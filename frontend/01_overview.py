@@ -1,10 +1,25 @@
+import os
+
 import numpy as np
 import pandas as pd
 import streamlit as st
+import yaml
 
-st.write("Hello World")
+with open('data/config.yml', 'r') as config_file:
+    config = yaml.safe_load(config_file)
 
-df = pd.read_json("data/example-export.json")
+st.write("DKP - " + config['season']['name'])
 
-st.write(df)
+export_dir = os.path.join('data', 'season', config['season']['key'], 'lootcouncil-export')
+for file in os.listdir(export_dir):
+    json = pd.read_json(os.path.join(export_dir, file))
+    filteredColumns = json[["player", "date", "time", "instance", "boss", "itemName", "note"]]
+    st.write(filteredColumns)
+
+
+
+
+
+
+
 
