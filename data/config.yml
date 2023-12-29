@@ -1,9 +1,25 @@
 season:
   key: dfs3
   name: Dragonflight - Season 3
+
+# TODO: find a way to easily ready char names (combat log parsing?)
 player:
-  Olli:
-    - Moppi-Anub'Arak
-    - Zelma-Anub'Arak
-  Micha:
-    - Wurzelpeter-Anub'Arak
+  - name: Olli
+    chars:
+      - Moppi-Anub'Arak
+      - Zelma-Anub'Arak
+  - name: Micha
+    chars:
+      - Wurzelpeter-Anub'Arak
+  - name: Yasmin
+    chars:
+      - Yäzmin-Antonidas
+  - name: Kevin
+    chars:
+      - Xenqt-Blackhand
+  - name: Tom
+    chars:
+      - Schäppert-Anub'arak
+  - name: Lutz
+    chars:
+      - Jnx-Aman'thul

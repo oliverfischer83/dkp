@@ -13,6 +13,7 @@ pip-sync
 ## start server
 
 ```bash
-streamlit run frontend/01_overview.py
+cd /home/fio1be/Projects/private/dkp  # path to repository root dir
+python -m streamlit run frontend/01_overview.py
 ```
 
