@@ -8,12 +8,11 @@ import yaml
 INITIAL_BALANCE = 100
 
 
-def find_unknown_players(players, known_player):
-    result = []
-    for player in players:
-        if player not in known_player:
-            result.append(player)
-    return result
+class Config:
+    def __init__(self, season, player_list, raid_list=None):
+        self.season = season
+        self.player_list = player_list
+        self.raid_list = raid_list
 
 
 class Season:
@@ -26,6 +25,13 @@ class Player:
     def __init__(self, name, chars):
         self.name = name
         self.chars = chars
+
+
+class Raid:
+    def __init__(self, date, report, member_list):
+        self.date = date
+        self.report = report
+        self.member_list = member_list
 
 
 class Loot:
@@ -42,12 +48,6 @@ class Balance:
     def __init__(self, player, value):
         self.player = player
         self.value = value
-
-
-class Config:
-    def __init__(self, season, player_list):
-        self.season = season
-        self.player_list = player_list
 
 
 class View:
@@ -149,3 +149,15 @@ def get_view():
     balance = get_balance(player_list, loot[["player", "cost"]])
 
     return View(season_name, balance, loot, validations)
+
+
+def get_raid(report_id):
+    report_link = f"https://www.warcraftlogs.com/reports/{report_id}"
+    # TODO call api and get members
+
+    date = "1990-01-01"
+    member_list = []
+
+    result = Raid(date, report_link, member_list)
+    return result
+

@@ -3,22 +3,20 @@ season:
   name: Dragonflight - Season 3
 
 player:
-  - name: Olli
-    chars:
-      - Moppi-Anub'Arak
-      - Zelma-Anub'Arak
-  - name: Micha
-    chars:
-      - Wurzelpeter-Anub'Arak
-  - name: Yasmin
-    chars:
-      - Yäzmin-Antonidas
   - name: Kevin
-    chars:
-      - Xenqt-Blackhand
-  - name: Tom
-    chars:
-      - Schäppert-Anub'arak
+    chars: ["Xenqt-Blackhand"]
   - name: Lutz
-    chars:
-      - Jnx-Aman'thul
+    chars: ["Jnx-Aman'thul"]
+  - name: Micha
+    chars: ["Wurzelpeter-Anub'Arak"]
+  - name: Olli
+    chars: ["Moppi-Anub'Arak", "Zelma-Anub'Arak"]
+  - name: Tom
+    chars: ["Schäppert-Anub'arak"]
+  - name: Yasmin
+    chars: ["Yäzmin-Antonidas"]
+
+raid:
+  - date: 2023-12-27
+    report: https://www.warcraftlogs.com/reports/JrYPGF9D1yLqtZhd
+    member: ["Olli", "Micha", "Yasmin", "Kevin", "Tom", "Lutz"]
