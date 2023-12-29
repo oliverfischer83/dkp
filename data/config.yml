@@ -3,20 +3,60 @@ season:
   name: Dragonflight - Season 3
 
 player:
+  - name: Carmen
+    chars: ["Cheîra-Aman'thul"]
+  - name: Christoph
+    chars: ["Thýráel-Antonidas"]
+  - name: Dave
+    chars: ["Schorsé-Antonidas","Failpuller-Antonidas"]
+  - name: Dennis
+    chars: []
+  - name: Dimi
+    chars: ["Fanfaron-Dalvengyr"]
+  - name: Franzi
+    chars: []
+  - name: Jessica
+    chars: []
+  - name: Joseph
+    chars: ["Etegosch-Zuluhed"]
+  - name: Kalle
+    chars: ["Gameofthrows-Blackhand"]
   - name: Kevin
-    chars: ["Xenqt-Blackhand"]
+    chars: ["Xenqt-Blackhand","Xenzqt-Blackhand","Heartdivine-Blackhand"]
+  - name: Leon
+    chars: ["Gómèz-Antonidas"]
   - name: Lutz
-    chars: ["Jnx-Aman'thul"]
+    chars: ["Jnx-Aman'thul","Pokusan-Aman'thul"]
+  - name: Marco
+    chars: []
+  - name: Marc
+    chars: []
+  - name: Maxi
+    chars: ["Zhòrá-Thrall"]
   - name: Micha
-    chars: ["Wurzelpeter-Anub'Arak"]
+    chars: ["Wurzelpeter-Anub'arak"]
+  - name: Mischa
+    chars: []
   - name: Olli
-    chars: ["Moppi-Anub'Arak", "Zelma-Anub'Arak"]
+    chars: ["Moppi-Anub'arak", "Zelma-Anub'arak"]
+  - name: Stalox
+    chars: []
+  - name: Steffo
+    chars: []
+  - name: Stephan
+    chars: ["Madherby-Nazjatar"]
+  - name: Tanja
+    chars: ["Blair-Dalvengyr"]
+  - name: Thomas
+    chars: ["Tiranôu-Frostmourne"]
+  - name: Tobi
+    chars: []
   - name: Tom
     chars: ["Schäppert-Anub'arak"]
   - name: Yasmin
-    chars: ["Yäzmin-Antonidas"]
+    chars: ["Yäzmin-Antonidas","Crêpesuzette-Antonidas"]
 
 raid:
   - date: 2023-12-27
     report: https://www.warcraftlogs.com/reports/JrYPGF9D1yLqtZhd
-    member: ["Olli", "Micha", "Yasmin", "Kevin", "Tom", "Lutz"]
+    member: ['Carmen', 'Christoph', 'Dave', 'Dimi', 'Joseph', 'Kalle', 'Kevin', 'Leon', 'Lutz', 'Maxi', 'Micha', 'Olli', 'Stephan', 'Tanja', 'Thomas', 'Yasmin']

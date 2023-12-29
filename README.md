@@ -18,3 +18,8 @@ cd /home/fio1be/Projects/private/dkp  # path to repository root dir
 python -m streamlit run frontend/01_overview.py
 ```
 
+## set secret as env var
+
+```bash
+export WCL_CLIENT_SECRET=top-secret
+```

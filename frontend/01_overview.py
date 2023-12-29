@@ -1,7 +1,7 @@
 import streamlit as st
-from src.dkp.dkp_app import get_view
+from src.dkp.dkp_app import get_balance_view
 
-view = get_view()
+view = get_balance_view()
 
 if view.validations:
     for validation in view.validations:

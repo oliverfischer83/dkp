@@ -4,6 +4,7 @@ Business logic for the DKP webapp.
 import os
 import pandas
 import yaml
+from . import warcraftlogs_client
 
 INITIAL_BALANCE = 100
 
@@ -27,11 +28,12 @@ class Player:
         self.chars = chars
 
 
-class Raid:
-    def __init__(self, date, report, member_list):
+class RaidView:
+    def __init__(self, date, report, player_list, validations):
         self.date = date
         self.report = report
-        self.member_list = member_list
+        self.player_list = player_list
+        self.validations = validations
 
 
 class Loot:
@@ -50,7 +52,7 @@ class Balance:
         self.value = value
 
 
-class View:
+class BalanceView:
     def __init__(self, season_name, balance, loot_history, validations):
         self.season_name = season_name
         self.balance = balance
@@ -108,16 +110,16 @@ def get_loot_from_local_files(season_key):
     return cleanup_data(raw_data)
 
 
-def validate_players_exists(player_list, looting_char_list):
+def validate_characters_known(player_list, looting_char_list):
     known_char_list = list()
     for player in player_list:
         for char in player.chars:
             known_char_list.append(char)
 
     result = []
-    for player in looting_char_list:
-        if player not in known_char_list:
-            result.append("Unknown player: " + player)
+    for char in looting_char_list:
+        if char not in known_char_list:
+            result.append("Unknown character: " + char)
     return result
 
 
@@ -133,31 +135,40 @@ def validate_costs_parsable(cost_list):
     return result
 
 
-def get_view():
+def get_balance_view():
     config = get_config()
     loot = get_loot_from_local_files(config.season.key)
     season_name = config.season.name
     player_list = config.player_list
 
     validations = []
-    validations.extend(validate_players_exists(player_list, loot['player'].unique()))
+    validations.extend(validate_characters_known(player_list, loot['player'].unique()))
     validations.extend(validate_costs_parsable(loot[["timestamp", "cost"]]))
 
     if validations:
-        return View(season_name, None, None, validations)
+        return BalanceView(season_name, None, None, validations)
 
     balance = get_balance(player_list, loot[["player", "cost"]])
 
-    return View(season_name, balance, loot, validations)
+    return BalanceView(season_name, balance, loot, None)
 
 
-def get_raid(report_id):
-    report_link = f"https://www.warcraftlogs.com/reports/{report_id}"
-    # TODO call api and get members
+def get_raid_view(report_id):
+    config = get_config()
 
-    date = "1990-01-01"
-    member_list = []
+    date, report_link, raiding_char_list = warcraftlogs_client.get_raid(report_id)
+    player_list = []
+    for player in config.player_list:
+        for char in raiding_char_list:
+            if char in player.chars:
+                player_list.append(player.name)
+                break
 
-    result = Raid(date, report_link, member_list)
-    return result
+    validations = []
+    validations.extend(validate_characters_known(config.player_list, raiding_char_list))
+
+    if validations:
+        return RaidView(date, report_link, None, validations)
+
+    return RaidView(date, report_link, player_list, None)
 
