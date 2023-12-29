@@ -1,3 +1,10 @@
+auth:
+  wcl:
+    client-id: "9af6b15b-44cb-4872-a9f9-7d0e56aad999"
+    client-secret: "not-set" # read from env var "WCL_CLIENT_SECRET"
+    token-url: "https://www.warcraftlogs.com/oauth/token"
+    api-endpoint: "https://www.warcraftlogs.com/api/v2/client"
+
 season:
   key: dfs3
   name: Dragonflight - Season 3

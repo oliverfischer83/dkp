@@ -1,0 +1,1206 @@
+{
+  "data": {
+    "reportData": {
+      "report": {
+        "code": "JrYPGF9D1yLqtZhd",
+        "title": "Amirdrassil, the Dream's Hope",
+        "startTime": 1703701714873,
+        "fights": [
+          {
+            "id": 5,
+            "size": 15,
+            "name": "Gnarlroot",
+            "difficulty": 3,
+            "friendlyPlayers": [
+              12,
+              27,
+              9,
+              32,
+              8,
+              24,
+              14,
+              3,
+              5,
+              6,
+              29,
+              15,
+              4,
+              38,
+              34
+            ],
+            "encounterID": 2820,
+            "startTime": 425003,
+            "endTime": 559178
+          },
+          {
+            "id": 8,
+            "size": 15,
+            "name": 'Igira the Cruel',
+            "difficulty": 3,
+            "friendlyPlayers": [
+              12,
+              27,
+              9,
+              32,
+              8,
+              24,
+              14,
+              3,
+              5,
+              6,
+              29,
+              15,
+              4,
+              38,
+              34
+            ],
+            "encounterID": 2709,
+            "startTime": 785908,
+            "endTime": 971257
+          },
+          {
+            "id": 13,
+            "size": 15,
+            "name": "Volcoross",
+            "difficulty": 3,
+            "friendlyPlayers": [
+              12,
+              27,
+              9,
+              32,
+              8,
+              24,
+              14,
+              3,
+              5,
+              6,
+              29,
+              15,
+              4,
+              38,
+              34
+            ],
+            "encounterID": 2737,
+            "startTime": 1348470,
+            "endTime": 1457907
+          },
+          {
+            "id": 18,
+            "size": 15,
+            "name": 'Larodar, Keeper of the Flame',
+            "difficulty": 3,
+            "friendlyPlayers": [
+              12,
+              27,
+              9,
+              32,
+              8,
+              24,
+              14,
+              3,
+              5,
+              6,
+              29,
+              15,
+              4,
+              38,
+              34
+            ],
+            "encounterID": 2731,
+            "startTime": 1724525,
+            "endTime": 1895596
+          },
+          {
+            "id": 24,
+            "size": 15,
+            "name": 'Council of Dreams',
+            "difficulty": 3,
+            "friendlyPlayers": [
+              12,
+              27,
+              9,
+              32,
+              8,
+              24,
+              14,
+              3,
+              5,
+              6,
+              29,
+              15,
+              4,
+              38,
+              34
+            ],
+            "encounterID": 2728,
+            "startTime": 2242047,
+            "endTime": 2390420
+          },
+          {
+            "id": 28,
+            "size": 16,
+            "name": 'Nymue, Weaver of the Cycle',
+            "difficulty": 3,
+            "friendlyPlayers": [
+              12,
+              27,
+              9,
+              32,
+              8,
+              120,
+              24,
+              14,
+              3,
+              5,
+              6,
+              29,
+              15,
+              4,
+              38,
+              34
+            ],
+            "encounterID": 2708,
+            "startTime": 2778752,
+            "endTime": 2916950
+          },
+          {
+            "id": 33,
+            "size": 16,
+            "name": "Smolderon",
+            "difficulty": 3,
+            "friendlyPlayers": [
+              12,
+              27,
+              9,
+              32,
+              8,
+              120,
+              24,
+              14,
+              3,
+              5,
+              6,
+              29,
+              15,
+              4,
+              38,
+              34
+            ],
+            "encounterID": 2824,
+            "startTime": 3093155,
+            "endTime": 3243873
+          },
+          {
+            "id": 36,
+            "size": 16,
+            "name": 'Tindral Sageswift, Seer of the Flame',
+            "difficulty": 3,
+            "friendlyPlayers": [
+              12,
+              27,
+              9,
+              32,
+              8,
+              120,
+              24,
+              14,
+              3,
+              5,
+              6,
+              29,
+              15,
+              4,
+              38,
+              34
+            ],
+            "encounterID": 2786,
+            "startTime": 3449596,
+            "endTime": 3691815
+          },
+          {
+            "id": 37,
+            "size": 16,
+            "name": 'Fyrakk the Blazing',
+            "difficulty": 3,
+            "friendlyPlayers": [
+              12,
+              27,
+              9,
+              32,
+              120,
+              24,
+              14,
+              3,
+              5,
+              6,
+              29,
+              131,
+              15,
+              4,
+              38,
+              34
+            ],
+            "encounterID": 2677,
+            "startTime": 3884924,
+            "endTime": 4236716
+          },
+          {
+            "id": 42,
+            "size": 16,
+            "name": "Gnarlroot",
+            "difficulty": 4,
+            "friendlyPlayers": [
+              203,
+              12,
+              27,
+              9,
+              205,
+              120,
+              14,
+              3,
+              5,
+              6,
+              131,
+              15,
+              202,
+              4,
+              38,
+              34
+            ],
+            "encounterID": 2820,
+            "startTime": 4982535,
+            "endTime": 5169607
+          },
+          {
+            "id": 46,
+            "size": 16,
+            "name": 'Igira the Cruel',
+            "difficulty": 4,
+            "friendlyPlayers": [
+              203,
+              12,
+              27,
+              9,
+              205,
+              120,
+              14,
+              3,
+              5,
+              6,
+              131,
+              15,
+              202,
+              4,
+              38,
+              34
+            ],
+            "encounterID": 2709,
+            "startTime": 5341305,
+            "endTime": 5577980
+          },
+          {
+            "id": 51,
+            "size": 16,
+            "name": "Volcoross",
+            "difficulty": 4,
+            "friendlyPlayers": [
+              203,
+              12,
+              27,
+              9,
+              205,
+              120,
+              14,
+              3,
+              5,
+              6,
+              131,
+              15,
+              202,
+              4,
+              38,
+              34
+            ],
+            "encounterID": 2737,
+            "startTime": 5996368,
+            "endTime": 6173251
+          },
+          {
+            "id": 55,
+            "size": 16,
+            "name": 'Larodar, Keeper of the Flame',
+            "difficulty": 4,
+            "friendlyPlayers": [
+              203,
+              12,
+              27,
+              9,
+              205,
+              120,
+              14,
+              3,
+              5,
+              6,
+              131,
+              15,
+              202,
+              4,
+              38,
+              34
+            ],
+            "encounterID": 2731,
+            "startTime": 6398034,
+            "endTime": 6479001
+          },
+          {
+            "id": 56,
+            "size": 16,
+            "name": 'Larodar, Keeper of the Flame',
+            "difficulty": 4,
+            "friendlyPlayers": [
+              203,
+              12,
+              27,
+              9,
+              205,
+              120,
+              14,
+              3,
+              5,
+              6,
+              131,
+              15,
+              202,
+              4,
+              38,
+              34
+            ],
+            "encounterID": 2731,
+            "startTime": 6654661,
+            "endTime": 6706709
+          },
+          {
+            "id": 57,
+            "size": 16,
+            "name": 'Larodar, Keeper of the Flame',
+            "difficulty": 4,
+            "friendlyPlayers": [
+              203,
+              12,
+              27,
+              9,
+              205,
+              120,
+              14,
+              3,
+              5,
+              6,
+              131,
+              15,
+              202,
+              4,
+              38,
+              34
+            ],
+            "encounterID": 2731,
+            "startTime": 6797298,
+            "endTime": 6895305
+          },
+          {
+            "id": 58,
+            "size": 16,
+            "name": 'Larodar, Keeper of the Flame',
+            "difficulty": 4,
+            "friendlyPlayers": [
+              203,
+              12,
+              27,
+              9,
+              205,
+              120,
+              14,
+              3,
+              5,
+              6,
+              131,
+              15,
+              202,
+              4,
+              38,
+              34
+            ],
+            "encounterID": 2731,
+            "startTime": 7015167,
+            "endTime": 7257434
+          }
+        ],
+        "zone": {
+          "id": 35,
+          "name": "Amirdrassil, the Dream's Hope",
+          "expansion": {
+            "id": 5,
+            "name": "Dragonflight",
+            "zones": [
+              {
+                "id": 36,
+                "name": 'Mythic+ Season 3'
+              },
+              {
+                "id": 34,
+                "name": 'Mythic+ Season 2'
+              },
+              {
+                "id": 32,
+                "name": 'Mythic+ Season 1'
+              },
+              {
+                "id": 35,
+                "name": "Amirdrassil, the Dream's Hope"
+              },
+              {
+                "id": 33,
+                "name": 'Aberrus, the Shadowed Crucible'
+              },
+              {
+                "id": 31,
+                "name": 'Vault of the Incarnates'
+              },
+              {
+                "id": 505,
+                "name": "zone-warcraft.zone_505"
+              },
+              {
+                "id": 504,
+                "name": "zone-warcraft.zone_504"
+              }
+            ]
+          }
+        },
+        "masterData": {
+          "actors": [
+            {
+              "name": "Blair",
+              "server": "Dalvengyr",
+              "id": 3
+            },
+            {
+              "name": "Thýráel",
+              "server": "Antonidas",
+              "id": 4
+            },
+            {
+              "name": "Fanfaron",
+              "server": "Dalvengyr",
+              "id": 5
+            },
+            {
+              "name": "Gameofthrows",
+              "server": "Blackhand",
+              "id": 6
+            },
+            {
+              "name": "Failpuller",
+              "server": "Antonidas",
+              "id": 8
+            },
+            {
+              "name": "Tiranôu",
+              "server": "Frostmourne",
+              "id": 9
+            },
+            {
+              "name": "Cheîra",
+              "server": "Aman'thul",
+              "id": 12
+            },
+            {
+              "name": "Madherby",
+              "server": "Nazjatar",
+              "id": 14
+            },
+            {
+              "name": "Moppi",
+              "server": "Anub'arak",
+              "id": 15
+            },
+            {
+              "name": "Crêpesuzette",
+              "server": "Antonidas",
+              "id": 24
+            },
+            {
+              "name": "Wurzelpeter",
+              "server": "Anub'arak",
+              "id": 27
+            },
+            {
+              "name": "Pokusan",
+              "server": "Aman'thul",
+              "id": 29
+            },
+            {
+              "name": "Xenzqt",
+              "server": "Blackhand",
+              "id": 32
+            },
+            {
+              "name": "Gómèz",
+              "server": "Antonidas",
+              "id": 34
+            },
+            {
+              "name": "Zhòrá",
+              "server": "Thrall",
+              "id": 38
+            },
+            {
+              "name": "Etegosch",
+              "server": "Zuluhed",
+              "id": 120
+            },
+            {
+              "name": "Schorsé",
+              "server": "Antonidas",
+              "id": 131
+            },
+            {
+              "name": "Merchi",
+              "server": "Nazjatar",
+              "id": 138
+            },
+            {
+              "name": "Momodan",
+              "server": "Aman'thul",
+              "id": 140
+            },
+            {
+              "name": "Useless",
+              "server": "Anub'arak",
+              "id": 141
+            },
+            {
+              "name": "Unbekannt",
+              "server": None,
+              "id": 142
+            },
+            {
+              "name": "Xáya",
+              "server": "Anub'arak",
+              "id": 143
+            },
+            {
+              "name": "Âyumî",
+              "server": "Frostmourne",
+              "id": 144
+            },
+            {
+              "name": "Diclonius",
+              "server": "Zuluhed",
+              "id": 145
+            },
+            {
+              "name": "Elthrine",
+              "server": "Aman'thul",
+              "id": 146
+            },
+            {
+              "name": "Caidan",
+              "server": "Aman'thul",
+              "id": 147
+            },
+            {
+              "name": "Rynas",
+              "server": "Aman'thul",
+              "id": 148
+            },
+            {
+              "name": "Chihu",
+              "server": "Aman'thul",
+              "id": 149
+            },
+            {
+              "name": "Aiiko",
+              "server": "Frostmourne",
+              "id": 151
+            },
+            {
+              "name": "Tahiti",
+              "server": "Aman'thul",
+              "id": 152
+            },
+            {
+              "name": "Karja",
+              "server": "Aman'thul",
+              "id": 153
+            },
+            {
+              "name": "Skinnypuppy",
+              "server": "Aman'thul",
+              "id": 154
+            },
+            {
+              "name": "Cerubín",
+              "server": "Zuluhed",
+              "id": 155
+            },
+            {
+              "name": "Tâiki",
+              "server": "Aman'thul",
+              "id": 156
+            },
+            {
+              "name": "Bankìer",
+              "server": "Aman'thul",
+              "id": 157
+            },
+            {
+              "name": "Novie",
+              "server": "Nazjatar",
+              "id": 158
+            },
+            {
+              "name": "Nathanus",
+              "server": "Aman'thul",
+              "id": 159
+            },
+            {
+              "name": "Megu",
+              "server": "Frostmourne",
+              "id": 160
+            },
+            {
+              "name": "Maiven",
+              "server": "Aman'thul",
+              "id": 161
+            },
+            {
+              "name": "Shakosbieros",
+              "server": "Nazjatar",
+              "id": 162
+            },
+            {
+              "name": "Aendrys",
+              "server": "Frostmourne",
+              "id": 163
+            },
+            {
+              "name": "Monkoo",
+              "server": "Nazjatar",
+              "id": 164
+            },
+            {
+              "name": "Vateria",
+              "server": "Aman'thul",
+              "id": 165
+            },
+            {
+              "name": "Edgaregal",
+              "server": "Zuluhed",
+              "id": 166
+            },
+            {
+              "name": "Charoz",
+              "server": "Anub'arak",
+              "id": 167
+            },
+            {
+              "name": "Omicronlrr",
+              "server": "Nazjatar",
+              "id": 168
+            },
+            {
+              "name": "Trustèy",
+              "server": "Thrall",
+              "id": 169
+            },
+            {
+              "name": "Scaar",
+              "server": "Nazjatar",
+              "id": 170
+            },
+            {
+              "name": "Cromek",
+              "server": "Aman'thul",
+              "id": 171
+            },
+            {
+              "name": "Sanumi",
+              "server": "Frostmourne",
+              "id": 172
+            },
+            {
+              "name": "Malaphas",
+              "server": "Nazjatar",
+              "id": 173
+            },
+            {
+              "name": "Krasnal",
+              "server": "Frostmourne",
+              "id": 174
+            },
+            {
+              "name": "Barbarar",
+              "server": "Aman'thul",
+              "id": 175
+            },
+            {
+              "name": "Hádés",
+              "server": "Aman'thul",
+              "id": 176
+            },
+            {
+              "name": "Magjike",
+              "server": "Frostmourne",
+              "id": 177
+            },
+            {
+              "name": "Nashobâ",
+              "server": "Anub'arak",
+              "id": 178
+            },
+            {
+              "name": "Dheria",
+              "server": "Aman'thul",
+              "id": 179
+            },
+            {
+              "name": "Dhamonia",
+              "server": "Aman'thul",
+              "id": 180
+            },
+            {
+              "name": "Evíltwo",
+              "server": "Nazjatar",
+              "id": 181
+            },
+            {
+              "name": "Erestron",
+              "server": "Anub'arak",
+              "id": 182
+            },
+            {
+              "name": "Layna",
+              "server": "Zuluhed",
+              "id": 183
+            },
+            {
+              "name": "Nila",
+              "server": "Frostmourne",
+              "id": 184
+            },
+            {
+              "name": "Cutepalaboy",
+              "server": "Aman'thul",
+              "id": 185
+            },
+            {
+              "name": "Emjaylul",
+              "server": "Thrall",
+              "id": 186
+            },
+            {
+              "name": "Breâth",
+              "server": "Anub'arak",
+              "id": 187
+            },
+            {
+              "name": "Tíana",
+              "server": "Aman'thul",
+              "id": 188
+            },
+            {
+              "name": "Hugó",
+              "server": "Zuluhed",
+              "id": 189
+            },
+            {
+              "name": "Mäddl",
+              "server": "Aman'thul",
+              "id": 190
+            },
+            {
+              "name": "Thiras",
+              "server": "Anub'arak",
+              "id": 192
+            },
+            {
+              "name": "Philae",
+              "server": "Aman'thul",
+              "id": 193
+            },
+            {
+              "name": "Blinkblin",
+              "server": "TheSha'tar",
+              "id": 194
+            },
+            {
+              "name": "Mickeeyy",
+              "server": "Aman'thul",
+              "id": 195
+            },
+            {
+              "name": "Cadassia",
+              "server": "Anub'arak",
+              "id": 197
+            },
+            {
+              "name": "Chelock",
+              "server": "Aman'thul",
+              "id": 198
+            },
+            {
+              "name": "Chihuahua",
+              "server": "Nazjatar",
+              "id": 199
+            },
+            {
+              "name": "Sincepri",
+              "server": "Blackrock",
+              "id": 201
+            },
+            {
+              "name": "Jnx",
+              "server": "Aman'thul",
+              "id": 202
+            },
+            {
+              "name": "Yäzmin",
+              "server": "Antonidas",
+              "id": 203
+            },
+            {
+              "name": "Heartdivine",
+              "server": "Blackhand",
+              "id": 205
+            },
+            {
+              "name": "Drihx",
+              "server": "Aman'thul",
+              "id": 211
+            },
+            {
+              "name": "Uokalark",
+              "server": "Nazjatar",
+              "id": 212
+            },
+            {
+              "name": "Yurahoy",
+              "server": "Nazjatar",
+              "id": 213
+            },
+            {
+              "name": "Moggey",
+              "server": "Aman'thul",
+              "id": 214
+            },
+            {
+              "name": "Akyrah",
+              "server": "Anub'arak",
+              "id": 215
+            },
+            {
+              "name": "Feer",
+              "server": "Aman'thul",
+              "id": 216
+            },
+            {
+              "name": "Chibzii",
+              "server": "Blackmoore",
+              "id": 217
+            },
+            {
+              "name": "Äbbeluwu",
+              "server": "Aman'thul",
+              "id": 218
+            },
+            {
+              "name": "Spoz",
+              "server": "Aman'thul",
+              "id": 219
+            },
+            {
+              "name": "Akimoto",
+              "server": "Nazjatar",
+              "id": 220
+            },
+            {
+              "name": "Drmettwurst",
+              "server": "Zuluhed",
+              "id": 221
+            },
+            {
+              "name": "Shârlena",
+              "server": "Aman'thul",
+              "id": 222
+            },
+            {
+              "name": "Arthalion",
+              "server": "Aman'thul",
+              "id": 223
+            },
+            {
+              "name": "Fett",
+              "server": "Anub'arak",
+              "id": 224
+            },
+            {
+              "name": "Nines",
+              "server": "Aman'thul",
+              "id": 225
+            },
+            {
+              "name": "Schlumbline",
+              "server": "Aman'thul",
+              "id": 226
+            },
+            {
+              "name": "Bemused",
+              "server": "Anub'arak",
+              "id": 227
+            },
+            {
+              "name": "Unbekannt",
+              "server": None,
+              "id": 229
+            },
+            {
+              "name": "Autumnlêaf",
+              "server": "Frostmourne",
+              "id": 230
+            },
+            {
+              "name": "Deedolit",
+              "server": "Aman'thul",
+              "id": 231
+            },
+            {
+              "name": "Labruja",
+              "server": "Aman'thul",
+              "id": 232
+            },
+            {
+              "name": "Vior",
+              "server": "Frostmourne",
+              "id": 233
+            },
+            {
+              "name": "Fueguchi",
+              "server": "Anub'arak",
+              "id": 234
+            },
+            {
+              "name": "Tamyia",
+              "server": "Aman'thul",
+              "id": 236
+            },
+            {
+              "name": "Christinka",
+              "server": "Kazzak",
+              "id": 237
+            },
+            {
+              "name": "Dovakîn",
+              "server": "Aman'thul",
+              "id": 238
+            },
+            {
+              "name": "Trollnuss",
+              "server": "Nazjatar",
+              "id": 239
+            },
+            {
+              "name": "Ouvrin",
+              "server": "Aman'thul",
+              "id": 240
+            },
+            {
+              "name": "Tayruni",
+              "server": "Nazjatar",
+              "id": 241
+            },
+            {
+              "name": "Emmenthaler",
+              "server": "Aman'thul",
+              "id": 242
+            },
+            {
+              "name": "Boomblood",
+              "server": "Frostmourne",
+              "id": 243
+            },
+            {
+              "name": "Yawar",
+              "server": "Aman'thul",
+              "id": 244
+            },
+            {
+              "name": "Oberhauer",
+              "server": "Aman'thul",
+              "id": 245
+            },
+            {
+              "name": "Xypres",
+              "server": "Nazjatar",
+              "id": 246
+            },
+            {
+              "name": "Myriel",
+              "server": "Nazjatar",
+              "id": 247
+            },
+            {
+              "name": "Sariell",
+              "server": "Dalvengyr",
+              "id": 248
+            },
+            {
+              "name": "Gleeok",
+              "server": "Aman'thul",
+              "id": 250
+            },
+            {
+              "name": "Fåb",
+              "server": "Anub'arak",
+              "id": 251
+            },
+            {
+              "name": "Flauschbart",
+              "server": "Anub'arak",
+              "id": 252
+            },
+            {
+              "name": "Distract",
+              "server": "Anub'arak",
+              "id": 253
+            },
+            {
+              "name": "Acquario",
+              "server": "Anub'arak",
+              "id": 254
+            },
+            {
+              "name": "Løvêïstøxïç",
+              "server": "Frostmourne",
+              "id": 255
+            },
+            {
+              "name": "Jeríchó",
+              "server": "Aman'thul",
+              "id": 256
+            },
+            {
+              "name": "Praliné",
+              "server": "Aman'thul",
+              "id": 257
+            },
+            {
+              "name": "Ânnânâss",
+              "server": "Aman'thul",
+              "id": 258
+            },
+            {
+              "name": "Fierst",
+              "server": "Aman'thul",
+              "id": 259
+            },
+            {
+              "name": "Wûrstrogue",
+              "server": "Nazjatar",
+              "id": 260
+            },
+            {
+              "name": "Aratohas",
+              "server": "Aman'thul",
+              "id": 261
+            },
+            {
+              "name": "Unbekannt",
+              "server": None,
+              "id": 262
+            },
+            {
+              "name": "Venomsnake",
+              "server": "Anub'arak",
+              "id": 263
+            },
+            {
+              "name": "Vilox",
+              "server": "Anub'arak",
+              "id": 264
+            },
+            {
+              "name": "Dragonsrage",
+              "server": "Aman'thul",
+              "id": 265
+            },
+            {
+              "name": "Anyanee",
+              "server": "Aman'thul",
+              "id": 266
+            },
+            {
+              "name": "Neytiri",
+              "server": "Zuluhed",
+              "id": 267
+            },
+            {
+              "name": "Dratasi",
+              "server": "Aman'thul",
+              "id": 268
+            },
+            {
+              "name": "Tarina",
+              "server": "Aman'thul",
+              "id": 269
+            },
+            {
+              "name": "Stion",
+              "server": "Aman'thul",
+              "id": 270
+            },
+            {
+              "name": "Sÿ",
+              "server": "Blackmoore",
+              "id": 271
+            },
+            {
+              "name": "Banjowo",
+              "server": "Frostmourne",
+              "id": 272
+            },
+            {
+              "name": "Khuyolicious",
+              "server": "Blackmoore",
+              "id": 273
+            },
+            {
+              "name": "Séncha",
+              "server": "Aman'thul",
+              "id": 274
+            },
+            {
+              "name": "Dragolyon",
+              "server": "Aman'thul",
+              "id": 275
+            },
+            {
+              "name": "Frósta",
+              "server": "Anub'arak",
+              "id": 276
+            },
+            {
+              "name": "Schnipfi",
+              "server": "Aman'thul",
+              "id": 277
+            },
+            {
+              "name": "Dolseum",
+              "server": "Blackmoore",
+              "id": 278
+            }
+          ]
+        }
+      }
+    }
+  }
+}

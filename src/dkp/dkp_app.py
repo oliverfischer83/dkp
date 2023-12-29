@@ -3,37 +3,13 @@ Business logic for the DKP webapp.
 """
 import os
 import pandas
-import yaml
-from . import warcraftlogs_client
+from . import config_mapper
+from .warcraftlogs_client import WclClient
 
 INITIAL_BALANCE = 100
 ATTENDANCE_BONUS = 50
 
-
-class Config:
-    def __init__(self, season, player_list, raid_list):
-        self.season = season
-        self.player_list = player_list
-        self.raid_list = raid_list
-
-
-class Season:
-    def __init__(self, name, key):
-        self.name = name
-        self.key = key
-
-
-class Player:
-    def __init__(self, name, chars):
-        self.name = name
-        self.chars = chars
-
-
-class Raid:
-    def __init__(self, date, report, player_list):
-        self.date = date
-        self.report = report
-        self.player_list = player_list
+config = config_mapper.get_config()
 
 
 class AdminView:
@@ -66,20 +42,6 @@ class BalanceView:
         self.balance = balance
         self.loot_history = loot_history
         self.validations = validations
-
-
-def get_config():
-    with open('data/config.yml', 'r') as config_file:
-        config_yml = yaml.safe_load(config_file)
-    season = Season(config_yml['season']['name'], config_yml['season']['key'])
-    player_list = []
-    for player in config_yml['player']:
-        player_list.append(Player(player['name'], player['chars']))
-
-    raid_list = []
-    for raid in config_yml['raid']:
-        raid_list.append(Raid(raid['date'], raid['report'], raid['player']))
-    return Config(season, player_list, raid_list)
 
 
 def get_raw_data_from_files(export_dir):
@@ -157,7 +119,6 @@ def validate_costs_parsable(cost_list):
 
 
 def get_balance_view():
-    config = get_config()
     loot = get_loot_from_local_files(config.season.key)
     season_name = config.season.name
     player_list = config.player_list
@@ -175,9 +136,9 @@ def get_balance_view():
 
 
 def get_admin_view(report_id):
-    config = get_config()
+    wcl_client = WclClient(config.auth.wcl_client)
+    date, report_link, raiding_char_list = wcl_client.get_raid_details(report_id)
 
-    date, report_link, raiding_char_list = warcraftlogs_client.get_raid(report_id)
     player_list = []
     for player in config.player_list:
         for char in raiding_char_list:
@@ -192,4 +153,3 @@ def get_admin_view(report_id):
         return AdminView(date, report_link, None, validations)
 
     return AdminView(date, report_link, player_list, None)
-
