@@ -103,8 +103,7 @@ def get_balance(player_list, loot):
             .sort_values(by=['name'], ascending=True, ignore_index=True))
 
 
-# TODO fetch data from github instead of local
-def get_loot(season_key):
+def get_loot_from_local_files(season_key):
     raw_data = get_raw_data_from_files(os.path.join('data', 'season', season_key))
     return cleanup_data(raw_data)
 
@@ -136,11 +135,10 @@ def validate_costs_parsable(cost_list):
 
 def get_view():
     config = get_config()
-    loot = get_loot(config.season.key)
+    loot = get_loot_from_local_files(config.season.key)
     season_name = config.season.name
     player_list = config.player_list
 
-    # TODO validate config and loot files (duplicates, empty entries, ...)
     validations = []
     validations.extend(validate_players_exists(player_list, loot['player'].unique()))
     validations.extend(validate_costs_parsable(loot[["timestamp", "cost"]]))
@@ -151,17 +149,3 @@ def get_view():
     balance = get_balance(player_list, loot[["player", "cost"]])
 
     return View(season_name, balance, loot, validations)
-
-#
-# loot_df = pandas.DataFrame()
-# export_dir = os.path.join('data', 'season', config['season']['key'], 'lootcouncil-export')
-# for file in os.listdir(export_dir):
-#     dataframe = pandas.read_json(os.path.join(export_dir, file), orient='records', dtype='str')
-#     dataframe['timestamp'] = dataframe['date'] + ' ' + dataframe['time']
-#     dataframe = dataframe[["timestamp", "player", "itemName", "note", "instance", "boss"]]
-#     dataframe.set_index('timestamp')
-#     loot_df = pandas.concat([loot_df, dataframe])
-#
-# loot_df.rename(columns={'itemName': 'item'}, inplace=True)
-# loot_df.rename(columns={'note': 'cost'}, inplace=True)
-# loot_df = loot_df.sort_values(by=['timestamp'], ascending=False, ignore_index=True)
