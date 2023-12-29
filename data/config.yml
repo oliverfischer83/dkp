@@ -59,4 +59,4 @@ player:
 raid:
   - date: 2023-12-27
     report: https://www.warcraftlogs.com/reports/JrYPGF9D1yLqtZhd
-    member: ['Carmen', 'Christoph', 'Dave', 'Dimi', 'Joseph', 'Kalle', 'Kevin', 'Leon', 'Lutz', 'Maxi', 'Micha', 'Olli', 'Stephan', 'Tanja', 'Thomas', 'Yasmin']
+    player: ['Carmen', 'Christoph', 'Dave', 'Dimi', 'Joseph', 'Kalle', 'Kevin', 'Leon', 'Lutz', 'Maxi', 'Micha', 'Olli', 'Stephan', 'Tanja', 'Thomas', 'Yasmin']

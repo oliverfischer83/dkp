@@ -7,10 +7,11 @@ import yaml
 from . import warcraftlogs_client
 
 INITIAL_BALANCE = 100
+ATTENDANCE_BONUS = 50
 
 
 class Config:
-    def __init__(self, season, player_list, raid_list=None):
+    def __init__(self, season, player_list, raid_list):
         self.season = season
         self.player_list = player_list
         self.raid_list = raid_list
@@ -28,7 +29,14 @@ class Player:
         self.chars = chars
 
 
-class RaidView:
+class Raid:
+    def __init__(self, date, report, player_list):
+        self.date = date
+        self.report = report
+        self.player_list = player_list
+
+
+class AdminView:
     def __init__(self, date, report, player_list, validations):
         self.date = date
         self.report = report
@@ -67,7 +75,11 @@ def get_config():
     player_list = []
     for player in config_yml['player']:
         player_list.append(Player(player['name'], player['chars']))
-    return Config(season, player_list)
+
+    raid_list = []
+    for raid in config_yml['raid']:
+        raid_list.append(Raid(raid['date'], raid['report'], raid['player']))
+    return Config(season, player_list, raid_list)
 
 
 def get_raw_data_from_files(export_dir):
@@ -88,11 +100,20 @@ def cleanup_data(raw_data):
     return result.sort_values(by=['timestamp'], ascending=False, ignore_index=True)
 
 
-def get_balance(player_list, loot):
+def get_balance(player_list, raid_list, loot):
+    # init balance list
     balance_list = list()
     for player in player_list:
         balance_list.append(Balance(player, INITIAL_BALANCE))
 
+    # add attendance fee
+    for raid in raid_list:
+        for player in raid.player_list:
+            for balance in balance_list:
+                if player == balance.player.name:
+                    balance.value = balance.value + ATTENDANCE_BONUS
+
+    # subtract costs
     for index, row in loot.iterrows():
         char = row['player']
         cost = row['cost']
@@ -148,12 +169,12 @@ def get_balance_view():
     if validations:
         return BalanceView(season_name, None, None, validations)
 
-    balance = get_balance(player_list, loot[["player", "cost"]])
+    balance = get_balance(player_list, config.raid_list, loot[["player", "cost"]])
 
     return BalanceView(season_name, balance, loot, None)
 
 
-def get_raid_view(report_id):
+def get_admin_view(report_id):
     config = get_config()
 
     date, report_link, raiding_char_list = warcraftlogs_client.get_raid(report_id)
@@ -168,7 +189,7 @@ def get_raid_view(report_id):
     validations.extend(validate_characters_known(config.player_list, raiding_char_list))
 
     if validations:
-        return RaidView(date, report_link, None, validations)
+        return AdminView(date, report_link, None, validations)
 
-    return RaidView(date, report_link, player_list, None)
+    return AdminView(date, report_link, player_list, None)
 
