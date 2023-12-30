@@ -31,9 +31,11 @@ class Loot:
 
 
 class Balance:
-    def __init__(self, player, value):
+    def __init__(self, player, value, income=INITIAL_BALANCE, cost=0):
         self.player = player
         self.value = value
+        self.income = income
+        self.cost = cost
 
 
 class BalanceView:
@@ -52,6 +54,10 @@ def get_raw_data_from_files(export_dir):
     return result
 
 
+def make_clickable(val):
+    return '<a href="{}">{}</a>'.format(val,val)
+
+
 def modify_data(dataframe, player_list):
     result = dataframe.copy()
     # remove irrelevant data, need bids only
@@ -60,14 +66,21 @@ def modify_data(dataframe, player_list):
     result['timestamp'] = result['date'] + ' ' + result['time']
     result['timestamp'] = pandas.to_datetime(result['timestamp'], format='%d/%m/%y %H:%M:%S', dayfirst=True)
     result.set_index('timestamp')
+    # creating item link column
+    result['itemLink'] = 'https://www.wowhead.com/item=' + result['itemID']
+    result.style.format({'itemLink': make_clickable})
     # renaming columns
     result = result.rename(columns={'player': 'character'})
     result = result.rename(columns={'itemName': 'item'})
     result = result.rename(columns={'note': 'cost'})
     # create and fill column 'player' using mapping table like {'Moppi': 'Olli', 'Zelma': 'Olli', ...}
     result['player'] = result['character'].map(lambda x: next((player.name for player in player_list if x in player.chars), None))
+    # create difficulty column
+    result['difficulty'] = result['instance'].str.split('-').str[1]
+    # substring of instance name
+    result['instance'] = result['instance'].str.split(',').str[0]
     # sort columns
-    result = result[["timestamp", "player", "cost", "item", "instance", "boss", "character"]]
+    result = result[["timestamp", "player", "cost", "item", "itemLink", "instance", "difficulty", "boss", "character"]]
     return result.sort_values(by=['timestamp'], ascending=False, ignore_index=True)
 
 
@@ -82,12 +95,13 @@ def get_balance(player_list, raid_list, loot):
     for player in player_list:
         balance_list.append(Balance(player, INITIAL_BALANCE))
 
-    # add attendance fee
+    # add income
     for raid in raid_list:
         for player in raid.player_list:
             for balance in balance_list:
                 if player == balance.player.name:
                     balance.value = balance.value + ATTENDANCE_BONUS
+                    balance.income = balance.income + ATTENDANCE_BONUS
 
     # subtract costs
     for index, row in loot.iterrows():
@@ -96,9 +110,10 @@ def get_balance(player_list, raid_list, loot):
         for balance in balance_list:
             if char in balance.player.chars:
                 balance.value = balance.value - int(cost)
+                balance.cost = balance.cost - int(cost)
 
-    balance_list_as_df = [[balance.player.name, balance.value] for balance in balance_list]
-    return (pandas.DataFrame(balance_list_as_df, columns=['name', 'points'])
+    balance_list_as_df = [[balance.player.name, balance.value, balance.income, balance.cost] for balance in balance_list]
+    return (pandas.DataFrame(balance_list_as_df, columns=['name', 'balance', "income", "cost"])
             .sort_values(by=['name'], ascending=True, ignore_index=True))
 
 
