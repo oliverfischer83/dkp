@@ -47,7 +47,7 @@ class BalanceView:
 def get_raw_data_from_files(export_dir):
     result = pandas.DataFrame()
     for file in os.listdir(export_dir):
-        dataframe = pandas.read_json(os.path.join(export_dir, file), orient='records', dtype='str')
+        dataframe = pandas.read_json(os.path.join(export_dir, file), orient='records', dtype='str', convert_dates=False)
         result = pandas.concat([result, dataframe])
     return result
 
@@ -55,6 +55,7 @@ def get_raw_data_from_files(export_dir):
 def cleanup_data(raw_data):
     result = raw_data.copy()
     result['timestamp'] = result['date'] + ' ' + result['time']
+    result['timestamp'] = pandas.to_datetime(result['timestamp'], format='%d/%m/%y %H:%M:%S', dayfirst=True)
     result = result[["timestamp", "player", "itemName", "note", "instance", "boss"]]
     result = result.rename(columns={'itemName': 'item'})
     result = result.rename(columns={'note': 'cost'})
