@@ -811,7 +811,7 @@
     "id": "1703702485-30",
     "itemID": 207788,
     "itemString": "item:207788::::::::70:70::3:6:6652:7979:9563:10247:1494:8767",
-    "response": "Candidate didn't respond on time",
+    "response": "Gebot",
     "votes": 0,
     "class": "PALADIN",
     "instance": "Amirdrassil, the Dream's Hope-Normal",
@@ -823,7 +823,7 @@
     "rollType": "normal",
     "subType": "One-Handed Maces",
     "equipLoc": "One-Hand",
-    "note": "",
+    "note": "10",
     "owner": "Moppi-Anub'arak",
     "itemName": "Vakash, the Shadowed Inferno"
   },

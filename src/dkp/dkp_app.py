@@ -52,15 +52,28 @@ def get_raw_data_from_files(export_dir):
     return result
 
 
-def cleanup_data(raw_data):
-    result = raw_data.copy()
+def modify_data(dataframe, player_list):
+    result = dataframe.copy()
+    # remove irrelevant data, need bids only
+    result = result[result['response'] == 'Gebot']
+    # creating timestamp column
     result['timestamp'] = result['date'] + ' ' + result['time']
     result['timestamp'] = pandas.to_datetime(result['timestamp'], format='%d/%m/%y %H:%M:%S', dayfirst=True)
-    result = result[["timestamp", "player", "itemName", "note", "instance", "boss"]]
+    result.set_index('timestamp')
+    # renaming columns
+    result = result.rename(columns={'player': 'character'})
     result = result.rename(columns={'itemName': 'item'})
     result = result.rename(columns={'note': 'cost'})
-    result.set_index('timestamp')
+    # create and fill column 'player' using mapping table like {'Moppi': 'Olli', 'Zelma': 'Olli', ...}
+    result['player'] = result['character'].map(lambda x: next((player.name for player in player_list if x in player.chars), None))
+    # sort columns
+    result = result[["timestamp", "player", "cost", "item", "instance", "boss", "character"]]
     return result.sort_values(by=['timestamp'], ascending=False, ignore_index=True)
+
+
+def get_loot_from_local_files(season_key, player_list):
+    raw_data = get_raw_data_from_files(os.path.join('data', 'season', season_key))
+    return modify_data(raw_data, player_list)
 
 
 def get_balance(player_list, raid_list, loot):
@@ -78,7 +91,7 @@ def get_balance(player_list, raid_list, loot):
 
     # subtract costs
     for index, row in loot.iterrows():
-        char = row['player']
+        char = row['character']
         cost = row['cost']
         for balance in balance_list:
             if char in balance.player.chars:
@@ -87,18 +100,6 @@ def get_balance(player_list, raid_list, loot):
     balance_list_as_df = [[balance.player.name, balance.value] for balance in balance_list]
     return (pandas.DataFrame(balance_list_as_df, columns=['name', 'points'])
             .sort_values(by=['name'], ascending=True, ignore_index=True))
-
-
-def filter_data(raw_data):
-    result = raw_data.copy()
-    result = result[result['response'] == 'Gebot']
-    return result
-
-
-def get_loot_from_local_files(season_key):
-    raw_data = get_raw_data_from_files(os.path.join('data', 'season', season_key))
-    filtered_data = filter_data(raw_data)
-    return cleanup_data(filtered_data)
 
 
 def validate_characters_known(player_list, looting_char_list):
@@ -127,18 +128,18 @@ def validate_costs_parsable(cost_list):
 
 
 def get_balance_view():
-    loot = get_loot_from_local_files(config.season.key)
     season_name = config.season.name
     player_list = config.player_list
+    loot = get_loot_from_local_files(config.season.key, player_list)
 
     validations = []
-    validations.extend(validate_characters_known(player_list, loot['player'].unique()))
+    validations.extend(validate_characters_known(player_list, loot['character'].unique()))
     validations.extend(validate_costs_parsable(loot[["timestamp", "cost"]]))
 
     if validations:
         return BalanceView(season_name, None, None, validations)
 
-    balance = get_balance(player_list, config.raid_list, loot[["player", "cost"]])
+    balance = get_balance(player_list, config.raid_list, loot[["character", "cost"]])
 
     return BalanceView(season_name, balance, loot, None)
 

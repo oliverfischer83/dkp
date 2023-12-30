@@ -673,7 +673,7 @@
     "id": "1701285065-30",
     "itemID": 207786,
     "itemString": "item:207786::::::::70:70::3:6:43:7979:9563:10247:1494:8767",
-    "response": "Gebot",
+    "response": "Transmog",
     "votes": 0,
     "class": "DEMONHUNTER",
     "instance": "Amirdrassil, the Dream's Hope-Normal",
@@ -685,7 +685,7 @@
     "rollType": "normal",
     "subType": "One-Handed Axes",
     "equipLoc": "One-Hand",
-    "note": "70",
+    "note": "",
     "owner": "Moppi-Anub'arak",
     "itemName": "Gholak, the Final Conflagration"
   },
@@ -780,5 +780,15 @@
     "note": "100",
     "owner": "Moppi-Anub'arak",
     "itemName": "Ouroboreal Necklet"
+  },
+  {
+    "player": "Moppi-Anub'arak",
+    "note": "30",
+    "response": "Gebot",
+    "date": "15/11/23",
+    "time": "21:30:00",
+    "instance": "Amirdrassil, the Dream's Hope-Normal",
+    "boss": "",
+    "itemName": ""
   }
 ]
