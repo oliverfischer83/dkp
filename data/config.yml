@@ -13,25 +13,25 @@ player:
   - name: Carmen
     chars: ["Cheîra-Aman'thul"]
   - name: Christoph
-    chars: ["Thýráel-Antonidas"]
+    chars: ["Thýráel-Antonidas","Thyraldur-Blackhand","Thyrân-Antonidas","Thyrodor-Antonidas"]
   - name: Dave
-    chars: ["Schorsé-Antonidas","Failpuller-Antonidas"]
+    chars: ["Schorsé-Antonidas","Failpuller-Antonidas","Angstblasé-Antonidas"]
   - name: Dennis
-    chars: []
+    chars: ["Mirady-Antonidas"]
   - name: Dimi
     chars: ["Fanfaron-Dalvengyr"]
   - name: Franzi
-    chars: []
+    chars: ["Lelu-Anub'arak"]
   - name: Jessica
-    chars: []
+    chars: ["Roselyn-Aman'thul"]
   - name: Joseph
     chars: ["Etegosch-Zuluhed"]
   - name: Kalle
-    chars: ["Gameofthrows-Blackhand"]
+    chars: ["Gameofthrows-Blackhand","Gameofthrows-Antonidas"]
   - name: Kevin
     chars: ["Xenqt-Blackhand","Xenzqt-Blackhand","Heartdivine-Blackhand"]
   - name: Leon
-    chars: ["Gómèz-Antonidas"]
+    chars: ["Gómèz-Antonidas","Sancticia-Antonidas","Simplecia-Antonidas"]
   - name: Lutz
     chars: ["Jnx-Aman'thul","Pokusan-Aman'thul"]
   - name: Marco
@@ -39,11 +39,11 @@ player:
   - name: Marc
     chars: ["Seysey-Aman'thul"]
   - name: Maxi
-    chars: ["Zhòrá-Thrall"]
+    chars: ["Zhòrá-Thrall","Zhòráqt-Thrall"]
   - name: Micha
     chars: ["Wurzelpeter-Anub'arak"]
   - name: Mischa
-    chars: []
+    chars: ["Kellykiller-Aman'thul"]
   - name: Olli
     chars: ["Moppi-Anub'arak", "Zelma-Anub'arak"]
   - name: Stalox
@@ -53,17 +53,50 @@ player:
   - name: Stephan
     chars: ["Madherby-Nazjatar"]
   - name: Tanja
-    chars: ["Blair-Dalvengyr"]
+    chars: ["Blair-Dalvengyr","Icheule-Anub'arak"]
   - name: Thomas
-    chars: ["Tiranôu-Frostmourne"]
+    chars: ["Tiranôu-Frostmourne","Dvalin-Frostmourne"]
   - name: Tobi
-    chars: []
+    chars: ["Dinkelheit-Antonidas"]
   - name: Tom
     chars: ["Schäppert-Anub'arak"]
   - name: Yasmin
     chars: ["Yäzmin-Antonidas","Crêpesuzette-Antonidas"]
 
 raid:
+  - date: 2023-11-15
+    report: https://www.warcraftlogs.com/reports/yAav4BwKJjrVm2bk
+    player: ['Dimi', 'Franzi', 'Joseph', 'Kalle', 'Kevin', 'Leon', 'Lutz', 'Marco', 'Marc', 'Micha', 'Mischa', 'Olli', 'Stephan', 'Tanja', 'Thomas', 'Tom', 'Yasmin']
+  - date: 2023-11-19
+    report: https://www.warcraftlogs.com/reports/C1xDZhXH2Pr6F7nR
+    player: ['Carmen', 'Dimi', 'Franzi', 'Joseph', 'Kalle', 'Kevin', 'Leon', 'Lutz', 'Marco', 'Marc', 'Maxi', 'Micha', 'Mischa', 'Olli', 'Stephan', 'Tanja', 'Thomas', 'Tobi', 'Tom', 'Yasmin']
+  - date: 2023-11-22
+    report: https://www.warcraftlogs.com/reports/P9k8pfJrQ7ZycMgL
+    player: ['Carmen', 'Franzi', 'Joseph', 'Kalle', 'Kevin', 'Leon', 'Lutz', 'Marco', 'Marc', 'Maxi', 'Micha', 'Mischa', 'Olli', 'Stephan', 'Tanja', 'Thomas', 'Tobi', 'Tom', 'Yasmin']
+  - date: 2023-11-26
+    report: https://www.warcraftlogs.com/reports/NxD74H2FGLb3mVRh
+    player: ['Dennis', 'Dimi', 'Joseph', 'Kalle', 'Kevin', 'Marco', 'Marc', 'Micha', 'Mischa', 'Olli', 'Stephan', 'Tanja', 'Thomas', 'Tobi', 'Tom', 'Yasmin']
+  - date: 2023-11-29
+    report: https://www.warcraftlogs.com/reports/B6JXPT3Ycjqt9ND1
+    player: ['Dave', 'Dimi', 'Franzi', 'Joseph', 'Kalle', 'Kevin', 'Leon', 'Lutz', 'Marc', 'Micha', 'Mischa', 'Olli', 'Tanja', 'Thomas', 'Tom', 'Yasmin']
+  - date: 2023-12-03
+    report: https://www.warcraftlogs.com/reports/awWJnDtgmVb8AxH4
+    player: ['Dimi', 'Franzi', 'Joseph', 'Kalle', 'Kevin', 'Leon', 'Lutz', 'Marc', 'Maxi', 'Micha', 'Olli', 'Stephan', 'Tanja', 'Tobi', 'Tom', 'Yasmin']
+  - date: 2023-12-06
+    report: https://www.warcraftlogs.com/reports/QWnZwTKz8PyApxhd
+    player: ['Carmen', 'Christoph', 'Dimi', 'Franzi', 'Joseph', 'Kalle', 'Kevin', 'Marc', 'Micha', 'Olli', 'Stephan', 'Tanja', 'Thomas', 'Tom', 'Yasmin']
+  - date: 2023-12-10
+    report: https://www.warcraftlogs.com/reports/mQYJGTMj2dzXPVyr
+    player: ['Dimi', 'Franzi', 'Joseph', 'Kalle', 'Lutz', 'Marco', 'Marc', 'Micha', 'Olli', 'Stephan', 'Tanja', 'Thomas', 'Tobi', 'Tom']
+  - date: 2023-12-13
+    report: https://www.warcraftlogs.com/reports/6XfmYNygvqV84Htz
+    player: [ 'Christoph', 'Dave', 'Dimi', 'Joseph', 'Kalle', 'Lutz', 'Marco', 'Marc', 'Micha', 'Olli', 'Stephan', 'Tanja', 'Thomas', 'Tom' ]
+  - date: 2023-12-17
+    report: https://www.warcraftlogs.com/reports/VXmAQFxvdk2cRDrt
+    player: ['Dimi', 'Kalle', 'Lutz', 'Marc', 'Micha', 'Olli', 'Stephan', 'Tanja', 'Thomas', 'Tobi', 'Tom']
+  - date: 2023-12-20
+    report: https://www.warcraftlogs.com/reports/naMxQhwHjqZB3d2y
+    player: ['Christoph', 'Dimi', 'Jessica', 'Kalle', 'Lutz', 'Marco', 'Marc', 'Micha', 'Olli', 'Stephan', 'Tanja', 'Thomas', 'Tobi']
   - date: 2023-12-27
     report: https://www.warcraftlogs.com/reports/JrYPGF9D1yLqtZhd
     player: ['Carmen', 'Christoph', 'Dave', 'Dimi', 'Joseph', 'Kalle', 'Kevin', 'Leon', 'Lutz', 'Maxi', 'Micha', 'Olli', 'Stephan', 'Tanja', 'Thomas', 'Yasmin']

@@ -88,9 +88,16 @@ def get_balance(player_list, raid_list, loot):
             .sort_values(by=['name'], ascending=True, ignore_index=True))
 
 
+def filter_data(raw_data):
+    result = raw_data.copy()
+    result = result[result['response'] == 'Gebot']
+    return result
+
+
 def get_loot_from_local_files(season_key):
     raw_data = get_raw_data_from_files(os.path.join('data', 'season', season_key))
-    return cleanup_data(raw_data)
+    filtered_data = filter_data(raw_data)
+    return cleanup_data(filtered_data)
 
 
 def validate_characters_known(player_list, looting_char_list):
