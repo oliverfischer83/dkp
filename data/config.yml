@@ -35,9 +35,9 @@ player:
   - name: Lutz
     chars: ["Jnx-Aman'thul","Pokusan-Aman'thul"]
   - name: Marco
-    chars: []
+    chars: ["Nay-Anub'arak"]
   - name: Marc
-    chars: []
+    chars: ["Seysey-Aman'thul"]
   - name: Maxi
     chars: ["Zhòrá-Thrall"]
   - name: Micha
