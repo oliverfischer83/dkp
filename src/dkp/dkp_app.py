@@ -88,7 +88,7 @@ def get_balance(player_list, raid_list, loot):
 
     # add income
     for raid in raid_list:
-        for player in raid.player_list:
+        for player in raid.player:
             for balance in balance_list:
                 if player == balance.player.name:
                     balance.value = balance.value + ATTENDANCE_BONUS

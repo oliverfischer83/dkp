@@ -3,52 +3,50 @@ Used to map and hold the config file in a singleton class
 """
 
 import yaml
+import datetime
 import threading
-from dataclasses import dataclass
+from pydantic import BaseModel
 
 
-@dataclass
-class WclClient:
+class WclClient(BaseModel):
     client_id: str
     client_secret: str
     token_url: str
     api_endpoint: str
 
 
-@dataclass
-class Auth:
+class Auth(BaseModel):
     wcl_client: WclClient
 
 
-@dataclass
-class Season:
+class Season(BaseModel):
     name: str
     key: str
 
 
-@dataclass
-class Player:
+class Player(BaseModel):
     name: str
     chars: list[str]
 
 
-@dataclass
-class Raid:
-    date: str
+class Raid(BaseModel):
+    date: datetime.date
     report: str
-    player_list: list[str]
+    player: list[str]
 
 
-@dataclass
-class ConfigRoot:
+class ConfigRoot(BaseModel):
     auth: Auth
     season: Season
-    player_list: list[Player]
-    raid_list: list[Raid]
+    player: list[Player]
+    raid: list[Raid]
 
 
 class Config:
+    # singleton instance
     _instance = None
+    # used to prevent multiple threads (e.g. multiple browser tabs) from start working with a not yet
+    # fully loaded config, which will lead to errors
     _lock = threading.Lock()
 
     def __new__(cls):
@@ -62,8 +60,8 @@ class Config:
         root = load_config()
         self.auth: Auth = root.auth
         self.season: Season = root.season
-        self.player_list: list[Player] = root.player_list
-        self.raid_list: list[Raid] = root.raid_list
+        self.player_list: list[Player] = root.player
+        self.raid_list: list[Raid] = root.raid
 
     def reload_config(self):
         with self._lock:
@@ -73,18 +71,4 @@ class Config:
 def load_config():
     with open('data/config.yml', 'r') as config_file:
         config_yml = yaml.safe_load(config_file)
-
-    wcl_config = config_yml['auth']['wcl']
-    wcl_client = WclClient(wcl_config['client-id'], wcl_config['client-secret'], wcl_config['token-url'],
-                           wcl_config['api-endpoint'])
-    auth = Auth(wcl_client)
-
-    season = Season(config_yml['season']['name'], config_yml['season']['key'])
-    player_list = []
-    for player in config_yml['player']:
-        player_list.append(Player(player['name'], player['chars']))
-
-    raid_list = []
-    for raid in config_yml['raid']:
-        raid_list.append(Raid(raid['date'], raid['report'], raid['player']))
-    return ConfigRoot(auth, season, player_list, raid_list)
+    return ConfigRoot(**config_yml)

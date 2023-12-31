@@ -6,6 +6,8 @@
 #
 altair==5.2.0
     # via streamlit
+annotated-types==0.6.0
+    # via pydantic
 attrs==23.1.0
     # via
     #   jsonschema
@@ -70,6 +72,10 @@ protobuf==4.25.1
     # via streamlit
 pyarrow==14.0.2
     # via streamlit
+pydantic==2.5.3
+    # via dkp (pyproject.toml)
+pydantic-core==2.14.6
+    # via pydantic
 pydeck==0.8.1b0
     # via streamlit
 pygments==2.17.2
@@ -116,7 +122,10 @@ toolz==0.12.0
 tornado==6.4
     # via streamlit
 typing-extensions==4.9.0
-    # via streamlit
+    # via
+    #   pydantic
+    #   pydantic-core
+    #   streamlit
 tzdata==2023.3
     # via pandas
 tzlocal==5.2

@@ -2,3 +2,4 @@ streamlit
 pyyaml
 requests
 requests-oauthlib
+pydantic
