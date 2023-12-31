@@ -5,6 +5,9 @@ import os
 import pandas
 from . import config_mapper
 from .warcraftlogs_client import WclClient
+from dataclasses import dataclass
+from .config_mapper import Player
+
 
 INITIAL_BALANCE = 100
 ATTENDANCE_BONUS = 50
@@ -12,38 +15,28 @@ ATTENDANCE_BONUS = 50
 config = config_mapper.get_config()
 
 
+@dataclass
 class AdminView:
-    def __init__(self, date, report, player_list, validations):
-        self.date = date
-        self.report = report
-        self.player_list = player_list
-        self.validations = validations
+    date: str
+    report: str
+    player_list: list[str]
+    validations: list[str]
 
 
-class Loot:
-    def __init__(self, timestamp, player, item, cost, instance, boss):
-        self.timestamp = timestamp
-        self.player = player
-        self.item = item
-        self.cost = cost
-        self.instance = instance
-        self.boss = boss
-
-
+@dataclass
 class Balance:
-    def __init__(self, player, value, income=INITIAL_BALANCE, cost=0):
-        self.player = player
-        self.value = value
-        self.income = income
-        self.cost = cost
+    player: Player
+    value: int = INITIAL_BALANCE
+    income: int = INITIAL_BALANCE
+    cost: int = 0
 
 
+@dataclass
 class BalanceView:
-    def __init__(self, season_name, balance, loot_history, validations):
-        self.season_name = season_name
-        self.balance = balance
-        self.loot_history = loot_history
-        self.validations = validations
+    season_name: str
+    balance: pandas.DataFrame
+    loot_history: pandas.DataFrame
+    validations: list[str]
 
 
 def get_raw_data_from_files(export_dir):
@@ -55,7 +48,7 @@ def get_raw_data_from_files(export_dir):
 
 
 def make_clickable(val):
-    return '<a href="{}">{}</a>'.format(val,val)
+    return '<a href="{}">{}</a>'.format(val, val)
 
 
 def modify_data(dataframe, player_list):
@@ -74,12 +67,13 @@ def modify_data(dataframe, player_list):
     result = result.rename(columns={'itemName': 'item'})
     result = result.rename(columns={'note': 'cost'})
     # create and fill column 'player' using mapping table like {'Moppi': 'Olli', 'Zelma': 'Olli', ...}
-    result['player'] = result['character'].map(lambda x: next((player.name for player in player_list if x in player.chars), None))
+    result['player'] = result['character'].map(
+        lambda x: next((player.name for player in player_list if x in player.chars), None))
     # create difficulty column
     result['difficulty'] = result['instance'].str.split('-').str[1]
     # substring of instance name
     result['instance'] = result['instance'].str.split(',').str[0]
-    # sort columns
+    # select and sort columns
     result = result[["timestamp", "player", "cost", "item", "itemLink", "instance", "difficulty", "boss", "character"]]
     return result.sort_values(by=['timestamp'], ascending=False, ignore_index=True)
 
@@ -93,7 +87,7 @@ def get_balance(player_list, raid_list, loot):
     # init balance list
     balance_list = list()
     for player in player_list:
-        balance_list.append(Balance(player, INITIAL_BALANCE))
+        balance_list.append(Balance(player))
 
     # add income
     for raid in raid_list:
@@ -112,7 +106,8 @@ def get_balance(player_list, raid_list, loot):
                 balance.value = balance.value - int(cost)
                 balance.cost = balance.cost - int(cost)
 
-    balance_list_as_df = [[balance.player.name, balance.value, balance.income, balance.cost] for balance in balance_list]
+    balance_list_as_df = [[balance.player.name, balance.value, balance.income, balance.cost] for balance in
+                          balance_list]
     return (pandas.DataFrame(balance_list_as_df, columns=['name', 'balance', "income", "cost"])
             .sort_values(by=['name'], ascending=True, ignore_index=True))
 
