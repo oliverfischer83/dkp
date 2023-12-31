@@ -3,16 +3,13 @@ Business logic for the DKP webapp.
 """
 import os
 import pandas
-from . import config_mapper
 from .warcraftlogs_client import WclClient
 from dataclasses import dataclass
-from .config_mapper import Player
+from .config_mapper import Player, Config
 
 
 INITIAL_BALANCE = 100
 ATTENDANCE_BONUS = 50
-
-config = config_mapper.get_config()
 
 
 @dataclass
@@ -138,6 +135,8 @@ def validate_costs_parsable(cost_list):
 
 
 def get_balance_view():
+    config = Config()
+
     season_name = config.season.name
     player_list = config.player_list
     loot = get_loot_from_local_files(config.season.key, player_list)
@@ -155,6 +154,8 @@ def get_balance_view():
 
 
 def get_admin_view(report_id):
+    config = Config()
+
     wcl_client = WclClient(config.auth.wcl_client)
     date, report_link, raiding_char_list = wcl_client.get_raid_details(report_id)
 

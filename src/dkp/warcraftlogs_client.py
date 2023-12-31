@@ -75,7 +75,7 @@ class WclClient:
         char_id_list = []
         for fight in all_fights:
             char_id_list.extend(fight['friendlyPlayers'])
-        char_id_list = list(set(char_id_list))
+        char_id_list = list(set(char_id_list))  # distinct
 
         all_chars = response_json['data']['reportData']['report']['masterData']['actors']
         char_list = []

@@ -1,5 +1,12 @@
 import streamlit as st
 from src.dkp.dkp_app import get_admin_view
+from src.dkp.config_mapper import Config
+
+
+if st.button("Reload config"):
+    config = Config()
+    config.reload_config()
+
 
 report_id = st.text_input("Enter warcraftlogs report id:", placeholder="e.g. JrYPGF9D1yLqtZhd")
 
