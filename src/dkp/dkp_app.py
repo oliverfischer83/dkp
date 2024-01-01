@@ -1,8 +1,11 @@
 """
 Business logic for the DKP webapp.
 """
+import datetime
 import os
 import pandas
+from typing import Optional
+from pydantic import BaseModel
 from .warcraftlogs_client import WclClient
 from dataclasses import dataclass
 from .config_mapper import Player, Config
@@ -28,8 +31,18 @@ class Balance:
     cost: int = 0
 
 
-@dataclass
-class BalanceView:
+class LootHistory(BaseModel):
+    timestamp: datetime.datetime
+    player: str
+    cost: str
+    item: str
+    instance: str
+    difficulty: str
+    boss: str
+    character: str
+
+
+class BalanceView(BaseModel):
     season_name: str
     balance: pandas.DataFrame
     loot_history: pandas.DataFrame
@@ -72,7 +85,8 @@ def modify_data(dataframe, player_list):
     result['instance'] = result['instance'].str.split(',').str[0]
     # select and sort columns
     result = result[["timestamp", "player", "cost", "item", "itemLink", "instance", "difficulty", "boss", "character"]]
-    return result.sort_values(by=['timestamp'], ascending=False, ignore_index=True)
+    result = result.sort_values(by=['timestamp'], ascending=False, ignore_index=True)
+    return result.to_dict()
 
 
 def get_loot_from_local_files(season_key, player_list):
@@ -145,10 +159,11 @@ def get_balance_view():
     season_name = config.season.name
     player_list = config.player_list
     loot = get_loot_from_local_files(config.season.key, player_list)
+    looting_characters = list(set([value for value in loot['character'].values()]))
 
     validations = []
-    validations.extend(validate_characters_known(player_list, loot['character'].unique()))
-    validations.extend(validate_costs_parsable(loot[["timestamp", "cost"]]))
+    validations.extend(validate_characters_known(player_list, looting_characters))
+    validations.extend(validate_costs(loot['cost'].values()))
 
     if validations:
         return BalanceView(season_name, None, None, validations)
