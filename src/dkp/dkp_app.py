@@ -7,24 +7,20 @@ import pandas
 from typing import Optional
 from pydantic import BaseModel
 from .warcraftlogs_client import WclClient
-from dataclasses import dataclass
 from .config_mapper import Player, Config
-
 
 INITIAL_BALANCE = 100
 ATTENDANCE_BONUS = 50
 
 
-@dataclass
-class AdminView:
+class AdminView(BaseModel):
     date: str
     report: str
     player_list: list[str]
     validations: list[str]
 
 
-@dataclass
-class Balance:
+class Balance(BaseModel):
     player: Player
     value: int = INITIAL_BALANCE
     income: int = INITIAL_BALANCE
@@ -44,9 +40,9 @@ class LootHistory(BaseModel):
 
 class BalanceView(BaseModel):
     season_name: str
-    balance: pandas.DataFrame
-    loot_history: pandas.DataFrame
-    validations: list[str]
+    balance: Optional[dict[str, dict[int, object]]]
+    loot_history: Optional[dict[str, dict[int, object]]]
+    validations: Optional[list[str]]
 
 
 def get_raw_data_from_files(export_dir):
@@ -94,33 +90,29 @@ def get_loot_from_local_files(season_key, player_list):
     return modify_data(raw_data, player_list)
 
 
-def get_balance(player_list, raid_list, loot):
+def get_balance(player_list, raid_list, char_to_cost_pair):
     # init balance list
     balance_list = list()
     for player in player_list:
-        balance_list.append(Balance(player))
+        balance_list.append(Balance(player=player))
 
     # add income
     for raid in raid_list:
-        for player in raid.player:
+        for raid_player_name in raid.player:
             for balance in balance_list:
-                if player == balance.player.name:
+                if raid_player_name == balance.player.name:
                     balance.value = balance.value + ATTENDANCE_BONUS
                     balance.income = balance.income + ATTENDANCE_BONUS
 
     # subtract costs
-    for index, row in loot.iterrows():
-        char = row['character']
-        cost = row['cost']
+    for row in char_to_cost_pair:
+        char, cost = row
         for balance in balance_list:
             if char in balance.player.chars:
                 balance.value = balance.value - int(cost)
                 balance.cost = balance.cost - int(cost)
 
-    balance_list_as_df = [[balance.player.name, balance.value, balance.income, balance.cost] for balance in
-                          balance_list]
-    return (pandas.DataFrame(balance_list_as_df, columns=['name', 'balance', "income", "cost"])
-            .sort_values(by=['name'], ascending=True, ignore_index=True))
+    return {[balance.player.name, balance.value, balance.income, balance.cost] for balance in balance_list}
 
 
 def validate_characters_known(known_player, looting_characters):
@@ -166,11 +158,11 @@ def get_balance_view():
     validations.extend(validate_costs(loot['cost'].values()))
 
     if validations:
-        return BalanceView(season_name, None, None, validations)
+        return BalanceView(season_name=season_name, balance=None, loot=None, validations=validations)
 
-    balance = get_balance(player_list, config.raid_list, loot[["character", "cost"]])
+    balance = get_balance(player_list, config.raid_list, zip(loot["character"], loot["cost"]))
 
-    return BalanceView(season_name, balance, loot, None)
+    return BalanceView(season_name=season_name, balance=balance, loot_history=loot, validations=None)
 
 
 def get_admin_view(report_id):
