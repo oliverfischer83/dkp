@@ -15,9 +15,9 @@ ATTENDANCE_BONUS = 50
 
 class AdminView(BaseModel):
     date: str
-    report: str
+    report_url: str
     player_list: list[str]
-    validations: list[str]
+    validations: Optional[list[str]]
 
 
 class LootHistory(BaseModel):
@@ -190,7 +190,7 @@ def get_admin_view(report_id):
     config = Config()
 
     wcl_client = WclClient(config.auth.wcl_client)
-    date, report_link, raiding_char_list = wcl_client.get_raid_details(report_id)
+    date, report_url, raiding_char_list = wcl_client.get_raid_details(report_id)
 
     player_list = []
     for player in config.player_list:
@@ -203,6 +203,6 @@ def get_admin_view(report_id):
     validations.extend(validate_characters_known(config.player_list, raiding_char_list))
 
     if validations:
-        return AdminView(date, report_link, None, validations)
+        return AdminView(date=date, report_url=report_url, player_list=None, validations=validations)
 
-    return AdminView(date, report_link, player_list, None)
+    return AdminView(date=date, report_url=report_url, player_list=player_list, validations=None)

@@ -69,7 +69,7 @@ class WclClient:
         timestamp_sec = response_json['data']['reportData']['report']['startTime'] / 1000.0
         date = datetime.datetime.fromtimestamp(timestamp_sec, datetime.UTC).strftime("%Y-%m-%d")
 
-        report_link = f"https://www.warcraftlogs.com/reports/{report_id}"
+        report_url = f"https://www.warcraftlogs.com/reports/{report_id}"
 
         all_fights = response_json['data']['reportData']['report']['fights']
         char_id_list = []
@@ -83,5 +83,5 @@ class WclClient:
             if char['id'] in char_id_list:
                 char_list.append(f"{char['name']}-{char['server']}")
 
-        return date, report_link, char_list
+        return date, report_url, char_list
 

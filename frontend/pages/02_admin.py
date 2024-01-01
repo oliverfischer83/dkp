@@ -19,7 +19,7 @@ if report_id:
 
     st.code(f"""
     - date: {view.date}
-      report: {view.report}
-      player: {view.player}""", language='yaml')
+      report: {view.report_url}
+      player: {view.player_list}""", language='yaml')
     st.markdown('Copy and paste this entry into the raid section of the config.yml file.')
 
