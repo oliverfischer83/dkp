@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 from src.dkp.dkp_app import get_balance_view
 
 view = get_balance_view()
@@ -11,7 +12,7 @@ st.write("DKP - " + view.season_name)
 st.dataframe(view.balance)
 
 st.write("Loot History")
-st.dataframe(view.loot_history, column_config={
+st.dataframe(pd.DataFrame(view.loot_history), column_config={
     "itemLink": st.column_config.LinkColumn(
         "item link",
         # display_text="Show item"  # TODO feature coming with streamlit 1.30 (Jan 2024)
