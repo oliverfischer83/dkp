@@ -20,13 +20,6 @@ class AdminView(BaseModel):
     validations: list[str]
 
 
-class Balance(BaseModel):
-    player: Player
-    value: int = INITIAL_BALANCE
-    income: int = INITIAL_BALANCE
-    cost: int = 0
-
-
 class LootHistory(BaseModel):
     timestamp: datetime.datetime
     player: str
@@ -90,29 +83,57 @@ def get_loot_from_local_files(season_key, player_list):
     return modify_data(raw_data, player_list)
 
 
-def get_balance(player_list, raid_list, char_to_cost_pair):
-    # init balance list
-    balance_list = list()
+def get_player_to_cost_pair(player_list, loot_table):
+    result = dict()
     for player in player_list:
-        balance_list.append(Balance(player=player))
+        result[player.name] = 0
+        for i, char_name in enumerate(loot_table['character'].values()):
+            if char_name in player.chars:
+                result[player.name] += int(loot_table['cost'][i])
+    return result
 
-    # add income
-    for raid in raid_list:
-        for raid_player_name in raid.player:
-            for balance in balance_list:
-                if raid_player_name == balance.player.name:
-                    balance.value = balance.value + ATTENDANCE_BONUS
-                    balance.income = balance.income + ATTENDANCE_BONUS
 
-    # subtract costs
-    for row in char_to_cost_pair:
-        char, cost = row
-        for balance in balance_list:
-            if char in balance.player.chars:
-                balance.value = balance.value - int(cost)
-                balance.cost = balance.cost - int(cost)
+def init_balance_table(player_list):
+    balance_list = dict()
+    balance_list['name'] = dict()
+    balance_list['value'] = dict()
+    balance_list['income'] = dict()
+    balance_list['cost'] = dict()
+    for i, player in enumerate(player_list):
+        balance_list['name'][i] = player.name
+        balance_list['value'][i] = INITIAL_BALANCE
+        balance_list['income'][i] = INITIAL_BALANCE
+        balance_list['cost'][i] = 0
+    return balance_list
 
-    return {[balance.player.name, balance.value, balance.income, balance.cost] for balance in balance_list}
+
+def add_income_to_balance_table(balance_table, raid_list):
+    for i, name in balance_table['name'].items():
+        for raid in raid_list:
+            for raid_player_name in raid.player:
+                if name == raid_player_name:
+                    balance_table['value'][i] += ATTENDANCE_BONUS
+                    balance_table['income'][i] += ATTENDANCE_BONUS
+    return balance_table
+
+
+def add_cost_to_balance_table(balance_table, player_to_cost_dict):
+    for i, name in balance_table['name'].items():
+        for key, value in player_to_cost_dict.items():
+            player_name = key
+            cost = value
+            if name == player_name:
+                balance_table['value'][i] -= cost
+                balance_table['cost'][i] -= cost
+    return balance_table
+
+
+def get_balance(player_list, raid_list, loot_table):
+    player_to_cost_pair = get_player_to_cost_pair(player_list, loot_table)
+    balance_table = init_balance_table(player_list)
+    balance_table = add_income_to_balance_table(balance_table, raid_list)
+    balance_table = add_cost_to_balance_table(balance_table, player_to_cost_pair)
+    return balance_table
 
 
 def validate_characters_known(known_player, looting_characters):
@@ -160,7 +181,7 @@ def get_balance_view():
     if validations:
         return BalanceView(season_name=season_name, balance=None, loot=None, validations=validations)
 
-    balance = get_balance(player_list, config.raid_list, zip(loot["character"], loot["cost"]))
+    balance = get_balance(player_list, config.raid_list, loot)
 
     return BalanceView(season_name=season_name, balance=balance, loot_history=loot, validations=None)
 

@@ -9,7 +9,7 @@ if view.validations:
         st.error(validation)
 
 st.write("DKP - " + view.season_name)
-st.dataframe(pd.DataFrame(view.balance, columns=['name', 'balance', "income", "cost"])
+st.dataframe(pd.DataFrame(view.balance, columns=['name', 'value', "income", "cost"])
              .sort_values(by=['name'], ascending=True, ignore_index=True))
 
 st.write("Loot History")
