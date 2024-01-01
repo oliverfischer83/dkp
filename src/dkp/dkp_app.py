@@ -109,28 +109,33 @@ def get_balance(player_list, raid_list, loot):
             .sort_values(by=['name'], ascending=True, ignore_index=True))
 
 
-def validate_characters_known(player_list, looting_char_list):
-    known_char_list = list()
-    for player in player_list:
+def validate_characters_known(known_player, looting_characters):
+    known_characters = list()
+    for player in known_player:
         for char in player.chars:
-            known_char_list.append(char)
+            known_characters.append(char)
 
     result = []
-    for char in looting_char_list:
-        if char not in known_char_list:
+    for char in looting_characters:
+        if char not in known_characters:
             result.append("Unknown character: " + char)
     return result
 
 
-def validate_costs_parsable(cost_list):
+def validate_costs(cost_list):
     result = []
-    for index, row in cost_list.iterrows():
-        timestamp = row['timestamp']
-        cost = row['cost']
+    for cost in cost_list:
         try:
             int(cost)
         except ValueError:
-            result.append("Invalid cost: " + cost + " (at timestamp: " + timestamp + ")")
+            result.append("Cost must be an integer, but was: " + cost)
+            continue
+        if int(cost) < 10:
+            result.append("Cost minimum is 10, but was: " + cost)
+            continue
+        if int(cost) % 10 != 0:
+            result.append("Cost must be within steps of 10, but was: " + cost)
+            continue
     return result
 
 
