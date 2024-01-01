@@ -22,6 +22,10 @@ charset-normalizer==3.3.2
     # via requests
 click==8.1.7
     # via streamlit
+coverage[toml]==7.4.0
+    # via
+    #   coverage
+    #   pytest-cov
 gitdb==4.0.11
     # via gitpython
 gitpython==3.1.40
@@ -81,6 +85,10 @@ pydeck==0.8.1b0
 pygments==2.17.2
     # via rich
 pytest==7.4.3
+    # via
+    #   dkp (pyproject.toml)
+    #   pytest-cov
+pytest-cov==4.1.0
     # via dkp (pyproject.toml)
 python-dateutil==2.8.2
     # via
