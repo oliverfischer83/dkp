@@ -35,9 +35,9 @@ player:
   - name: Lutz
     chars: ["Jnx-Aman'thul","Pokusan-Aman'thul"]
   - name: Marco
-    chars: ["Nay-Anub'arak"]
+    chars: ["Nay-Anub'arak","Fadrim-Anub'arak"]
   - name: Marc
-    chars: ["Seysey-Aman'thul"]
+    chars: ["Seysey-Aman'thul","Loryxius-Aman'thul"]
   - name: Maxi
     chars: ["Zhòrá-Thrall","Zhòráqt-Thrall"]
   - name: Micha
@@ -100,3 +100,6 @@ raid:
   - date: 2023-12-27
     report: https://www.warcraftlogs.com/reports/JrYPGF9D1yLqtZhd
     player: ['Carmen', 'Christoph', 'Dave', 'Dimi', 'Joseph', 'Kalle', 'Kevin', 'Leon', 'Lutz', 'Maxi', 'Micha', 'Olli', 'Stephan', 'Tanja', 'Thomas', 'Yasmin']
+  - date: 2024-01-03
+    report: https://www.warcraftlogs.com/reports/YAwg4zvQ7PFGtVcq
+    player: ['Christoph', 'Dave', 'Dimi', 'Joseph', 'Kalle', 'Kevin', 'Leon', 'Lutz', 'Marco', 'Marc', 'Micha', 'Olli', 'Stephan', 'Tanja', 'Thomas', 'Tom', 'Yasmin']

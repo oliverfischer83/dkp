@@ -16,7 +16,7 @@ from requests_oauthlib import OAuth2Session
 class WclClient:
     def __init__(self, wcl_client):
         self.client_id = wcl_client.client_id
-        self.client_secret = os.environ.get("WCL_CLIENT_SECRET")
+        self.client_secret = os.environ.get("WCL_CLIENT_SECRET", wcl_client.client_secret)
         self.token_uri = wcl_client.token_url
         self.api_endpoint = wcl_client.api_endpoint
 

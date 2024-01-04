@@ -9,3 +9,4 @@
 /.idea/
 /src/dkp.egg-info/
 **/__pycache__/
+.env

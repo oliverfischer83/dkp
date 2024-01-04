@@ -94,6 +94,8 @@ python-dateutil==2.8.2
     # via
     #   pandas
     #   streamlit
+python-dotenv==1.0.0
+    # via dkp (pyproject.toml)
 pytz==2023.3.post1
     # via pandas
 pyyaml==6.0.1

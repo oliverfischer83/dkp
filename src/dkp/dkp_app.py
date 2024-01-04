@@ -4,10 +4,13 @@ Business logic for the DKP webapp.
 import datetime
 import os
 import pandas
-from typing import Optional
+from typing import Any, Hashable, Optional
 from pydantic import BaseModel
 from .warcraftlogs_client import WclClient
 from .config_mapper import Player, Config
+from dotenv import load_dotenv
+
+load_dotenv()
 
 INITIAL_BALANCE = 100
 ATTENDANCE_BONUS = 50
@@ -16,7 +19,7 @@ ATTENDANCE_BONUS = 50
 class AdminView(BaseModel):
     date: str
     report_url: str
-    player_list: list[str]
+    player_list: Optional[list[str]]
     validations: Optional[list[str]]
 
 
@@ -33,15 +36,15 @@ class LootHistory(BaseModel):
 
 class BalanceView(BaseModel):
     season_name: str
-    balance: Optional[dict[str, dict[int, object]]]
-    loot_history: Optional[dict[str, dict[int, object]]]
+    balance: Optional[dict[Hashable, Any]]
+    loot_history: Optional[dict[Hashable, Any]]
     validations: Optional[list[str]]
 
 
 def get_raw_data_from_files(export_dir):
     result = pandas.DataFrame()
     for file in os.listdir(export_dir):
-        dataframe = pandas.read_json(os.path.join(export_dir, file), orient='records', dtype='str', convert_dates=False)
+        dataframe = pandas.read_json(os.path.join(export_dir, file), orient='records', convert_dates=False)
         result = pandas.concat([result, dataframe])
     return result
 
@@ -59,7 +62,7 @@ def modify_data(dataframe, player_list):
     result['timestamp'] = pandas.to_datetime(result['timestamp'], format='%d/%m/%y %H:%M:%S', dayfirst=True)
     result.set_index('timestamp')
     # creating item link column
-    result['itemLink'] = 'https://www.wowhead.com/item=' + result['itemID']
+    result['itemLink'] = 'https://www.wowhead.com/item=' + result['itemID'].astype(str)
     result.style.format({'itemLink': make_clickable})
     # renaming columns
     result = result.rename(columns={'player': 'character'})
@@ -179,7 +182,7 @@ def get_balance_view():
     validations.extend(validate_costs(loot['cost'].values()))
 
     if validations:
-        return BalanceView(season_name=season_name, balance=None, loot=None, validations=validations)
+        return BalanceView(season_name=season_name, balance=None, loot_history=None, validations=validations)
 
     balance = get_balance(player_list, config.raid_list, loot)
 
