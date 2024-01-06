@@ -2,9 +2,10 @@
 Used to map and hold the config file in a singleton class
 """
 
-import yaml
 import datetime
 import threading
+
+import yaml
 from pydantic import BaseModel
 
 

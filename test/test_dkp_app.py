@@ -1,54 +1,55 @@
 import os
 from unittest import mock
 from unittest.mock import patch
-from src.dkp.config_mapper import Player
+
 from src.dkp import dkp_app as app
+from src.dkp.config_mapper import Player
 
 
 def test_get_balance():
     player_list = [
-        Player(name='Olli', chars=['Moppi', 'Zelma']),
-        Player(name='Micha', chars=['Wurzel']),
-        Player(name='Tanja', chars=['Blair'])
+        Player(name="Olli", chars=["Moppi", "Zelma"]),
+        Player(name="Micha", chars=["Wurzel"]),
+        Player(name="Tanja", chars=["Blair"]),
     ]
-    raid_list = ['Moppi', 'Wurzel']
-    char_to_cost_pair = [('Moppi', '10'), ('Moppi', '20')]
+    raid_list = ["Moppi", "Wurzel"]
+    char_to_cost_pair = [("Moppi", "10"), ("Moppi", "20")]
     #
     # balance_list = app.get_balance(player_list, raid_list, char_to_cost_pair)
     # assert len(balance_list) == 3
     # assert balance_list['Olli'] == 0
     #
 
+
 def test_validate_characters_known():
     known_player = [
-        Player(name='Olli', chars=['Moppi', 'Zelma']),
-        Player(name='Micha', chars=['Wurzel'])
+        Player(name="Olli", chars=["Moppi", "Zelma"]),
+        Player(name="Micha", chars=["Wurzel"]),
     ]
     assert len(app.validate_characters_known(known_player, [])) == 0
-    assert len(app.validate_characters_known(known_player, ['Moppi'])) == 0
-    assert len(app.validate_characters_known(known_player, ['Zelma'])) == 0
-    assert len(app.validate_characters_known(known_player, ['Wurzel'])) == 0
-    assert len(app.validate_characters_known(known_player, ['Moppi', 'Wurzel'])) == 0
-    assert len(app.validate_characters_known(known_player, ['Unknown'])) == 1
-    assert len(app.validate_characters_known(known_player, ['Unknown1', 'Unknown2'])) == 2
+    assert len(app.validate_characters_known(known_player, ["Moppi"])) == 0
+    assert len(app.validate_characters_known(known_player, ["Zelma"])) == 0
+    assert len(app.validate_characters_known(known_player, ["Wurzel"])) == 0
+    assert len(app.validate_characters_known(known_player, ["Moppi", "Wurzel"])) == 0
+    assert len(app.validate_characters_known(known_player, ["Unknown"])) == 1
+    assert len(app.validate_characters_known(known_player, ["Unknown1", "Unknown2"])) == 2
 
 
 def test_validate_costs_parsable():
     """Test the number of validations for costs parsable"""
-    assert len(app.validate_costs([''])) == 1
-    assert len(app.validate_costs([''])) == 1
-    assert len(app.validate_costs([' '])) == 1
-    assert len(app.validate_costs(['w'])) == 1
-    assert len(app.validate_costs(['_'])) == 1
-    assert len(app.validate_costs(['A', 'B'])) == 2
-    assert len(app.validate_costs(['-80'])) == 1  # must be positive
-    assert len(app.validate_costs(['+80'])) == 0
-    assert len(app.validate_costs(['80'])) == 0
-    assert len(app.validate_costs(['75'])) == 1   # must be steps of 10
-    assert len(app.validate_costs(['0'])) == 1    # at least 10
-    assert len(app.validate_costs(['-0'])) == 1   # at least 10
-    assert len(app.validate_costs(['5'])) == 1    # at least 10
-
+    assert len(app.validate_costs([""])) == 1
+    assert len(app.validate_costs([""])) == 1
+    assert len(app.validate_costs([" "])) == 1
+    assert len(app.validate_costs(["w"])) == 1
+    assert len(app.validate_costs(["_"])) == 1
+    assert len(app.validate_costs(["A", "B"])) == 2
+    assert len(app.validate_costs(["-80"])) == 1  # must be positive
+    assert len(app.validate_costs(["+80"])) == 0
+    assert len(app.validate_costs(["80"])) == 0
+    assert len(app.validate_costs(["75"])) == 1  # must be steps of 10
+    assert len(app.validate_costs(["0"])) == 1  # at least 10
+    assert len(app.validate_costs(["-0"])) == 1  # at least 10
+    assert len(app.validate_costs(["5"])) == 1  # at least 10
 
 
 #

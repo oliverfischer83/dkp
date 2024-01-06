@@ -1,7 +1,7 @@
 import streamlit as st
-from src.dkp.dkp_app import get_admin_view
-from src.dkp.config_mapper import Config
 
+from src.dkp.config_mapper import Config
+from src.dkp.dkp_app import get_admin_view
 
 if st.button("Reload config"):
     config = Config()
@@ -17,9 +17,11 @@ if report_id:
         for validation in view.validations:
             st.error(validation)
 
-    st.code(f"""
+    st.code(
+        f"""
     - date: {view.date}
       report: {view.report_url}
-      player: {view.player_list}""", language="yaml")
+      player: {view.player_list}""",
+        language="yaml",
+    )
     st.markdown("Copy and paste this entry into the raid section of the config.yml file.")
-

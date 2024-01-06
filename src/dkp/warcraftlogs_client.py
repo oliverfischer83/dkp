@@ -5,10 +5,10 @@ see WCL OAuth doc: https://www.warcraftlogs.com/api/docs
 see WCL GraphQL doc: https://www.warcraftlogs.com/v2-api-docs/warcraft/
 see request oauth doc: https://requests-oauthlib.readthedocs.io/en/latest/oauth2_workflow.html#legacy-application-flow
 """
-
-import os
-import requests
 import datetime
+import os
+
+import requests
 from oauthlib.oauth2 import BackendApplicationClient
 from requests_oauthlib import OAuth2Session
 
@@ -22,12 +22,16 @@ class WclClient:
 
         self.client = BackendApplicationClient(client_id=self.client_id)
         self.oauth = OAuth2Session(client=self.client)
-        self.token_json = self.oauth.fetch_token(token_url=self.token_uri, client_id=self.client_id, client_secret=self.client_secret)
+        self.token_json = self.oauth.fetch_token(
+            token_url=self.token_uri,
+            client_id=self.client_id,
+            client_secret=self.client_secret,
+        )
 
         self.access_token = self.token_json.get("access_token")
         self.headers = {
             "Authorization": f"Bearer {self.access_token}",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         }
 
     def get_data(self, query: str, **kwargs):
@@ -81,7 +85,6 @@ class WclClient:
         char_list = []
         for char in all_chars:
             if char["id"] in char_id_list:
-                char_list.append(f"{char["name"]}-{char["server"]}")
+                char_list.append(f"{char['name']}-{char['server']}")
 
         return date, report_url, char_list
-

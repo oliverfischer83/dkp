@@ -8,10 +8,14 @@ altair==5.2.0
     # via streamlit
 annotated-types==0.6.0
     # via pydantic
+asttokens==2.4.1
+    # via stack-data
 attrs==23.1.0
     # via
     #   jsonschema
     #   referencing
+black[jupyter]==23.12.1
+    # via dkp (pyproject.toml)
 blinker==1.7.0
     # via streamlit
 boto3==1.34.13
@@ -27,11 +31,17 @@ certifi==2023.11.17
 charset-normalizer==3.3.2
     # via requests
 click==8.1.7
-    # via streamlit
+    # via
+    #   black
+    #   streamlit
 coverage[toml]==7.4.0
     # via
     #   coverage
     #   pytest-cov
+decorator==5.1.1
+    # via ipython
+executing==2.0.1
+    # via stack-data
 gitdb==4.0.11
     # via gitpython
 gitpython==3.1.40
@@ -42,6 +52,12 @@ importlib-metadata==6.11.0
     # via streamlit
 iniconfig==2.0.0
     # via pytest
+ipython==8.19.0
+    # via black
+isort==5.13.2
+    # via dkp (pyproject.toml)
+jedi==0.19.1
+    # via ipython
 jinja2==3.1.2
     # via
     #   altair
@@ -58,8 +74,12 @@ markdown-it-py==3.0.0
     # via rich
 markupsafe==2.1.3
     # via jinja2
+matplotlib-inline==0.1.6
+    # via ipython
 mdurl==0.1.2
     # via markdown-it-py
+mypy-extensions==1.0.0
+    # via black
 numpy==1.26.2
     # via
     #   altair
@@ -72,18 +92,33 @@ oauthlib==3.2.2
 packaging==23.2
     # via
     #   altair
+    #   black
     #   pytest
     #   streamlit
 pandas==2.1.4
     # via
     #   altair
     #   streamlit
+parso==0.8.3
+    # via jedi
+pathspec==0.12.1
+    # via black
+pexpect==4.9.0
+    # via ipython
 pillow==10.1.0
     # via streamlit
+platformdirs==4.1.0
+    # via black
 pluggy==1.3.0
     # via pytest
+prompt-toolkit==3.0.43
+    # via ipython
 protobuf==4.25.1
     # via streamlit
+ptyprocess==0.7.0
+    # via pexpect
+pure-eval==0.2.2
+    # via stack-data
 pyarrow==14.0.2
     # via streamlit
 pydantic==2.5.3
@@ -93,7 +128,9 @@ pydantic-core==2.14.6
 pydeck==0.8.1b0
     # via streamlit
 pygments==2.17.2
-    # via rich
+    # via
+    #   ipython
+    #   rich
 pytest==7.4.4
     # via
     #   dkp (pyproject.toml)
@@ -131,19 +168,29 @@ rpds-py==0.15.2
 s3transfer==0.10.0
     # via boto3
 six==1.16.0
-    # via python-dateutil
+    # via
+    #   asttokens
+    #   python-dateutil
 smmap==5.0.1
     # via gitdb
+stack-data==0.6.3
+    # via ipython
 streamlit==1.29.0
     # via dkp (pyproject.toml)
 tenacity==8.2.3
     # via streamlit
+tokenize-rt==5.2.0
+    # via black
 toml==0.10.2
     # via streamlit
 toolz==0.12.0
     # via altair
 tornado==6.4
     # via streamlit
+traitlets==5.14.1
+    # via
+    #   ipython
+    #   matplotlib-inline
 typing-extensions==4.9.0
     # via
     #   pydantic
@@ -161,5 +208,7 @@ validators==0.22.0
     # via streamlit
 watchdog==3.0.0
     # via streamlit
+wcwidth==0.2.13
+    # via prompt-toolkit
 zipp==3.17.0
     # via importlib-metadata

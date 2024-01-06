@@ -3,12 +3,14 @@ Business logic for the DKP webapp.
 """
 import datetime
 import os
-import pandas
 from typing import Any, Hashable, Optional
-from pydantic import BaseModel
-from .warcraftlogs_client import WclClient
-from .config_mapper import Player, Config
+
+import pandas
 from dotenv import load_dotenv
+from pydantic import BaseModel
+
+from .config_mapper import Config
+from .warcraftlogs_client import WclClient
 
 load_dotenv()
 
@@ -44,7 +46,7 @@ class BalanceView(BaseModel):
 def get_raw_data_from_files(export_dir):
     result = pandas.DataFrame()
     for file in os.listdir(export_dir):
-        dataframe = pandas.read_json(os.path.join(export_dir, file), orient='records', convert_dates=False)
+        dataframe = pandas.read_json(os.path.join(export_dir, file), orient="records", convert_dates=False)
         result = pandas.concat([result, dataframe])
     return result
 
@@ -56,33 +58,44 @@ def make_clickable(val):
 def modify_data(dataframe, player_list):
     result = dataframe.copy()
     # remove irrelevant data, need bids only
-    result = result[result['response'] == 'Gebot']
+    result = result[result["response"] == "Gebot"]
     # creating timestamp column
-    result['timestamp'] = result['date'] + ' ' + result['time']
-    result['timestamp'] = pandas.to_datetime(result['timestamp'], format='%d/%m/%y %H:%M:%S', dayfirst=True)
-    result.set_index('timestamp')
+    result["timestamp"] = result["date"] + " " + result["time"]
+    result["timestamp"] = pandas.to_datetime(result["timestamp"], format="%d/%m/%y %H:%M:%S", dayfirst=True)
+    result.set_index("timestamp")
     # creating item link column
-    result['itemLink'] = 'https://www.wowhead.com/item=' + result['itemID'].astype(str)
-    result.style.format({'itemLink': make_clickable})
+    result["itemLink"] = "https://www.wowhead.com/item=" + result["itemID"].astype(str)
+    result.style.format({"itemLink": make_clickable})
     # renaming columns
-    result = result.rename(columns={'player': 'character'})
-    result = result.rename(columns={'itemName': 'item'})
-    result = result.rename(columns={'note': 'cost'})
+    result = result.rename(columns={"player": "character"})
+    result = result.rename(columns={"itemName": "item"})
+    result = result.rename(columns={"note": "cost"})
     # create and fill column 'player' using mapping table like {'Moppi': 'Olli', 'Zelma': 'Olli', ...}
-    result['player'] = result['character'].map(
-        lambda x: next((player.name for player in player_list if x in player.chars), None))
+    result["player"] = result["character"].map(lambda x: next((player.name for player in player_list if x in player.chars), None))
     # create difficulty column
-    result['difficulty'] = result['instance'].str.split('-').str[1]
+    result["difficulty"] = result["instance"].str.split("-").str[1]
     # substring of instance name
-    result['instance'] = result['instance'].str.split(',').str[0]
+    result["instance"] = result["instance"].str.split(",").str[0]
     # select and sort columns
-    result = result[["timestamp", "player", "cost", "item", "itemLink", "instance", "difficulty", "boss", "character"]]
-    result = result.sort_values(by=['timestamp'], ascending=False, ignore_index=True)
+    result = result[
+        [
+            "timestamp",
+            "player",
+            "cost",
+            "item",
+            "itemLink",
+            "instance",
+            "difficulty",
+            "boss",
+            "character",
+        ]
+    ]
+    result = result.sort_values(by=["timestamp"], ascending=False, ignore_index=True)
     return result.to_dict()
 
 
 def get_loot_from_local_files(season_key, player_list):
-    raw_data = get_raw_data_from_files(os.path.join('data', 'season', season_key))
+    raw_data = get_raw_data_from_files(os.path.join("data", "season", season_key))
     return modify_data(raw_data, player_list)
 
 
@@ -90,44 +103,44 @@ def get_player_to_cost_pair(player_list, loot_table):
     result = dict()
     for player in player_list:
         result[player.name] = 0
-        for i, char_name in enumerate(loot_table['character'].values()):
+        for i, char_name in enumerate(loot_table["character"].values()):
             if char_name in player.chars:
-                result[player.name] += int(loot_table['cost'][i])
+                result[player.name] += int(loot_table["cost"][i])
     return result
 
 
 def init_balance_table(player_list):
     balance_list = dict()
-    balance_list['name'] = dict()
-    balance_list['value'] = dict()
-    balance_list['income'] = dict()
-    balance_list['cost'] = dict()
+    balance_list["name"] = dict()
+    balance_list["value"] = dict()
+    balance_list["income"] = dict()
+    balance_list["cost"] = dict()
     for i, player in enumerate(player_list):
-        balance_list['name'][i] = player.name
-        balance_list['value'][i] = INITIAL_BALANCE
-        balance_list['income'][i] = INITIAL_BALANCE
-        balance_list['cost'][i] = 0
+        balance_list["name"][i] = player.name
+        balance_list["value"][i] = INITIAL_BALANCE
+        balance_list["income"][i] = INITIAL_BALANCE
+        balance_list["cost"][i] = 0
     return balance_list
 
 
 def add_income_to_balance_table(balance_table, raid_list):
-    for i, name in balance_table['name'].items():
+    for i, name in balance_table["name"].items():
         for raid in raid_list:
             for raid_player_name in raid.player:
                 if name == raid_player_name:
-                    balance_table['value'][i] += ATTENDANCE_BONUS
-                    balance_table['income'][i] += ATTENDANCE_BONUS
+                    balance_table["value"][i] += ATTENDANCE_BONUS
+                    balance_table["income"][i] += ATTENDANCE_BONUS
     return balance_table
 
 
 def add_cost_to_balance_table(balance_table, player_to_cost_dict):
-    for i, name in balance_table['name'].items():
+    for i, name in balance_table["name"].items():
         for key, value in player_to_cost_dict.items():
             player_name = key
             cost = value
             if name == player_name:
-                balance_table['value'][i] -= cost
-                balance_table['cost'][i] -= cost
+                balance_table["value"][i] -= cost
+                balance_table["cost"][i] -= cost
     return balance_table
 
 
@@ -175,14 +188,19 @@ def get_balance_view():
     season_name = config.season.name
     player_list = config.player_list
     loot = get_loot_from_local_files(config.season.key, player_list)
-    looting_characters = list(set([value for value in loot['character'].values()]))
+    looting_characters = list(set([value for value in loot["character"].values()]))
 
     validations = []
     validations.extend(validate_characters_known(player_list, looting_characters))
-    validations.extend(validate_costs(loot['cost'].values()))
+    validations.extend(validate_costs(loot["cost"].values()))
 
     if validations:
-        return BalanceView(season_name=season_name, balance=None, loot_history=None, validations=validations)
+        return BalanceView(
+            season_name=season_name,
+            balance=None,
+            loot_history=None,
+            validations=validations,
+        )
 
     balance = get_balance(player_list, config.raid_list, loot)
 
