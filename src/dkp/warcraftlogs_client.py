@@ -15,7 +15,7 @@ from requests_oauthlib import OAuth2Session
 
 class WclClient:
     def __init__(self, wcl_client):
-        self.client_id = wcl_client.client_id
+        self.client_id = os.environ.get("WCL_CLIENT_ID", wcl_client.client_id)
         self.client_secret = os.environ.get("WCL_CLIENT_SECRET", wcl_client.client_secret)
         self.token_uri = wcl_client.token_url
         self.api_endpoint = wcl_client.api_endpoint
@@ -24,10 +24,10 @@ class WclClient:
         self.oauth = OAuth2Session(client=self.client)
         self.token_json = self.oauth.fetch_token(token_url=self.token_uri, client_id=self.client_id, client_secret=self.client_secret)
 
-        self.access_token = self.token_json.get('access_token')
+        self.access_token = self.token_json.get("access_token")
         self.headers = {
-            'Authorization': f'Bearer {self.access_token}',
-            'Content-Type': 'application/json'
+            "Authorization": f"Bearer {self.access_token}",
+            "Content-Type": "application/json"
         }
 
     def get_data(self, query: str, **kwargs):
@@ -66,22 +66,22 @@ class WclClient:
         """
         response_json = self.get_data(query, code=report_id)
 
-        timestamp_sec = response_json['data']['reportData']['report']['startTime'] / 1000.0
+        timestamp_sec = response_json["data"]["reportData"]["report"]["startTime"] / 1000.0
         date = datetime.datetime.fromtimestamp(timestamp_sec, datetime.UTC).strftime("%Y-%m-%d")
 
         report_url = f"https://www.warcraftlogs.com/reports/{report_id}"
 
-        all_fights = response_json['data']['reportData']['report']['fights']
+        all_fights = response_json["data"]["reportData"]["report"]["fights"]
         char_id_list = []
         for fight in all_fights:
-            char_id_list.extend(fight['friendlyPlayers'])
+            char_id_list.extend(fight["friendlyPlayers"])
         char_id_list = list(set(char_id_list))  # distinct
 
-        all_chars = response_json['data']['reportData']['report']['masterData']['actors']
+        all_chars = response_json["data"]["reportData"]["report"]["masterData"]["actors"]
         char_list = []
         for char in all_chars:
-            if char['id'] in char_id_list:
-                char_list.append(f"{char['name']}-{char['server']}")
+            if char["id"] in char_id_list:
+                char_list.append(f"{char["name"]}-{char["server"]}")
 
         return date, report_url, char_list
 

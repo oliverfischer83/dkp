@@ -5,12 +5,22 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "AWS DynamoDB Example",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/experimental/aws_dynamodb_example.py",
+            "console": "integratedTerminal"
+        },
+        {
             "name": "Start DKP server",
             "type": "python",
             "request": "launch",
             "module": "streamlit",
             "justMyCode": true,
-            "args": ["run", "frontend/01_overview.py"]
+            "args": [
+                "run",
+                "frontend/01_overview.py"
+            ]
         }
     ]
 }

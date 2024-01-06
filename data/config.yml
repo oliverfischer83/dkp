@@ -1,7 +1,7 @@
 auth:
   wcl_client:
-    client_id: "9af6b15b-44cb-4872-a9f9-7d0e56aad999"
-    client_secret: "not-set" # read from env var "WCL_CLIENT_SECRET"
+    client_id: "not-set"      # read from env var "WCL_CLIENT_ID
+    client_secret: "not-set"  # read from env var "WCL_CLIENT_SECRET"
     token_url: "https://www.warcraftlogs.com/oauth/token"
     api_endpoint: "https://www.warcraftlogs.com/api/v2/client"
 
