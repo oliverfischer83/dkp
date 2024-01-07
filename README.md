@@ -39,9 +39,18 @@ AWS_SECRET_ACCESS_KEY=...
 AWS_REGION=eu-central-1
 ```
 
-### Start server
+### Start in terminal
 
 ```bash
-cd /home/fio1be/Projects/private/dkp  # path to repository root dir
+cd ~/Projects/private/dkp  # path to repository root dir
 python -m streamlit run frontend/01_overview.py
+```
+
+### Start in docker
+
+```bash
+cd ~/Projects/private/dkp                       # path to repository root dir
+docker build -t dkp .                           # build
+docker run -d -p 8080:8501 dkp                  # start detached
+docker run -it --rm -p 8080:8501 dkp /bin/bash  # debugging interactivly
 ```

@@ -1,7 +1,7 @@
 import pandas as pd
 import streamlit as st
 
-from src.dkp.dkp_app import get_balance_view
+from dkp.dkp_app import get_balance_view
 
 view = get_balance_view()
 
@@ -28,3 +28,13 @@ st.dataframe(
         ),
     },
 )
+
+
+# src/
+#   dkp/
+#     streamlit/
+#       01_overview.py
+#       __init__.py
+#     __init__.py
+#     dkp_app.py
+

@@ -1,7 +1,7 @@
 import streamlit as st
 
-from src.dkp.config_mapper import Config
-from src.dkp.dkp_app import get_admin_view
+from dkp.config_mapper import Config
+from dkp.dkp_app import get_admin_view
 
 if st.button("Reload config"):
     config = Config()
