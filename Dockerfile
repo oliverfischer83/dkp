@@ -8,12 +8,13 @@ RUN groupadd --gid $USER_GID $USERNAME \
 
 WORKDIR /app
 
-COPY src .
-COPY LICENSE .
-COPY pyproject.toml .
-COPY requirements.in .
-COPY requirements-dev.in .
-COPY requirements.txt .
+COPY src /app
+COPY config.yml /app
+COPY pyproject.toml /app
+COPY requirements.in /app
+COPY requirements-dev.in /app
+COPY requirements.txt /app
+COPY LICENSE /app
 
 RUN python -m venv venv
 ENV PATH="/app/venv/bin:$PATH"

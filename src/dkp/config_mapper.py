@@ -70,6 +70,6 @@ class Config:
 
 
 def load_config():
-    with open("data/config.yml", "r") as config_file:
+    with open("config.yml", "r") as config_file:
         config_yml = yaml.safe_load(config_file)
     return ConfigRoot(**config_yml)
