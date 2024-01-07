@@ -40,17 +40,28 @@ AWS_REGION=eu-central-1
 ```
 
 ### Start in terminal
-
 ```bash
 cd ~/Projects/private/dkp  # path to repository root dir
 python -m streamlit run frontend/01_overview.py
 ```
 
 ### Start in docker
-
 ```bash
-cd ~/Projects/private/dkp                       # path to repository root dir
-docker build -t dkp .                           # build
-docker run -d -p 8080:8501 dkp                  # start detached
-docker run -it --rm -p 8080:8501 dkp /bin/bash  # debugging interactivly
+cd ~/Projects/private/dkp  # path to repository root dir
+```
+
+#### Build image
+```bash
+docker build -t dkp .
+```
+
+#### Start detached
+```bash
+docker run --name dkp -p 8080:8501 -d dkp  # start
+docker stop dkp && docker rm dkp           # stop and remove
+```
+
+#### Start interactive
+```bash
+docker run --name dkp -p 8080:8501 -it --rm dkp /bin/bash
 ```
