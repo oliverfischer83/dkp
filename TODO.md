@@ -1,5 +1,13 @@
 # DKP
 - GO live
+  - steps (use copilot)
+    - setup local dev dynamodb
+    - import/export data into/from dynamodb
+    - create GUI to insert data
+    - create docker image
+    - test app runner manually
+    - create build/deployment pipelines
+    - test app runner automatically
   - provide data on dynamodb (not local dir anymore)
   - how to auto-update the browser?
     - periodically reload page or webhooks using github actions and display warning?
@@ -20,7 +28,6 @@
   - fix: m+ chars in raid report, test with report vF2C8crAdja1QKhD
     - or show warning and abort if m+ logs in report
   - fix: when passing invalid report ids
-  - https://12factor.net/
 - safety
   - database backup on github (/data/backup/<tablename>-<timestamp>.json)
     - delete backups older than 90d

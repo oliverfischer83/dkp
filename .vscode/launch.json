@@ -12,6 +12,13 @@
             "console": "integratedTerminal"
         },
         {
+            "name": "AWS DynamoDB Example Localhost",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/experimental/aws_dynamodb_example_localhost.py",
+            "console": "integratedTerminal"
+        },
+        {
             "name": "Start DKP server",
             "type": "python",
             "request": "launch",
