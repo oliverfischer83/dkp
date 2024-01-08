@@ -1,12 +1,14 @@
 """
 Used to map and hold the config file in a singleton class
 """
-
+import logging
 import datetime
 import threading
 
 import yaml
 from pydantic import BaseModel
+
+log = logging.getLogger(__name__)
 
 
 class WclClient(BaseModel):
@@ -65,11 +67,13 @@ class Config:
         self.raid_list: list[Raid] = root.raid
 
     def reload_config(self):
+        log.debug("reload_config")
         with self._lock:
             self._load_config()
 
 
 def load_config():
+    log.debug("load_config")
     with open("config.yml", "r") as config_file:
         config_yml = yaml.safe_load(config_file)
     return ConfigRoot(**config_yml)

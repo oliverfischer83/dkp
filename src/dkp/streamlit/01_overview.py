@@ -1,19 +1,27 @@
+import logging
+
 import pandas as pd
 import streamlit as st
 
-from dkp.dkp_app import get_balance_view
+from src.dkp.dkp_app import get_balance_view
 
+log = logging.getLogger(__name__)
+
+log.debug("rendering page")
 view = get_balance_view()
 
+log.debug("validation")
 if view.validations:
     for validation in view.validations:
         st.error(validation)
 
+log.debug("show balance")
 st.write("DKP - " + view.season_name)
 st.dataframe(
     pd.DataFrame(view.balance, columns=["name", "value", "income", "cost"]).sort_values(by=["name"], ascending=True, ignore_index=True)
 )
 
+log.debug("show loot history")
 st.write("Loot History")
 st.dataframe(
     pd.DataFrame(view.loot_history),
@@ -28,13 +36,3 @@ st.dataframe(
         ),
     },
 )
-
-
-# src/
-#   dkp/
-#     streamlit/
-#       01_overview.py
-#       __init__.py
-#     __init__.py
-#     dkp_app.py
-

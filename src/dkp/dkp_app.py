@@ -2,6 +2,7 @@
 Business logic for the DKP webapp.
 """
 import datetime
+import logging
 import os
 from typing import Any, Hashable, Optional
 
@@ -13,6 +14,7 @@ from .config_mapper import Config
 from .warcraftlogs_client import WclClient
 
 load_dotenv()
+log = logging.getLogger(__name__)
 
 INITIAL_BALANCE = 100
 ATTENDANCE_BONUS = 50
@@ -44,6 +46,7 @@ class BalanceView(BaseModel):
 
 
 def get_raw_data_from_files(export_dir):
+    log.debug("get_raw_data_from_files")
     result = pandas.DataFrame()
     for file in os.listdir(export_dir):
         dataframe = pandas.read_json(os.path.join(export_dir, file), orient="records", convert_dates=False)
@@ -52,10 +55,12 @@ def get_raw_data_from_files(export_dir):
 
 
 def make_clickable(val):
+    log.debug("make_clickable")
     return '<a href="{}">{}</a>'.format(val, val)
 
 
 def modify_data(dataframe, player_list):
+    log.debug("modify_data")
     result = dataframe.copy()
     # remove irrelevant data, need bids only
     result = result[result["response"] == "Gebot"]
@@ -95,11 +100,13 @@ def modify_data(dataframe, player_list):
 
 
 def get_loot_from_local_files(season_key, player_list):
+    log.debug("get_loot_from_local_files")
     raw_data = get_raw_data_from_files(os.path.join("data", "season", season_key))
     return modify_data(raw_data, player_list)
 
 
 def get_player_to_cost_pair(player_list, loot_table):
+    log.debug("get_player_to_cost_pair")
     result = dict()
     for player in player_list:
         result[player.name] = 0
@@ -110,6 +117,7 @@ def get_player_to_cost_pair(player_list, loot_table):
 
 
 def init_balance_table(player_list):
+    log.debug("init_balance_table")
     balance_list = dict()
     balance_list["name"] = dict()
     balance_list["value"] = dict()
@@ -124,6 +132,7 @@ def init_balance_table(player_list):
 
 
 def add_income_to_balance_table(balance_table, raid_list):
+    log.debug("add_income_to_balance_table")
     for i, name in balance_table["name"].items():
         for raid in raid_list:
             for raid_player_name in raid.player:
@@ -134,6 +143,7 @@ def add_income_to_balance_table(balance_table, raid_list):
 
 
 def add_cost_to_balance_table(balance_table, player_to_cost_dict):
+    log.debug("add_cost_to_balance_table")
     for i, name in balance_table["name"].items():
         for key, value in player_to_cost_dict.items():
             player_name = key
@@ -145,6 +155,7 @@ def add_cost_to_balance_table(balance_table, player_to_cost_dict):
 
 
 def get_balance(player_list, raid_list, loot_table):
+    log.debug("get_balance")
     player_to_cost_pair = get_player_to_cost_pair(player_list, loot_table)
     balance_table = init_balance_table(player_list)
     balance_table = add_income_to_balance_table(balance_table, raid_list)
@@ -153,6 +164,7 @@ def get_balance(player_list, raid_list, loot_table):
 
 
 def validate_characters_known(known_player, looting_characters):
+    log.debug("validate_characters_known")
     known_characters = list()
     for player in known_player:
         for char in player.chars:
@@ -166,6 +178,7 @@ def validate_characters_known(known_player, looting_characters):
 
 
 def validate_costs(cost_list):
+    log.debug("validate_costs")
     result = []
     for cost in cost_list:
         try:
@@ -183,6 +196,8 @@ def validate_costs(cost_list):
 
 
 def get_balance_view():
+    log.debug("get_balance_view")
+
     config = Config()
 
     season_name = config.season.name
@@ -208,6 +223,8 @@ def get_balance_view():
 
 
 def get_admin_view(report_id):
+    log.debug("get_admin_view")
+
     config = Config()
 
     wcl_client = WclClient(config.auth.wcl_client)

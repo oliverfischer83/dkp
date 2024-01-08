@@ -6,11 +6,14 @@ see WCL GraphQL doc: https://www.warcraftlogs.com/v2-api-docs/warcraft/
 see request oauth doc: https://requests-oauthlib.readthedocs.io/en/latest/oauth2_workflow.html#legacy-application-flow
 """
 import datetime
+import logging
 import os
 
 import requests
 from oauthlib.oauth2 import BackendApplicationClient
 from requests_oauthlib import OAuth2Session
+
+log = logging.getLogger(__name__)
 
 
 class WclClient:
@@ -35,11 +38,13 @@ class WclClient:
         }
 
     def get_data(self, query: str, **kwargs):
+        log.debug("get_data")
         data = {"query": query, "variables": kwargs}
         response = requests.get(self.api_endpoint, headers=self.headers, json=data)
         return response.json()
 
     def get_raid_details(self, report_id):
+        log.debug("get_raid_details")
         # TODO test report having m+ fights, expect m+ fights not considered
         query = """query($code: String) {
             reportData {
