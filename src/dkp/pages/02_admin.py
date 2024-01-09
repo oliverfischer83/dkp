@@ -2,8 +2,8 @@ import logging
 
 import streamlit as st
 
-from ...config_mapper import Config
-from ...dkp_app import get_admin_view
+from ..config_mapper import Config
+from ..dkp_app import get_admin_view
 
 log = logging.getLogger(__name__)
 
