@@ -10,8 +10,8 @@ import pandas
 from dotenv import load_dotenv
 from pydantic import BaseModel
 
-from .config_mapper import Config
-from .warcraftlogs_client import WclClient
+from config_mapper import Config
+from warcraftlogs_client import WclClient
 
 load_dotenv()
 log = logging.getLogger(__name__)
