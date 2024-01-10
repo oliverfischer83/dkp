@@ -22,6 +22,7 @@ st.dataframe(
     pd.DataFrame(view.balance, columns=["name", "value", "income", "cost", "characters"]).sort_values(
         by=["name"], ascending=True, ignore_index=True
     )
+    hide_index=True,
 )
 
 log.debug("show loot history")
