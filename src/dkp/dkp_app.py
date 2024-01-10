@@ -81,6 +81,8 @@ def modify_data(dataframe, player_list):
     result["difficulty"] = result["instance"].str.split("-").str[1]
     # substring of instance name
     result["instance"] = result["instance"].str.split(",").str[0]
+    # substring of boss name
+    result["boss"] = result["boss"].str.split(",").str[0]
     # select and sort columns
     result = result[
         [
@@ -123,11 +125,13 @@ def init_balance_table(player_list):
     balance_list["value"] = dict()
     balance_list["income"] = dict()
     balance_list["cost"] = dict()
+    balance_list["characters"] = dict()
     for i, player in enumerate(player_list):
         balance_list["name"][i] = player.name
         balance_list["value"][i] = INITIAL_BALANCE
         balance_list["income"][i] = INITIAL_BALANCE
         balance_list["cost"][i] = 0
+        balance_list["characters"][i] = player.chars
     return balance_list
 
 

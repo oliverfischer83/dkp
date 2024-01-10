@@ -16,13 +16,18 @@ if view.validations:
         st.error(validation)
 
 log.debug("show balance")
-st.write("DKP - " + view.season_name)
+st.markdown("# " + view.season_name)
+st.markdown("Last update: 2024-01-07 19:47 (Boss: Nymue)")
+st.markdown("### DKP")
 st.dataframe(
-    pd.DataFrame(view.balance, columns=["name", "value", "income", "cost"]).sort_values(by=["name"], ascending=True, ignore_index=True)
+    pd.DataFrame(view.balance, columns=["name", "value", "income", "cost", "characters"]).sort_values(
+        by=["name"], ascending=True, ignore_index=True
+    ),
+    hide_index=True,
 )
 
 log.debug("show loot history")
-st.write("Loot History")
+st.markdown("### Loot History")
 st.dataframe(
     pd.DataFrame(view.loot_history),
     column_config={
