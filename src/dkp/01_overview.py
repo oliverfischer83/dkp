@@ -17,6 +17,7 @@ if view.validations:
 
 log.debug("show balance")
 st.markdown("# " + view.season_name)
+st.markdown("last update: 2024-01-07 19:47 (Boss: Nymue)")
 st.markdown("### DKP")
 st.dataframe(
     pd.DataFrame(view.balance, columns=["name", "value", "income", "cost", "characters"]).sort_values(

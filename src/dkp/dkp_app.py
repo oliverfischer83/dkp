@@ -81,6 +81,8 @@ def modify_data(dataframe, player_list):
     result["difficulty"] = result["instance"].str.split("-").str[1]
     # substring of instance name
     result["instance"] = result["instance"].str.split(",").str[0]
+    # substring of boss name
+    result["boss"] = result["boss"].str.split(",").str[0]
     # select and sort columns
     result = result[
         [
