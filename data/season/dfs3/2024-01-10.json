@@ -236,7 +236,7 @@
         "id": "1704911215-19",
         "itemID": 207787,
         "itemString": "item:207787::::::::70:70::5:5:6652:7980:9568:1498:8767",
-        "response": "Gebot",
+        "response": "Transmog",
         "votes": 0,
         "class": "SHAMAN",
         "instance": "Amirdrassil, the Dream's Hope-Heroic",
@@ -248,7 +248,7 @@
         "rollType": "normal",
         "subType": "One-Handed Axes",
         "equipLoc": "One-Hand",
-        "note": "10",
+        "note": "0",
         "owner": "Moppi-Anub'arak",
         "itemName": "Igira's Flaying Hatchet"
     },
