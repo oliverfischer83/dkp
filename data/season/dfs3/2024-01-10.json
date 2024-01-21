@@ -711,5 +711,18 @@
         "note": "30",
         "owner": "Moppi-Anub'arak",
         "itemName": "Flame-Warped Curio"
+    },
+    {
+        "player": "Fadrim-Anub'arak",
+        "date": "10/1/24",
+        "time": "20:09:20",
+        "id": "1705258862-99",
+        "itemID": 207786,
+        "response": "Gebot",
+        "class": "WARRIOR",
+        "instance": "Amirdrassil, the Dream's Hope-Normal",
+        "boss": "Fyrakk the Blazing",
+        "note": "150",
+        "itemName": "Gholak, the Final Conflagration"
     }
 ]
