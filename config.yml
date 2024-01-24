@@ -118,4 +118,6 @@ raid:
   - date: 2024-01-21
     report: https://www.warcraftlogs.com/reports/WRwZnBN7JC2AGzKQ
     player: ['Carmen', 'Christoph', 'Dimi', 'Joseph', 'Kalle', 'Kevin', 'Lutz', 'Marco', 'Marc', 'Maxi', 'Micha', 'Olli', 'Stephan', 'Tanja', 'Tobi', 'Yasmin']
-    
+  - date: 2024-01-24
+    report: https://www.warcraftlogs.com/reports/2nMYkQfm1GCt6pbV
+    player: ['Carmen', 'Christoph', 'Kalle', 'Kevin', 'Leon', 'Marco', 'Marc', 'Micha', 'Olli', 'Stephan', 'Tanja', 'Thomas', 'Yasmin']
