@@ -40,6 +40,7 @@ class LootHistory(BaseModel):
 
 class BalanceView(BaseModel):
     season_name: str
+    last_update: str
     balance: Optional[dict[Hashable, Any]]
     loot_history: Optional[dict[Hashable, Any]]
     validations: Optional[list[str]]
@@ -208,6 +209,7 @@ def get_balance_view():
     player_list = config.player_list
     loot = get_loot_from_local_files(config.season.key, player_list)
     looting_characters = list(set([value for value in loot["character"].values()]))
+    last_update = str(loot["timestamp"][0]) + " (Boss: " + str(loot["boss"][0]) + ", " + str(loot["difficulty"][0]) + ")"
 
     validations = []
     validations.extend(validate_characters_known(player_list, looting_characters))
@@ -216,6 +218,7 @@ def get_balance_view():
     if validations:
         return BalanceView(
             season_name=season_name,
+            last_update="",
             balance=None,
             loot_history=None,
             validations=validations,
@@ -223,7 +226,7 @@ def get_balance_view():
 
     balance = get_balance(player_list, config.raid_list, loot)
 
-    return BalanceView(season_name=season_name, balance=balance, loot_history=loot, validations=None)
+    return BalanceView(season_name=season_name, balance=balance, loot_history=loot, last_update=last_update, validations=None)
 
 
 def get_admin_view(report_id):

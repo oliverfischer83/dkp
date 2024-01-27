@@ -17,8 +17,7 @@ if view.validations:
 
 log.debug("show balance")
 st.markdown("# " + view.season_name)
-st.markdown("Last update: 2024-01-24 21:31 (Boss: Tindral Sageswift, Heroic)")
-#st.markdown("Last update: " + view.last_update)
+st.markdown("Letzte Aktualisierung: " + view.last_update)
 st.markdown("### DKP")
 st.dataframe(
     pd.DataFrame(view.balance, columns=["name", "value", "income", "cost", "characters"]).sort_values(
