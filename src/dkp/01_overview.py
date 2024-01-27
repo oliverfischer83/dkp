@@ -18,11 +18,19 @@ if view.validations:
 log.debug("show balance")
 st.markdown("# " + view.season_name)
 st.markdown("Last update: 2024-01-24 21:31 (Boss: Tindral Sageswift, Heroic)")
+#st.markdown("Last update: " + view.last_update)
 st.markdown("### DKP")
 st.dataframe(
     pd.DataFrame(view.balance, columns=["name", "value", "income", "cost", "characters"]).sort_values(
         by=["name"], ascending=True, ignore_index=True
     ),
+    column_config={
+        "name": "Spieler",
+        "value": "Guthaben",
+        "income": "verdient",
+        "cost": "ausgegeben",
+        "characters": "Charaktere",
+    },
     hide_index=True,
 )
 
@@ -31,13 +39,20 @@ st.markdown("### Loot History")
 st.dataframe(
     pd.DataFrame(view.loot_history),
     column_config={
-        "itemLink": st.column_config.LinkColumn(
-            "item link",
-            # display_text="Show item"  # TODO feature coming with streamlit 1.30 (Jan 2024)
-        ),
         "timestamp": st.column_config.DateColumn(
-            "date",
+            "Datum",
             format="DD.MM.YYYY",
         ),
+        "player": "Spieler",
+        "cost": "Gebot",
+        "item": "Item",
+        "itemLink": st.column_config.LinkColumn(
+            "Item Link",
+            display_text="wowhead.com"
+        ),
+        "instance": "Raid",
+        "difficulty": "Stufe",
+        "boss": "Boss",
+        "character": "Charakter",
     },
 )

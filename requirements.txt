@@ -175,7 +175,7 @@ smmap==5.0.1
     # via gitdb
 stack-data==0.6.3
     # via ipython
-streamlit==1.29.0
+streamlit==1.30.0
     # via dkp (pyproject.toml)
 tenacity==8.2.3
     # via streamlit
