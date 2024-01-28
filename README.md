@@ -3,8 +3,9 @@
 ## Design decisions
 
 ### Platform
-- choosing App Runner over Elastic Beanstalk over EC2 over ECS (managed Kubernetes)
 - outsourcing the platform management, just giving the application code and configuration
+- sadly cant use AWS App Runner, because websockets are not supported (needed by Streamlit)
+- choosing Streamlit Community Cloud over Elastic Beanstalk
 - cheap, easy to setup and manage
 
 ### Database
@@ -27,6 +28,7 @@ conda activate dkp
 pip install pip-tools
 pip-compile --all-extras pyproject.toml
 pip-sync
+pip install --editable=.[dev]
 ```
 
 ### Configuration
@@ -42,33 +44,8 @@ AWS_REGION=eu-central-1
 ### Start locally
 ```bash
 cd ~/Projects/private/dkp
-python -m streamlit run src/dkp/streamlit/01_overview.py
+python -m streamlit run src/dkp/01_overview.py
 ```
 
-### Start in docker
 
-#### Build image
-```bash
-cd ~/Projects/private/dkp
-docker build -t dkp .
-```
-
-#### Start detached
-```bash
-docker run --name dkp -p 8080:8501 -d dkp  # start
-docker stop dkp && docker rm dkp           # stop and remove
-```
-
-#### Start interactive
-```bash
-docker run --name dkp -p 8080:8501 -it --rm dkp /bin/bash
-```
-
-#### Upload image
-```bash
-aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 243351289711.dkr.ecr.eu-central-1.amazonaws.com
-BUILD_TAG=1234  # some build number
-docker tag dkp:latest 243351289711.dkr.ecr.eu-central-1.amazonaws.com/dkp:$BUILD_TAG
-docker push 243351289711.dkr.ecr.eu-central-1.amazonaws.com/dkp:$BUILD_TAG
-```
 
