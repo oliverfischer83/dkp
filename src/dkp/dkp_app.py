@@ -55,11 +55,6 @@ def get_raw_data_from_files(export_dir):
     return result
 
 
-def make_clickable(val):
-    log.debug("make_clickable")
-    return '<a href="{}">{}</a>'.format(val, val)
-
-
 def modify_data(dataframe, player_list):
     log.debug("modify_data")
     result = dataframe.copy()
@@ -71,7 +66,6 @@ def modify_data(dataframe, player_list):
     result.set_index("timestamp")
     # creating item link column
     result["itemLink"] = "https://www.wowhead.com/item=" + result["itemID"].astype(str)
-    result.style.format({"itemLink": make_clickable})
     # renaming columns
     result = result.rename(columns={"player": "character"})
     result = result.rename(columns={"itemName": "item"})

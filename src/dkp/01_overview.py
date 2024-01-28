@@ -18,7 +18,7 @@ if view.validations:
 log.debug("show balance")
 st.markdown("# " + view.season_name)
 st.markdown("Letzte Aktualisierung: " + view.last_update)
-st.markdown("### DKP")
+st.markdown("### DKP Liste")
 st.dataframe(
     pd.DataFrame(view.balance, columns=["name", "value", "income", "cost", "characters"]).sort_values(
         by=["name"], ascending=True, ignore_index=True
@@ -34,7 +34,7 @@ st.dataframe(
 )
 
 log.debug("show loot history")
-st.markdown("### Loot History")
+st.markdown("### Loot Liste")
 st.dataframe(
     pd.DataFrame(view.loot_history),
     column_config={
