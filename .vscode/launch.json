@@ -1,33 +1,24 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "AWS DynamoDB Example",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/experimental/aws_dynamodb_example.py",
-            "console": "integratedTerminal"
-        },
-        {
-            "name": "AWS DynamoDB Example Localhost",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/experimental/aws_dynamodb_example_localhost.py",
-            "console": "integratedTerminal"
-        },
-        {
-            "name": "Start DKP server",
-            "type": "python",
-            "request": "launch",
-            "module": "streamlit",
-            "justMyCode": true,
-            "args": [
-                "run",
-                "src/dkp/01_overview.py"
-            ]
-        }
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run DKP server",
+      "type": "python",
+      "request": "launch",
+      "module": "streamlit",
+      "justMyCode": true,
+      "args": ["run", "src/dkp/01_overview.py"]
+    },
+    {
+      "name": "Run all Tests",
+      "type": "python",
+      "request": "launch",
+      "module": "pytest",
+      "cwd": "${workspaceFolder}",
+    //   "args": ["tests"],
+    //   "env": {
+    //     "PYTHONPATH": "${workspaceFolder}${pathSeparator}${env:PYTHONPATH}"
+    //   }
+    }
+  ]
 }

@@ -1,9 +1,13 @@
+# Checking the import path
+# import sys
+# print(sys.path)
 import os
+
 from unittest import mock
 from unittest.mock import patch
 
-from src.dkp import dkp_app as app
-from src.dkp.config_mapper import Player
+from dkp.config_mapper import Player
+from dkp import dkp_app as app
 
 
 def test_get_balance():
@@ -33,6 +37,7 @@ def test_validate_characters_known():
     assert len(app.validate_characters_known(known_player, ["Moppi", "Wurzel"])) == 0
     assert len(app.validate_characters_known(known_player, ["Unknown"])) == 1
     assert len(app.validate_characters_known(known_player, ["Unknown1", "Unknown2"])) == 2
+
 
 
 def test_validate_costs_parsable():
@@ -94,3 +99,54 @@ def test_validate_costs_parsable():
 #
 #     version = util.get_version()
 #     assert version == am_test_oliver2.__version__
+
+
+# from datetime import datetime
+# from unittest.mock import patch
+
+# from dkp.dkp_app import modify_data
+
+
+# @patch("src.dkp.dkp_app.pandas")
+# def test_modify_data(mock_pandas):
+#     # Mock input data
+#     dataframe = mock_pandas.DataFrame()
+#     player_list = [
+#         Player(name="Olli", chars=["Moppi", "Zelma"]),
+#         Player(name="Micha", chars=["Wurzel"]),
+#     ]
+
+#     # Mock expected output data
+#     expected_result = {
+#         "timestamp": [datetime(2022, 1, 1, 12, 0, 0)],
+#         "player": ["Olli"],
+#         "cost": ["10"],
+#         "item": ["Some Item"],
+#         "instance": ["Instance"],
+#         "difficulty": ["Normal"],
+#         "boss": ["Boss"],
+#         "character": ["Moppi"],
+#     }
+
+#     # Mock pandas DataFrame methods
+#     mock_dataframe = mock_pandas.DataFrame.return_value
+#     mock_dataframe.copy.return_value = mock_dataframe
+#     mock_dataframe.__getitem__.side_effect = [
+#         mock_pandas.Series(["Gebot"]),
+#         mock_pandas.Series(["01/01/22"]),
+#         mock_pandas.Series(["12:00:00"]),
+#         mock_pandas.Series(["Some Item"]),
+#         mock_pandas.Series(["Instance"]),
+#         mock_pandas.Series(["Normal"]),
+#         mock_pandas.Series(["Boss"]),
+#         mock_pandas.Series(["Moppi"]),
+#     ]
+#     mock_dataframe.rename.return_value = mock_dataframe
+#     mock_dataframe.sort_values.return_value = mock_dataframe
+#     mock_dataframe.to_dict.return_value = expected_result
+
+#     # Call the function
+#     result = modify_data(dataframe, player_list)
+
+#     # Assert the result
+#     assert result == expected_result
