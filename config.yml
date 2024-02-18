@@ -22,6 +22,8 @@ player:
     chars: ["Fanfaron-Dalvengyr"]
   - name: Franzi
     chars: ["Lelu-Anub'arak"]
+  - name: Janine
+    chars: ["Motsognir-Anub'arak"]
   - name: Jessica
     chars: ["Roselyn-Aman'thul"]
   - name: Joseph
