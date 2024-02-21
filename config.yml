@@ -48,10 +48,6 @@ player:
     chars: ["Kellykiller-Aman'thul"]
   - name: Olli
     chars: ["Moppi-Anub'arak", "Zelma-Anub'arak"]
-  - name: Stalox
-    chars: []
-  - name: Steffo
-    chars: []
   - name: Stephan
     chars: ["Madherby-Nazjatar"]
   - name: Tanja
