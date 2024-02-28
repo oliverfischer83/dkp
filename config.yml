@@ -13,7 +13,7 @@ player:
   - name: Carmen
     chars: ["Cheîra-Aman'thul"]
   - name: Christoph
-    chars: ["Thýráel-Antonidas","Thyraldur-Blackhand","Thyrân-Antonidas","Thyrodor-Antonidas","Thyrondir-Antonidas"]
+    chars: ["Thýráel-Antonidas","Thyraldur-Blackhand","Thyrân-Antonidas","Thyrodor-Antonidas","Thyrondir-Antonidas","Thyrondur-Antonidas"]
   - name: Dave
     chars: ["Schorsé-Antonidas","Failpuller-Antonidas","Angstblasé-Antonidas"]
   - name: Dennis
@@ -37,7 +37,7 @@ player:
   - name: Lutz
     chars: ["Jnx-Aman'thul","Pokusan-Aman'thul"]
   - name: Marco
-    chars: ["Nay-Anub'arak","Fadrim-Anub'arak"]
+    chars: ["Nay-Anub'arak","Fadrim-Anub'arak","Nirí-Anub'arak"]
   - name: Marc
     chars: ["Seysey-Aman'thul","Loryxius-Aman'thul"]
   - name: Maxi
@@ -134,3 +134,6 @@ raid:
   - date: 2024-02-21
     report: https://www.warcraftlogs.com/reports/A9wgWR6ckLtyNaC3
     player: ['Carmen', 'Christoph', 'Janine', 'Joseph', 'Kalle', 'Kevin', 'Lutz', 'Marco', 'Micha', 'Olli', 'Tanja', 'Thomas', 'Tobi']
+  - date: 2024-02-28
+    report: https://www.warcraftlogs.com/reports/1KkpanNrx4hgfLvM
+    player: None
