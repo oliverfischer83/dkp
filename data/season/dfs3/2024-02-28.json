@@ -6,7 +6,7 @@
     "id": "1709143653-8",
     "itemID": 207172,
     "itemString": "item:207172::::::::70:70::5:5:6652:7980:9571:1507:8767",
-    "response": "Pass",
+    "response": "Gebot",
     "votes": 0,
     "class": "PALADIN",
     "instance": "Amirdrassil, the Dream's Hope-Heroic",
@@ -18,7 +18,7 @@
     "rollType": "normal",
     "subType": "Miscellaneous",
     "equipLoc": "Trinket",
-    "note": "10",
+    "note": "10 ",
     "owner": "Moppi-Anub'arak",
     "itemName": "Belor'relos, the Suncaller"
   },
