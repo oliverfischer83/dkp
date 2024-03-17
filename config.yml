@@ -13,7 +13,7 @@ player:
   - name: Carmen
     chars: ["Cheîra-Aman'thul"]
   - name: Christoph
-    chars: ["Thýráel-Antonidas","Thyraldur-Blackhand","Thyrân-Antonidas","Thyrodor-Antonidas","Thyrondir-Antonidas","Thyrondur-Antonidas"]
+    chars: ["Thýráel-Antonidas","Thyraldur-Blackhand","Thyrân-Antonidas","Thyrodor-Antonidas","Thyrondir-Antonidas","Thyrondur-Antonidas","Thylondur-Antonidas"]
   - name: Dave
     chars: ["Schorsé-Antonidas","Failpuller-Antonidas","Angstblasé-Antonidas"]
   - name: Dennis
@@ -48,6 +48,8 @@ player:
     chars: ["Wurzelpeter-Anub'arak"]
   - name: Mischa
     chars: ["Kellykiller-Aman'thul"]
+  - name: Nadja
+    chars: ["Shanya-Antonidas"]
   - name: Olli
     chars: ["Moppi-Anub'arak", "Zelma-Anub'arak"]
   - name: Stephan
