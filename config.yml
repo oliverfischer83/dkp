@@ -24,6 +24,8 @@ player:
     chars: ["Lelu-Anub'arak"]
   - name: Janine
     chars: ["Motsognir-Anub'arak"]
+  - name: Jan
+    chars: ["Dâtä-Antonidas"]
   - name: Jessica
     chars: ["Roselyn-Aman'thul"]
   - name: Joseph
