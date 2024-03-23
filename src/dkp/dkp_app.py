@@ -1,6 +1,9 @@
 """
 Business logic for the DKP webapp.
 """
+
+# pylint: disable=missing-module-docstring,missing-function-docstring,missing-class-docstring
+
 import datetime
 import logging
 import os

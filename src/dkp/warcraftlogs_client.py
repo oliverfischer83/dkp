@@ -5,6 +5,9 @@ see WCL OAuth doc: https://www.warcraftlogs.com/api/docs
 see WCL GraphQL doc: https://www.warcraftlogs.com/v2-api-docs/warcraft/
 see request oauth doc: https://requests-oauthlib.readthedocs.io/en/latest/oauth2_workflow.html#legacy-application-flow
 """
+
+# pylint: disable=missing-module-docstring,missing-function-docstring,missing-class-docstring
+
 import datetime
 import logging
 import os
@@ -40,7 +43,7 @@ class WclClient:
     def get_data(self, query: str, **kwargs):
         log.debug("get_data")
         data = {"query": query, "variables": kwargs}
-        response = requests.get(self.api_endpoint, headers=self.headers, json=data)
+        response = requests.get(self.api_endpoint, headers=self.headers, json=data, timeout=10)
         return response.json()
 
     def get_raid_details(self, report_id):

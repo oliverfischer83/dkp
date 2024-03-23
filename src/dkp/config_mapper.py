@@ -1,6 +1,9 @@
 """
 Used to map and hold the config file in a singleton class
 """
+
+# pylint: disable=missing-module-docstring,missing-function-docstring,missing-class-docstring
+
 import logging
 import datetime
 import threading
@@ -52,6 +55,12 @@ class Config:
     # fully loaded config, which will lead to errors
     _lock = threading.Lock()
 
+    def __init__(self) -> None:
+        self.auth: Auth
+        self.season: Season
+        self.player_list: list[Player]
+        self.raid_list: list[Raid]
+
     def __new__(cls):
         with cls._lock:
             if cls._instance is None:
@@ -74,6 +83,6 @@ class Config:
 
 def load_config():
     log.debug("load_config")
-    with open("config.yml", "r") as config_file:
+    with open("config.yml", "r", encoding="utf-8") as config_file:
         config_yml = yaml.safe_load(config_file)
     return ConfigRoot(**config_yml)

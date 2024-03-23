@@ -1,4 +1,7 @@
+# pylint: disable=missing-module-docstring,missing-function-docstring,missing-class-docstring
+
 import logging
+import os
 
 import streamlit as st
 
@@ -9,28 +12,34 @@ log = logging.getLogger(__name__)
 
 log.debug("rendering page")
 
+# Password protection
+expected_password = os.environ.get("ADMIN_PASSWORD", "")
+password = st.text_input("Enter password:", type="password")
+if password != expected_password:
+    st.error("Incorrect password. Access denied.")
+    st.stop()
+
+# Reload config
 if st.button("Reload config"):
     log.debug("reloading config")
     config = Config()
     config.reload_config()
 
+# Generate config snippet
 report_id = st.text_input("Enter warcraftlogs report id:", placeholder="e.g. JrYPGF9D1yLqtZhd")
-
 if report_id:
     log.debug("generate config snippet")
     view = get_admin_view(report_id)
-
     log.debug("validate")
     if view.validations:
         for validation in view.validations:
             st.error(validation)
-
     log.debug("show config snippet")
     st.code(
         f"""
     - date: {view.date}
-      report: {view.report_url}
-      player: {view.player_list}""",
+        report: {view.report_url}
+        player: {view.player_list}""",
         language="yaml",
     )
     st.markdown("Copy and paste this entry into the raid section of the config.yml file.")

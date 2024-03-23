@@ -3,22 +3,24 @@
   "configurations": [
     {
       "name": "Run DKP server",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "module": "streamlit",
       "justMyCode": true,
-      "args": ["run", "src/dkp/01_overview.py"]
+      "args": ["run", "src/dkp/01_overview.py"],
+      "console": "integratedTerminal"
     },
     {
       "name": "Run all Tests",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "module": "pytest",
       "cwd": "${workspaceFolder}",
-    //   "args": ["tests"],
-    //   "env": {
-    //     "PYTHONPATH": "${workspaceFolder}${pathSeparator}${env:PYTHONPATH}"
-    //   }
+      "console": "integratedTerminal"
+      //   "args": ["tests"],
+      //   "env": {
+      //     "PYTHONPATH": "${workspaceFolder}${pathSeparator}${env:PYTHONPATH}"
+      //   }
     }
   ]
 }
