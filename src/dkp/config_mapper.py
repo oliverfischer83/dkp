@@ -14,6 +14,9 @@ from pydantic import BaseModel
 log = logging.getLogger(__name__)
 
 
+class GithubClient(BaseModel):
+    token: str
+
 class WclClient(BaseModel):
     client_id: str
     client_secret: str
@@ -23,6 +26,7 @@ class WclClient(BaseModel):
 
 class Auth(BaseModel):
     wcl_client: WclClient
+    github_client: GithubClient
 
 
 class Season(BaseModel):

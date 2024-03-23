@@ -7,7 +7,7 @@ from unittest import mock
 from unittest.mock import patch
 
 from dkp.config_mapper import Player
-from dkp import dkp_app as app
+from . import app as app
 
 
 def test_get_balance():

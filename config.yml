@@ -4,6 +4,8 @@ auth:
     client_secret: "not-set"  # read from env var "WCL_CLIENT_SECRET"
     token_url: "https://www.warcraftlogs.com/oauth/token"
     api_endpoint: "https://www.warcraftlogs.com/api/v2/client"
+  github_client:
+    token: "not-set"          # read from env var "GITHUB_CLIENT_TOKEN"
 
 season:
   key: dfs3

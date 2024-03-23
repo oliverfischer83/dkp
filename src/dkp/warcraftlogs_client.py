@@ -20,11 +20,11 @@ log = logging.getLogger(__name__)
 
 
 class WclClient:
-    def __init__(self, wcl_client):
-        self.client_id = os.environ.get("WCL_CLIENT_ID", wcl_client.client_id)
-        self.client_secret = os.environ.get("WCL_CLIENT_SECRET", wcl_client.client_secret)
-        self.token_uri = wcl_client.token_url
-        self.api_endpoint = wcl_client.api_endpoint
+    def __init__(self, config, client_id, client_secret):
+        self.client_id = client_id
+        self.client_secret = client_secret
+        self.token_uri = config.token_url
+        self.api_endpoint = config.api_endpoint
 
         self.client = BackendApplicationClient(client_id=self.client_id)
         self.oauth = OAuth2Session(client=self.client)

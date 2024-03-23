@@ -5,22 +5,36 @@ Business logic for the DKP webapp.
 # pylint: disable=missing-module-docstring,missing-function-docstring,missing-class-docstring
 
 import datetime
+from io import StringIO
+import json
 import logging
 import os
 from typing import Any, Hashable, Optional
+from xxlimited import new
 
 import pandas
 from dotenv import load_dotenv
 from pydantic import BaseModel
 
 from config_mapper import Config
+from github_client import GithubClient
 from warcraftlogs_client import WclClient
 
 load_dotenv()
 log = logging.getLogger(__name__)
 
+
 INITIAL_BALANCE = 100
 ATTENDANCE_BONUS = 50
+
+WCL_CLIENT_ID = os.environ.get("WCL_CLIENT_ID")
+WCL_CLIENT_SECRET = os.environ.get("WCL_CLIENT_SECRET")
+GITHUB_TOKEN = os.environ.get("GITHUB_CLIENT_TOKEN")
+
+
+CONFIG = Config()
+WCL_CLIENT = WclClient(CONFIG.auth.wcl_client, WCL_CLIENT_ID, WCL_CLIENT_SECRET)
+DATABASE = GithubClient(GITHUB_TOKEN)
 
 
 class AdminView(BaseModel):
@@ -200,11 +214,9 @@ def validate_costs(cost_list):
 def get_balance_view():
     log.debug("get_balance_view")
 
-    config = Config()
-
-    season_name = config.season.name
-    player_list = config.player_list
-    loot = get_loot_from_local_files(config.season.key, player_list)
+    season_name = CONFIG.season.name
+    player_list = CONFIG.player_list
+    loot = get_loot_from_local_files(CONFIG.season.key, player_list)
     looting_characters = list(set([value for value in loot["character"].values()]))
     last_update = str(loot["timestamp"][0]) + " (Boss: " + str(loot["boss"][0]) + ", " + str(loot["difficulty"][0]) + ")"
 
@@ -221,7 +233,7 @@ def get_balance_view():
             validations=validations,
         )
 
-    balance = get_balance(player_list, config.raid_list, loot)
+    balance = get_balance(player_list, CONFIG.raid_list, loot)
 
     return BalanceView(season_name=season_name, balance=balance, loot_history=loot, last_update=last_update, validations=None)
 
@@ -229,22 +241,56 @@ def get_balance_view():
 def get_admin_view(report_id):
     log.debug("get_admin_view")
 
-    config = Config()
-
-    wcl_client = WclClient(config.auth.wcl_client)
-    date, report_url, raiding_char_list = wcl_client.get_raid_details(report_id)
+    all_players = CONFIG.player_list
+    date, report_url, raiding_char_list = WCL_CLIENT.get_raid_details(report_id)
 
     player_list = []
-    for player in config.player_list:
+    for player in all_players:
         for char in raiding_char_list:
             if char in player.chars:
                 player_list.append(player.name)
                 break
 
     validations = []
-    validations.extend(validate_characters_known(config.player_list, raiding_char_list))
+    validations.extend(validate_characters_known(all_players, raiding_char_list))
 
     if validations:
         return AdminView(date=date, report_url=report_url, player_list=None, validations=validations)
 
     return AdminView(date=date, report_url=report_url, player_list=player_list, validations=None)
+
+
+# TODO test case
+def upload_loot_log(new_loot_json_string):
+
+    # validate each date is the same
+    new_loot_df = pandas.read_json(StringIO(new_loot_json_string), orient="records", convert_dates=False)
+    first_date = new_loot_df["date"][0]
+    for date in new_loot_df["date"]:
+        if date != first_date:
+            raise Exception("Dates in the dataframe differ from each other.")
+
+    season = CONFIG.season.key
+    raid_day = datetime.datetime.strptime(first_date, "%d/%m/%y").strftime("%Y-%m-%d")
+    loot_log_content = DATABASE.get_loot_log_content(season, raid_day)
+
+    resulting_content = new_loot_json_string
+    if loot_log_content:  # appending new content to existing loot log
+        existing_json = json.loads(loot_log_content)
+        existing_json.extend(json.loads(new_loot_json_string))
+
+        # remove duplicates
+        unique_ids = set()
+        filtered_data = []
+        for item in existing_json:
+            if item["id"] not in unique_ids:
+                filtered_data.append(item)
+                unique_ids.add(item["id"])
+
+        resulting_content = json.dumps(filtered_data, indent=2)
+
+    DATABASE.update_or_create_loot_log(resulting_content, season, raid_day)
+
+
+def reload_config():
+    CONFIG.reload_config()

@@ -4,7 +4,7 @@ import logging
 import pandas as pd
 import streamlit as st
 
-from dkp_app import get_balance_view
+from app import get_balance_view
 
 log = logging.getLogger(__name__)
 

@@ -18,6 +18,10 @@
 - can be reused for development, testing and database initialization
 - using GitHub API for educational reasons
 
+### Architecture
+- form data validation happens in app, not in views
+- clients don't contain any business logic
+
 ## Setup local environment
 
 ### Python
