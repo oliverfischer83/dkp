@@ -52,7 +52,7 @@
     "id": "9999999999-3",
     "itemID": 207783,
     "itemString": "item:207783::::::::70:70::5:5:41:7980:9568:1498:8767",
-    "response": "Pass",
+    "response": "",
     "votes": 0,
     "class": "ROGUE",
     "instance": "Amirdrassil, the Dream's Hope-Heroic",
@@ -66,7 +66,8 @@
     "equipLoc": "One-Hand",
     "note": "",
     "owner": "Moppi-Anub'arak",
-    "itemName": "Cruel Dreamcarver"
+    "itemName": "Cruel Dreamcarver",
+    "data_status": "fixed"
   },
   {
     "player": "Thylondur-Antonidas",
@@ -75,7 +76,7 @@
     "id": "9999999999-2",
     "itemID": 207131,
     "itemString": "item:207131::::::::70:70::5:7:6652:9599:9508:7980:9568:1498:8767",
-    "response": "Transmog",
+    "response": "Gebot",
     "votes": 0,
     "class": "DEMONHUNTER",
     "instance": "Amirdrassil, the Dream's Hope-Heroic",
@@ -87,8 +88,9 @@
     "rollType": "normal",
     "subType": "Leather",
     "equipLoc": "Waist",
-    "note": "",
+    "note": "20",
     "owner": "Moppi-Anub'arak",
-    "itemName": "Bloody Dragonhide Belt"
+    "itemName": "Bloody Dragonhide Belt",
+    "data_status": "fixed"
   }
 ]
