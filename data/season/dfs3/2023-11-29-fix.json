@@ -7,6 +7,19 @@
     "time": "21:30:00",
     "instance": "Amirdrassil, the Dream's Hope-Normal",
     "boss": "",
-    "itemName": ""
+    "itemName": "",
+    "id": "9999999999-0",
+    "itemID": 0,
+    "itemString": "",
+    "votes": 0,
+    "class": "",
+    "gear1": "",
+    "gear2": "",
+    "responseID": "",
+    "isAwardReason": "",
+    "rollType": "",
+    "subType": "",
+    "equipLoc": "",
+    "owner": "",
   }
 ]
