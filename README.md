@@ -57,20 +57,27 @@ python -m streamlit run src/dkp/01_overview.py
 
 # TODO
 - GO live
-  - only get new entries from last boss, when updating the loot list (prevents overwriting earlier manual changes)
   - test run
     - process if new char is in raid and gets loot
     - process cleaning up data
+  - adding player and characters via admin page
+  - manage raid list in separate json file
+  - extract raids from config
+  - extract player from config
+  - remove reload button
+  - before uploading loot data in admin page, validate values:
+    - if response=Gebot, then note=[0-9]+
+    - characters are known
+  - checklist (video on, live log on, loot-council uptodate, ...)
+  - status sign, e.g. traffic jam lights: green=raid active, red=raid still active need to close, none=ok
+  - scenario:
+    - cannot do master looter (because ID already taken), so cannot loot, so cannot use RCLootCouncil
+    - do auction like bidding, and note down winner
+    - manually add entries afterwards
+    - use Excel sheet if necessary
 - code quality
   - unit tests for balance functions
   - constants for string names
 - nice to have
   - fix: m+ chars in raid report, test with report vF2C8crAdja1QKhD
     - or show warning and abort if m+ logs in report
-- checklist (video on, live log on, loot-council uptodate, ...)
-- remove reload button
-- adding player and characters via admin page
-- manage raid list in separate json file
-- before uploading loot data in admin page, validate values:
-  - if response=Gebot, then note=[0-9]+
-  - characters are known

@@ -8,7 +8,7 @@ import datetime
 from io import StringIO
 import logging
 import os
-from typing import Any, Hashable, Optional
+from typing import Any, Optional
 
 import pandas
 from config_mapper import Config, Player, Raid
