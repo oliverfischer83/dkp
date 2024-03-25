@@ -68,6 +68,9 @@ python -m streamlit run src/dkp/01_overview.py
   - fix: m+ chars in raid report, test with report vF2C8crAdja1QKhD
     - or show warning and abort if m+ logs in report
 - checklist (video on, live log on, loot-council uptodate, ...)
+- remove reload button
 - adding player and characters via admin page
-- changing loot log via admin page
-- 
+- manage raid list in separate json file
+- before uploading loot data in admin page, validate values:
+  - if response=Gebot, then note=[0-9]+
+  - characters are known
