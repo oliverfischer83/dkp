@@ -723,6 +723,16 @@
         "instance": "Amirdrassil, the Dream's Hope-Normal",
         "boss": "Fyrakk the Blazing",
         "note": "150",
-        "itemName": "Gholak, the Final Conflagration"
+        "itemName": "Gholak, the Final Conflagration",
+        "itemString": "",
+        "votes": 0,
+        "gear1": "",
+        "gear2": "",
+        "responseID": "",
+        "isAwardReason": "",
+        "rollType": "",
+        "subType": "",
+        "equipLoc": "",
+        "owner": ""
     }
 ]
