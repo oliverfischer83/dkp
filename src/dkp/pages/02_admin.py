@@ -63,18 +63,17 @@ if st.button("Submit LootCouncil export"):
 raid_day = st.date_input("Show Loot Log of Raid day:", value=datetime.date.today(), format="YYYY-MM-DD").strftime("%Y-%m-%d")  # type: ignore
 loot_log_original = app.get_loot_log(raid_day)
 
+# TODO unify the dataframes
 log.debug("show loot log of raid day")
+## TODO: disable not editable columns
 loot_log_modified_df = st.data_editor(
-    pd.DataFrame(loot_log_original, columns=[ "id", "player", "note", "response", "itemName", "time", "instance", "boss"])
+    pd.DataFrame(loot_log_original, columns=[ "id", "character", "note", "response", "item_name", "boss", "difficulty", "instance", "timestamp"])
     .sort_values(by=["id"], ascending=True)
     .set_index("id"),
-    column_config={
-        "player": "character",
-    },
 )
 
 changed_lines = loot_log_modified_df.compare(
-    pd.DataFrame(loot_log_original, columns=[ "id", "player", "note", "response", "itemName", "time", "instance", "boss"])
+    pd.DataFrame(loot_log_original, columns=[ "id", "character", "note", "response", "item_name", "boss", "difficulty", "instance", "timestamp"])
     .sort_values(by=["id"], ascending=True)
     .set_index("id"),
     keep_shape=False,
@@ -95,8 +94,8 @@ if not changed_lines.empty:
             st.stop()
 
         fix_df = changed_lines
-        if ("player", "original") in fix_df.columns:
-            fix_df = fix_df.drop(columns=[("player", "original")])
+        if ("character", "original") in fix_df.columns:
+            fix_df = fix_df.drop(columns=[("character", "original")])
         if ("note", "original") in fix_df.columns:
             fix_df = fix_df.drop(columns=[("note", "original")])
         if ("response", "original") in fix_df.columns:

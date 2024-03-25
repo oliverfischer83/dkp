@@ -11,7 +11,7 @@ import os
 from typing import Any, Hashable, Optional
 
 import pandas
-from config_mapper import Config
+from config_mapper import Config, Player, Raid
 from dotenv import load_dotenv
 from github_client import GithubClient, to_python
 from pydantic import BaseModel
@@ -55,8 +55,8 @@ class LootHistory(BaseModel):
 class BalanceView(BaseModel):
     season_name: str
     last_update: str
-    balance: Optional[dict[Hashable, Any]]
-    loot_history: Optional[dict[Hashable, Any]]
+    balance: Optional[dict[str, dict[int, Any]]]
+    loot_history: Optional[list[dict[str, Any]]]
     validations: Optional[list[str]]
 
 
@@ -64,74 +64,39 @@ def get_admin_password():
     return ADMIN_PASSWORD
 
 
-def get_raw_data_from_files(export_dir):
-    log.debug("get_raw_data_from_files")
-    result = pandas.DataFrame()
-    for file in os.listdir(export_dir):
-        dataframe = pandas.read_json(os.path.join(export_dir, file), orient="records", convert_dates=False)
-        result = pandas.concat([result, dataframe])
-    return result
+def modify_data(data: list[dict[str, str]], player_list: list[Player]) -> list[dict[str, str]]:
+    result = []
+    for data_entry in data:
+        entry = data_entry.copy()
+        # add item link
+        entry["item_link"] = f"https://www.wowhead.com/item={entry["item_id"]}"
+        # add player name
+        for player in player_list:
+            if entry["character"] in player.chars:
+                entry["player"] = player.name
+                break
+        result.append(entry)
+    return sorted(result, key=lambda entry: entry["timestamp"], reverse=True)
 
 
-def modify_data(dataframe, player_list):
-    log.debug("modify_data")
-    result = dataframe.copy()
-    # remove irrelevant data, need bids only
-    result = result[result["response"] == "Gebot"]
-    # creating timestamp column
-    result["timestamp"] = result["date"] + " " + result["time"]
-    result["timestamp"] = pandas.to_datetime(result["timestamp"], format="%d/%m/%y %H:%M:%S", dayfirst=True)
-    result.set_index("timestamp")
-    # creating item link column
-    result["itemLink"] = "https://www.wowhead.com/item=" + result["itemID"].astype(str)
-    # renaming columns
-    result = result.rename(columns={"player": "character"})
-    result = result.rename(columns={"itemName": "item"})
-    result = result.rename(columns={"note": "cost"})
-    # create and fill column 'player' using mapping table like {'Moppi': 'Olli', 'Zelma': 'Olli', ...}
-    result["player"] = result["character"].map(lambda x: next((player.name for player in player_list if x in player.chars), None))
-    # create difficulty column
-    result["difficulty"] = result["instance"].str.split("-").str[1]
-    # substring of instance name
-    result["instance"] = result["instance"].str.split(",").str[0]
-    # substring of boss name
-    result["boss"] = result["boss"].str.split(",").str[0]
-    # select and sort columns
-    result = result[
-        [
-            "timestamp",
-            "player",
-            "cost",
-            "item",
-            "itemLink",
-            "instance",
-            "difficulty",
-            "boss",
-            "character",
-        ]
-    ]
-    result = result.sort_values(by=["timestamp"], ascending=False, ignore_index=True)
-    return result.to_dict()
+def filter_data(data: list[dict[str, str]]) -> list[dict[str, str]]:
+    # remove non-bid entries (irrelevant for loot history)
+    return [entry.copy() for entry in data if entry["response"] == "Gebot"]
 
 
-def get_loot_from_local_files(season_key, player_list):
-    log.debug("get_loot_from_local_files")
-    raw_data = get_raw_data_from_files(os.path.join("data", "season", season_key))
-    return modify_data(raw_data, player_list)
-
-
-def get_player_to_cost_pair(player_list, loot_table):
+def get_player_to_cost_pair(player_list: list[Player], loot_table: list[dict[str, str]]) -> dict[str, int]:
     log.debug("get_player_to_cost_pair")
     result = dict()
     for player in player_list:
         result[player.name] = 0
-        for i, char_name in enumerate(loot_table["character"].values()):
+        for i in range(len(loot_table)):
+            char_name = loot_table[i]["character"]
             if char_name in player.chars:
-                result[player.name] += int(loot_table["cost"][i])
+                result[player.name] += int(loot_table[i]["note"])
     return result
 
 
-def init_balance_table(player_list):
+def init_balance_table(player_list: list[Player]) -> dict[str, dict[int, Any]]:
     log.debug("init_balance_table")
     balance_list = dict()
     balance_list["name"] = dict()
@@ -148,7 +113,7 @@ def init_balance_table(player_list):
     return balance_list
 
 
-def add_income_to_balance_table(balance_table, raid_list):
+def add_income_to_balance_table(balance_table: dict[str, dict[int, Any]], raid_list: list[Raid]) -> dict[str, dict[int, Any]]:
     log.debug("add_income_to_balance_table")
     for i, name in balance_table["name"].items():
         for raid in raid_list:
@@ -159,10 +124,10 @@ def add_income_to_balance_table(balance_table, raid_list):
     return balance_table
 
 
-def add_cost_to_balance_table(balance_table, player_to_cost_dict):
+def add_cost_to_balance_table(balance_table: dict[str, dict[int, Any]], player_to_cost_pair: dict[str, int]) -> dict[str, dict[int, Any]]:
     log.debug("add_cost_to_balance_table")
     for i, name in balance_table["name"].items():
-        for key, value in player_to_cost_dict.items():
+        for key, value in player_to_cost_pair.items():
             player_name = key
             cost = value
             if name == player_name:
@@ -171,7 +136,7 @@ def add_cost_to_balance_table(balance_table, player_to_cost_dict):
     return balance_table
 
 
-def get_balance(player_list, raid_list, loot_table):
+def get_balance(player_list: list[Player], raid_list: list[Raid], loot_table: list[dict[str, str]]) -> dict[str, dict[int, Any]]:
     log.debug("get_balance")
     player_to_cost_pair = get_player_to_cost_pair(player_list, loot_table)
     balance_table = init_balance_table(player_list)
@@ -194,8 +159,8 @@ def validate_characters_known(known_player, looting_characters):
     return result
 
 
-def validate_costs(cost_list):
-    log.debug("validate_costs")
+def validate_notes(cost_list):
+    log.debug("validate_notes")
     result = []
     for cost in cost_list:
         try:
@@ -215,15 +180,20 @@ def validate_costs(cost_list):
 def get_balance_view():
     log.debug("get_balance_view")
 
-    season_name = CONFIG.season.name
     player_list = CONFIG.player_list
-    loot = get_loot_from_local_files(CONFIG.season.key, player_list)
-    looting_characters = list(set([value for value in loot["character"].values()]))
-    last_update = str(loot["timestamp"][0]) + " (Boss: " + str(loot["boss"][0]) + ", " + str(loot["difficulty"][0]) + ")"
+    season_name = CONFIG.season.name
+    season_key = CONFIG.season.key
+
+    all_loot = DATABASE.get_loot_log_all(season_key)
+    modified_loot = modify_data(all_loot, player_list)
+    first_entry = modified_loot[0]
+    filtered_loot = filter_data(modified_loot)
+    looting_characters = list(set([entry["character"] for entry in filtered_loot]))
+    last_update = f"{first_entry["timestamp"]} (Boss: {first_entry["boss"]}, {first_entry["difficulty"]})"
 
     validations = []
     validations.extend(validate_characters_known(player_list, looting_characters))
-    validations.extend(validate_costs(loot["cost"].values()))
+    validations.extend(validate_notes([entry["note"] for entry in filtered_loot]))
 
     if validations:
         return BalanceView(
@@ -234,9 +204,9 @@ def get_balance_view():
             validations=validations,
         )
 
-    balance = get_balance(player_list, CONFIG.raid_list, loot)
+    balance = get_balance(player_list, CONFIG.raid_list, filtered_loot)
 
-    return BalanceView(season_name=season_name, balance=balance, loot_history=loot, last_update=last_update, validations=None)
+    return BalanceView(season_name=season_name, balance=balance, loot_history=filtered_loot, last_update=last_update, validations=None)
 
 
 def get_admin_view(report_id):
@@ -294,7 +264,7 @@ def update_or_create_loot_log(new_log_str: str):
 def apply_loot_log_fix(fixes: dict[str, dict[str, str]], raid_day: str, reason: str):
 
     season = CONFIG.season.key
-    existing_log = DATABASE.get_loot_log(season, raid_day)
+    existing_log = DATABASE.get_loot_log(season, raid_day, raw=True)
     if not existing_log:
         raise Exception(f"No loot log found! season: {season}, raid day: {raid_day}")
 
@@ -303,7 +273,10 @@ def apply_loot_log_fix(fixes: dict[str, dict[str, str]], raid_day: str, reason: 
         for loot in existing_log:
             if loot["id"] == fix_id:
                 for key, value in fix.items():
-                    loot[key] = value
+                    if key == "character":  # hack: clean up renamed player > character, need to revert here
+                        loot["player"] = value
+                    else:
+                        loot[key] = value
                     loot["data_status"] = "fixed"  # indicate that this loot has been fixed
 
     DATABASE.fix_loot_log(existing_log, season, raid_day, reason)
