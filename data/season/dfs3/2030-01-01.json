@@ -179,9 +179,10 @@
     "rollType": "normal",
     "subType": "One-Handed Maces",
     "equipLoc": "One-Hand",
-    "note": "100",
+    "note": "50",
     "owner": "Moppi-Anub'arak",
-    "itemName": "Vakash, the Shadowed Inferno"
+    "itemName": "Vakash, the Shadowed Inferno",
+    "data_status": "fixed"
   },
   {
     "player": "Moppi-Anub'arak",
@@ -202,9 +203,10 @@
     "rollType": "normal",
     "subType": "One-Handed Axes",
     "equipLoc": "One-Hand",
-    "note": "100",
+    "note": "150",
     "owner": "Moppi-Anub'arak",
-    "itemName": "Gholak, the Final Conflagration"
+    "itemName": "Gholak, the Final Conflagration",
+    "data_status": "fixed"
   },
   {
     "player": "Nirí-Anub'arak",
