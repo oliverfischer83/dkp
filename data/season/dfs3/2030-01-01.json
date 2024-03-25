@@ -101,7 +101,7 @@
     "id": "9999999999-99",
     "itemID": 207794,
     "itemString": "item:207794::::::::70:70::5:5:6652:7980:9568:1498:8767",
-    "response": "Transmog",
+    "response": "Gebot",
     "votes": 0,
     "class": "WARLOCK",
     "instance": "Amirdrassil, the Dream's Hope-Heroic",
@@ -115,6 +115,7 @@
     "equipLoc": "Two-Hand",
     "note": "",
     "owner": "Moppi-Anub'arak",
-    "itemName": "Staff of Incandescent Torment"
+    "itemName": "Staff of Incandescent Torment",
+    "data_status": "fixed"
   }
 ]
