@@ -21,6 +21,10 @@
 ### Architecture
 - form data validation happens in app, not in views
 - clients don't contain any business logic
+- data formats
+  - dataframes for views
+  - dataframes and list of dics for transformation/data-manipulation
+  - json as storage format of data files (should be converted right before pushing to github.com)
 
 ## Setup local environment
 
@@ -51,5 +55,19 @@ cd ~/Projects/private/dkp
 python -m streamlit run src/dkp/01_overview.py
 ```
 
-
-
+# TODO
+- GO live
+  - only get new entries from last boss, when updating the loot list (prevents overwriting earlier manual changes)
+  - test run
+    - process if new char is in raid and gets loot
+    - process cleaning up data
+- code quality
+  - unit tests for balance functions
+  - constants for string names
+- nice to have
+  - fix: m+ chars in raid report, test with report vF2C8crAdja1QKhD
+    - or show warning and abort if m+ logs in report
+- checklist (video on, live log on, loot-council uptodate, ...)
+- adding player and characters via admin page
+- changing loot log via admin page
+- 

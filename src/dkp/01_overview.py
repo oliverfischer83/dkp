@@ -16,6 +16,7 @@ if view.validations:
     for validation in view.validations:
         st.error(validation)
 
+# Balance
 log.debug("show balance")
 st.markdown("# " + view.season_name)
 st.markdown("Letzte Aktualisierung: " + view.last_update)
@@ -34,6 +35,7 @@ st.dataframe(
     hide_index=True,
 )
 
+# Loot history
 log.debug("show loot history")
 st.markdown("### Loot Liste")
 st.dataframe(

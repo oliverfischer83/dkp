@@ -6,18 +6,15 @@ Business logic for the DKP webapp.
 
 import datetime
 from io import StringIO
-import json
 import logging
 import os
 from typing import Any, Hashable, Optional
-from xxlimited import new
 
 import pandas
-from dotenv import load_dotenv
-from pydantic import BaseModel
-
 from config_mapper import Config
-from github_client import GithubClient
+from dotenv import load_dotenv
+from github_client import GithubClient, to_python
+from pydantic import BaseModel
 from warcraftlogs_client import WclClient
 
 load_dotenv()
@@ -30,7 +27,7 @@ ATTENDANCE_BONUS = 50
 WCL_CLIENT_ID = os.environ.get("WCL_CLIENT_ID")
 WCL_CLIENT_SECRET = os.environ.get("WCL_CLIENT_SECRET")
 GITHUB_TOKEN = os.environ.get("GITHUB_CLIENT_TOKEN")
-
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
 
 CONFIG = Config()
 WCL_CLIENT = WclClient(CONFIG.auth.wcl_client, WCL_CLIENT_ID, WCL_CLIENT_SECRET)
@@ -61,6 +58,10 @@ class BalanceView(BaseModel):
     balance: Optional[dict[Hashable, Any]]
     loot_history: Optional[dict[Hashable, Any]]
     validations: Optional[list[str]]
+
+
+def get_admin_password():
+    return ADMIN_PASSWORD
 
 
 def get_raw_data_from_files(export_dir):
@@ -261,10 +262,11 @@ def get_admin_view(report_id):
 
 
 # TODO test case
-def upload_loot_log(new_loot_json_string):
+def update_or_create_loot_log(new_log_str: str):
 
     # validate each date is the same
-    new_loot_df = pandas.read_json(StringIO(new_loot_json_string), orient="records", convert_dates=False)
+    # TODO: try not to use pandas for this
+    new_loot_df = pandas.read_json(StringIO(new_log_str), orient="records", convert_dates=False)
     first_date = new_loot_df["date"][0]
     for date in new_loot_df["date"]:
         if date != first_date:
@@ -272,24 +274,47 @@ def upload_loot_log(new_loot_json_string):
 
     season = CONFIG.season.key
     raid_day = datetime.datetime.strptime(first_date, "%d/%m/%y").strftime("%Y-%m-%d")
-    loot_log_content = DATABASE.get_loot_log_content(season, raid_day)
+    new_log = to_python(new_log_str)
+    existing_log = DATABASE.get_loot_log(season, raid_day)
 
-    resulting_content = new_loot_json_string
-    if loot_log_content:  # appending new content to existing loot log
-        existing_json = json.loads(loot_log_content)
-        existing_json.extend(json.loads(new_loot_json_string))
-
-        # remove duplicates
+    if existing_log:
+        # appending new logs to existing loot log
         unique_ids = set()
-        filtered_data = []
-        for item in existing_json:
+        filtered_log = []
+        for item in existing_log + new_log:
             if item["id"] not in unique_ids:
-                filtered_data.append(item)
+                filtered_log.append(item)
                 unique_ids.add(item["id"])
+        DATABASE.update_loot_log(filtered_log, season, raid_day)
+    else:
+        # create new loot log
+        DATABASE.create_loot_log(new_log, season, raid_day)
 
-        resulting_content = json.dumps(filtered_data, indent=2)
 
-    DATABASE.update_or_create_loot_log(resulting_content, season, raid_day)
+def apply_loot_log_fix(fixes: dict[str, dict[str, str]], raid_day: str, reason: str):
+
+    season = CONFIG.season.key
+    existing_log = DATABASE.get_loot_log(season, raid_day)
+    if not existing_log:
+        raise Exception(f"No loot log found! season: {season}, raid day: {raid_day}")
+
+    # apply fixes
+    for fix_id, fix in fixes.items():
+        for loot in existing_log:
+            if loot["id"] == fix_id:
+                for key, value in fix.items():
+                    loot[key] = value
+                    loot["data_status"] = "fixed"  # indicate that this loot has been fixed
+
+    DATABASE.fix_loot_log(existing_log, season, raid_day, reason)
+
+
+def get_loot_log(raid_day: str) -> list[dict[str, str]]:
+    season = CONFIG.season.key
+    loot_log_content = DATABASE.get_loot_log(season, raid_day)
+    if loot_log_content is None:
+        return []
+    return loot_log_content
 
 
 def reload_config():
