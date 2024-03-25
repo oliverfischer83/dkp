@@ -95,13 +95,13 @@
     "data_status": "fixed"
   },
   {
-    "player": "Unknown-Aman'thul",
+    "player": "Unkno-Aman'thul",
     "date": "1/1/30",
     "time": "19:35:56",
     "id": "9999999999-99",
     "itemID": 207794,
     "itemString": "item:207794::::::::70:70::5:5:6652:7980:9568:1498:8767",
-    "response": "Pass",
+    "response": "Transmog",
     "votes": 0,
     "class": "WARLOCK",
     "instance": "Amirdrassil, the Dream's Hope-Heroic",
@@ -113,7 +113,7 @@
     "rollType": "normal",
     "subType": "Staves",
     "equipLoc": "Two-Hand",
-    "note": "10",
+    "note": "",
     "owner": "Moppi-Anub'arak",
     "itemName": "Staff of Incandescent Torment",
     "data_status": "fixed"
