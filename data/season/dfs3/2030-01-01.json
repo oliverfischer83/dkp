@@ -20,7 +20,8 @@
     "equipLoc": "Shoulder",
     "note": "10",
     "owner": "Moppi-Anub'arak",
-    "itemName": "Requiem Rootmantle"
+    "itemName": "Requiem Rootmantle",    
+    "data_status": "fixed"
   },
   {
     "player": "Cheîra-Aman'thul",
