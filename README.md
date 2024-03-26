@@ -62,9 +62,6 @@ python -m streamlit run src/dkp/01_overview.py
     - process cleaning up data
   - adding player and characters via admin page
   - manage raid list in separate json file
-  - extract raids from config
-  - extract player from config
-  - remove reload button
   - before uploading loot data in admin page, validate values:
     - if response=Gebot, then note=[0-9]+
     - characters are known
