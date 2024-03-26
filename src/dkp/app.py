@@ -5,15 +5,14 @@ Business logic for the DKP webapp.
 # pylint: disable=missing-module-docstring,missing-function-docstring,missing-class-docstring
 
 import datetime
-from io import StringIO
 import logging
 import os
 from typing import Any, Optional
 
-import pandas
-from config_mapper import Config, Player, Raid
+import yaml
 from dotenv import load_dotenv
-from github_client import GithubClient, to_python
+from config_mapper import Config
+from github_client import GithubClient, Loot, Player, Raid, to_lootlist_raw
 from pydantic import BaseModel
 from warcraftlogs_client import WclClient
 
@@ -30,8 +29,10 @@ GITHUB_TOKEN = os.environ.get("GITHUB_CLIENT_TOKEN")
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
 
 CONFIG = Config()
+
 WCL_CLIENT = WclClient(CONFIG.auth.wcl_client, WCL_CLIENT_ID, WCL_CLIENT_SECRET)
 DATABASE = GithubClient(GITHUB_TOKEN)
+
 
 
 class AdminView(BaseModel):
@@ -56,7 +57,7 @@ class BalanceView(BaseModel):
     season_name: str
     last_update: str
     balance: Optional[dict[str, dict[int, Any]]]
-    loot_history: Optional[list[dict[str, Any]]]
+    loot_history: Optional[list[Loot]]
     validations: Optional[list[str]]
 
 
@@ -64,35 +65,19 @@ def get_admin_password():
     return ADMIN_PASSWORD
 
 
-def modify_data(data: list[dict[str, str]], player_list: list[Player]) -> list[dict[str, str]]:
-    result = []
-    for data_entry in data:
-        entry = data_entry.copy()
-        # add item link
-        entry["item_link"] = f"https://www.wowhead.com/item={entry["item_id"]}"
-        # add player name
-        for player in player_list:
-            if entry["character"] in player.chars:
-                entry["player"] = player.name
-                break
-        result.append(entry)
-    return sorted(result, key=lambda entry: entry["timestamp"], reverse=True)
-
-
-def filter_data(data: list[dict[str, str]]) -> list[dict[str, str]]:
+def filter_data(data: list[Loot]) -> list[Loot]:
     # remove non-bid entries (irrelevant for loot history)
-    return [entry.copy() for entry in data if entry["response"] == "Gebot"]
+    return [entry for entry in data if entry.response == "Gebot"]
 
 
-def get_player_to_cost_pair(player_list: list[Player], loot_table: list[dict[str, str]]) -> dict[str, int]:
+def get_player_to_cost_pair(player_list: list[Player], loot_table: list[Loot]) -> dict[str, int]:
     log.debug("get_player_to_cost_pair")
     result = dict()
     for player in player_list:
         result[player.name] = 0
-        for i in range(len(loot_table)):
-            char_name = loot_table[i]["character"]
-            if char_name in player.chars:
-                result[player.name] += int(loot_table[i]["note"])
+        for loot in loot_table:
+            if loot.character in player.chars:
+                result[player.name] += int(loot.note)
     return result
 
 
@@ -117,7 +102,7 @@ def add_income_to_balance_table(balance_table: dict[str, dict[int, Any]], raid_l
     log.debug("add_income_to_balance_table")
     for i, name in balance_table["name"].items():
         for raid in raid_list:
-            for raid_player_name in raid.player:
+            for raid_player_name in raid.attendees:
                 if name == raid_player_name:
                     balance_table["value"][i] += ATTENDANCE_BONUS
                     balance_table["income"][i] += ATTENDANCE_BONUS
@@ -136,7 +121,7 @@ def add_cost_to_balance_table(balance_table: dict[str, dict[int, Any]], player_t
     return balance_table
 
 
-def get_balance(player_list: list[Player], raid_list: list[Raid], loot_table: list[dict[str, str]]) -> dict[str, dict[int, Any]]:
+def get_balance(player_list: list[Player], raid_list: list[Raid], loot_table: list[Loot]) -> dict[str, dict[int, Any]]:
     log.debug("get_balance")
     player_to_cost_pair = get_player_to_cost_pair(player_list, loot_table)
     balance_table = init_balance_table(player_list)
@@ -180,20 +165,19 @@ def validate_notes(cost_list):
 def get_balance_view():
     log.debug("get_balance_view")
 
-    player_list = CONFIG.player_list
+    player_list = DATABASE.get_players()  # TODO refactor: player_list is already in all_loot, should not be necessary here
     season_name = CONFIG.season.name
     season_key = CONFIG.season.key
 
     all_loot = DATABASE.get_loot_log_all(season_key)
-    modified_loot = modify_data(all_loot, player_list)
-    first_entry = modified_loot[0]
-    filtered_loot = filter_data(modified_loot)
-    looting_characters = list(set([entry["character"] for entry in filtered_loot]))
-    last_update = f"{first_entry["timestamp"]} (Boss: {first_entry["boss"]}, {first_entry["difficulty"]})"
+    first_entry = all_loot[0]
+    filtered_loot = filter_data(all_loot)
+    looting_characters = list(set([entry.character for entry in filtered_loot]))
+    last_update = f"{first_entry.timestamp} (Boss: {first_entry.boss}, {first_entry.difficulty})"
 
     validations = []
     validations.extend(validate_characters_known(player_list, looting_characters))
-    validations.extend(validate_notes([entry["note"] for entry in filtered_loot]))
+    validations.extend(validate_notes([entry.note for entry in filtered_loot]))
 
     if validations:
         return BalanceView(
@@ -204,7 +188,7 @@ def get_balance_view():
             validations=validations,
         )
 
-    balance = get_balance(player_list, CONFIG.raid_list, filtered_loot)
+    balance = get_balance(player_list, DATABASE.get_raids(), filtered_loot)
 
     return BalanceView(season_name=season_name, balance=balance, loot_history=filtered_loot, last_update=last_update, validations=None)
 
@@ -212,7 +196,7 @@ def get_balance_view():
 def get_admin_view(report_id):
     log.debug("get_admin_view")
 
-    all_players = CONFIG.player_list
+    all_players = DATABASE.get_players()
     date, report_url, raiding_char_list = WCL_CLIENT.get_raid_details(report_id)
 
     player_list = []
@@ -235,16 +219,14 @@ def get_admin_view(report_id):
 def update_or_create_loot_log(new_log_str: str):
 
     # validate each date is the same
-    # TODO: try not to use pandas for this
-    new_loot_df = pandas.read_json(StringIO(new_log_str), orient="records", convert_dates=False)
-    first_date = new_loot_df["date"][0]
-    for date in new_loot_df["date"]:
-        if date != first_date:
-            raise Exception("Dates in the dataframe differ from each other.")
+    new_log = to_lootlist_raw(new_log_str)
+    first_date = new_log[0].date
+    for entry in new_log:
+        if entry.date != first_date:
+            raise Exception("Dates in the new log differ from each other.")
 
     season = CONFIG.season.key
     raid_day = datetime.datetime.strptime(first_date, "%d/%m/%y").strftime("%Y-%m-%d")
-    new_log = to_python(new_log_str)
     existing_log = DATABASE.get_loot_log(season, raid_day)
 
     if existing_log:
@@ -252,9 +234,9 @@ def update_or_create_loot_log(new_log_str: str):
         unique_ids = set()
         filtered_log = []
         for item in existing_log + new_log:
-            if item["id"] not in unique_ids:
+            if item.id not in unique_ids:
                 filtered_log.append(item)
-                unique_ids.add(item["id"])
+                unique_ids.add(item.id)
         DATABASE.update_loot_log(filtered_log, season, raid_day)
     else:
         # create new loot log
@@ -264,31 +246,31 @@ def update_or_create_loot_log(new_log_str: str):
 def apply_loot_log_fix(fixes: dict[str, dict[str, str]], raid_day: str, reason: str):
 
     season = CONFIG.season.key
-    existing_log = DATABASE.get_loot_log(season, raid_day, raw=True)
+    existing_log = DATABASE.get_loot_log_raw(season, raid_day)
     if not existing_log:
         raise Exception(f"No loot log found! season: {season}, raid day: {raid_day}")
 
     # apply fixes
     for fix_id, fix in fixes.items():
         for loot in existing_log:
-            if loot["id"] == fix_id:
+            if loot.id == fix_id:
                 for key, value in fix.items():
-                    if key == "character":  # hack: clean up renamed player > character, need to revert here
-                        loot["player"] = value
+                    if key == "character":
+                        loot.player = value  # hack: clean up renamed player > character, need to revert here
+                    elif key == "note":
+                        loot.note = value
+                    elif key == "response":
+                        loot.response = value
                     else:
-                        loot[key] = value
-                    loot["data_status"] = "fixed"  # indicate that this loot has been fixed
+                        raise Exception(f"Invalid key: {key}")
+                    loot.data_status = "fixed"  # indicates that this loot has been fixed
 
     DATABASE.fix_loot_log(existing_log, season, raid_day, reason)
 
 
-def get_loot_log(raid_day: str) -> list[dict[str, str]]:
+def get_loot_log(raid_day: str) -> list[Loot]:
     season = CONFIG.season.key
     loot_log_content = DATABASE.get_loot_log(season, raid_day)
     if loot_log_content is None:
         return []
     return loot_log_content
-
-
-def reload_config():
-    CONFIG.reload_config()

@@ -15,6 +15,11 @@ log.debug("validation")
 if view.validations:
     for validation in view.validations:
         st.error(validation)
+    st.stop()
+
+if view.loot_history is None:  # TODO: find better way to handle this (necessary to avoid type error below)
+    view.loot_history = []
+
 
 # Balance
 log.debug("show balance")
@@ -39,7 +44,7 @@ st.dataframe(
 log.debug("show loot history")
 st.markdown("### Loot Liste")
 st.dataframe(
-    pd.DataFrame(view.loot_history, columns=["timestamp", "player", "note", "item_name", "item_link", "boss", "difficulty", "instance", "character"]).sort_values(
+    pd.DataFrame([loot.model_dump() for loot in view.loot_history], columns=["timestamp", "player", "note", "item_name", "item_link", "boss", "difficulty", "instance", "character"]).sort_values(
         by=["timestamp"], ascending=False, ignore_index=False
     ),
     column_config={

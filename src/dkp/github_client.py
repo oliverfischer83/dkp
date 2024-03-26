@@ -8,9 +8,11 @@ import datetime
 import json
 import logging
 import os
+from typing import Optional
 
 from github import Auth, Github, UnknownObjectException
 from github.ContentFile import ContentFile
+from pydantic import BaseModel, Field
 
 
 log = logging.getLogger(__name__)
@@ -18,11 +20,65 @@ log = logging.getLogger(__name__)
 USER_NAME = "oliverfischer83"
 REPO_NAME = "dkp"
 
+
+class Loot(BaseModel):
+    id: str
+    timestamp: str
+    player: str
+    note: str
+    item_name: str
+    item_link: str
+    item_id: str
+    boss: str
+    difficulty: str
+    instance: str
+    character: str
+    response: str
+
+
+class RawLoot(BaseModel):
+    player: str
+    date: str
+    time: str
+    id: str
+    itemID: int
+    itemString: str
+    response: str
+    votes: int
+    class_: str = Field(alias="class")
+    instance: str
+    boss: str
+    gear1: str
+    gear2: str
+    responseID: str
+    isAwardReason: str
+    rollType: str
+    subType: str
+    equipLoc: str
+    note: str
+    owner: str
+    itemName: str
+    data_status: Optional[str] = "original"  # indicates if the entry was modified
+
+
+class Player(BaseModel):
+    name: str
+    chars: list[str]
+
+
+class Raid(BaseModel):
+    date: str
+    report_url: str = Field(alias="report")
+    attendees: list[str] = Field(alias="player")
+
+
 class GithubClient:
 
     def __init__(self, token):
         github_api = Github(auth=Auth.Token(token))
         self.repo_api = github_api.get_user(USER_NAME).get_repo(REPO_NAME)
+        self.player_list = self._load_players()
+        self.raid_list = self._load_raids()
 
 
     def _get_data_file(self, file_path: str) -> ContentFile:
@@ -32,95 +88,124 @@ class GithubClient:
         return result # type: ignore
 
 
-    def get_loot_log(self, season: str, raid_day: str, raw=False) -> list[dict[str, str]] | None:
-        """"Get loot log for a specific raid day from REMOTE repository at github.com."""
+    def _load_raids(self) -> list[Raid]:
+        content = self._get_data_file(_get_raid_file()).decoded_content.decode("utf-8")
+        return [Raid(**entry) for entry in json.loads(content)]
 
+    def get_raids(self) -> list[Raid]:
+        return self.raid_list
+
+
+    def _load_players(self) -> list[Player]:
+        content = self._get_data_file(_get_player_file()).decoded_content.decode("utf-8")
+        return [Player(**entry) for entry in json.loads(content)]
+
+    def get_players(self) -> list[Player]:
+        return self.player_list
+
+
+    def get_loot_log_raw(self, season: str, raid_day: str) -> list[RawLoot] | None:
+        """"Get loot log for a specific raid day from REMOTE repository at github.com."""
         file_path = _get_loot_log_file_path(season, raid_day)
         try:
-            loot_log = to_python(self._get_data_file(file_path).decoded_content.decode("utf-8"))
-            if raw:
-                return loot_log
-            else:
-                return _cleanup_data(loot_log)
+            content = self._get_data_file(file_path).decoded_content.decode("utf-8")
+            return to_lootlist_raw(content)
         except UnknownObjectException:
             return None
 
 
-    def get_loot_log_all(self, season: str) -> list[dict[str, str]]:
-        """"Get all loot logs for a season from LOCAL git repository."""
+    def get_loot_log(self, season: str, raid_day: str) -> list[Loot] | None:
+        """"Get loot log for a specific raid day from REMOTE repository at github.com."""
+        file_path = _get_loot_log_file_path(season, raid_day)
+        try:
+            content = self._get_data_file(file_path).decoded_content.decode("utf-8")
+            return to_lootlist(content, self.player_list)
+        except UnknownObjectException:
+            return None
 
+
+    def get_loot_log_all(self, season: str) -> list[Loot]:
+        """"Get all loot logs for a season from LOCAL git repository."""
         dir_path = _get_loot_log_dir_path(season)
         result = []
         for file in os.listdir(dir_path):
             with open(os.path.join(dir_path, file), 'r') as file:
-                result += to_python(file.read())
-        return _cleanup_data(result)
+                result += to_lootlist(file.read(), self.player_list)
+        return result
 
 
-    def create_loot_log(self, content: list[dict[str, str]], season: str, raid_day: str):
+    def create_loot_log(self, content: list[RawLoot], season: str, raid_day: str):
         file_path = _get_loot_log_file_path(season, raid_day)
         self.repo_api.create_file(file_path, "Create", to_str(content))
 
 
-    def update_loot_log(self, content: list[dict[str, str]], season: str, raid_day: str):
+    def update_loot_log(self, content: list[RawLoot], season: str, raid_day: str):
         file_path = _get_loot_log_file_path(season, raid_day)
         file_hash = self._get_data_file(file_path).sha
         self.repo_api.update_file(file_path, "Update", to_str(content), file_hash)
 
 
-    def fix_loot_log(self, content: list[dict[str, str]], season: str, raid_day: str, reason: str):
+    def fix_loot_log(self, content: list[RawLoot], season: str, raid_day: str, reason: str):
         file_path = _get_loot_log_file_path(season, raid_day)
         file_hash = self._get_data_file(file_path).sha
         self.repo_api.update_file(file_path, f"Fix: {reason}", to_str(content), file_hash)
 
 
-def _cleanup_data(data: list[dict[str, str]]) -> list[dict[str, str]]:
-    result = data.copy()
-    for entry in result:
-        # creating timestamp column
-        entry["timestamp"] = entry["date"] + " " + entry["time"]
-        entry["timestamp"] = datetime.datetime.strptime(entry["timestamp"], "%d/%m/%y %H:%M:%S").strftime("%Y-%m-%d %H:%M:%S")
-        # remove irrelevant columns
-        entry.pop("date")
-        entry.pop("time")
-        entry.pop("class")
-        entry.pop("itemString")
-        entry.pop("votes")
-        entry.pop("gear1")
-        entry.pop("gear2")
-        entry.pop("responseID")
-        entry.pop("isAwardReason")
-        entry.pop("rollType")
-        entry.pop("subType")
-        entry.pop("equipLoc")
-        entry.pop("owner")
-        # renaming columns
-        entry["character"] = entry.pop("player")
-        entry["item_id"] = entry.pop("itemID")
-        entry["item_name"] = entry.pop("itemName")
-        # cleanup values
-        entry["boss"] = entry["boss"].split(",")[0]
-        entry["difficulty"] = entry["instance"].split("-")[1]
-        entry["instance"] = entry["instance"].split("-")[0].split(",")[0]
-    return result
-
-
-def _get_loot_log_dir_path(season: str):
-    return f"data/season/{season}"
-
-
-def _get_loot_log_file_path(season: str, raid_day: str):
-    return f"{_get_loot_log_dir_path(season)}/{raid_day}.json"
-
-
-def to_str(content: list[dict[str, str]]) -> str:
-    """Converts list of dicts into json str for database storage."""
-    sorted_content = sorted(content, key=lambda x: x['player'])  # sort by character name
+def to_str(loot_list: list[RawLoot]) -> str:
+    """Converts loot lists into json str for database storage."""
+    content = [loot.model_dump(by_alias=True) for loot in loot_list]
+    sorted_content = sorted(content, key=lambda entry: entry['player'])  # sort by character name
     return json.dumps(sorted_content,
                       indent=2,             # beautify
                       ensure_ascii=False)   # allow non-ascii characters
 
 
-def to_python(content: str) -> list[dict[str, str]]:
-    """Converts json str to list of dicts for data manipulation and transformation."""
-    return json.loads(content)
+def to_lootlist_raw(content: str) -> list[RawLoot]:
+    loot_list = json.loads(content)
+    return [RawLoot(**entry) for entry in loot_list]
+
+
+def to_lootlist(content: str, player_list: list[Player]) -> list[Loot]:
+    data = json.loads(content)
+    loot_list_raw = [RawLoot(**entry) for entry in data]
+    return _cleanup_data(loot_list_raw, player_list)
+
+
+def _cleanup_data(raw_loot: list[RawLoot], player_list: list[Player]) -> list[Loot]:
+    result = []
+    for raw_entry in raw_loot:
+
+        # get player name for character
+        player_name = ""
+        for player in player_list:
+            if raw_entry.player in player.chars:
+                player_name = player.name
+                break
+
+        entry = Loot(
+            id = raw_entry.id,
+            timestamp = datetime.datetime.strptime(raw_entry.date + " " + raw_entry.time, "%d/%m/%y %H:%M:%S").strftime("%Y-%m-%d %H:%M:%S"),
+            player = player_name,
+            note = raw_entry.note,
+            item_name = raw_entry.itemName,
+            item_link = f"https://www.wowhead.com/item={raw_entry.itemID}",
+            item_id = str(raw_entry.itemID),
+            boss = raw_entry.boss.split(",")[0],
+            difficulty = raw_entry.instance.split("-")[1],
+            instance = raw_entry.instance.split("-")[0].split(",")[0],
+            character = raw_entry.player,
+            response = raw_entry.response
+        )
+
+        result.append(entry)
+    return sorted(result, key=lambda entry: entry.timestamp, reverse=True)
+
+
+def _get_raid_file():
+    return f"data/raid.json"
+def _get_player_file():
+    return f"data/player.json"
+def _get_loot_log_dir_path(season: str):
+    return f"data/season/{season}"
+def _get_loot_log_file_path(season: str, raid_day: str):
+    return f"data/season/{season}/{raid_day}.json"

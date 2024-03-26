@@ -5,7 +5,6 @@ Used to map and hold the config file in a singleton class
 # pylint: disable=missing-module-docstring,missing-function-docstring,missing-class-docstring
 
 import logging
-import datetime
 import threading
 
 import yaml
@@ -34,22 +33,9 @@ class Season(BaseModel):
     key: str
 
 
-class Player(BaseModel):
-    name: str
-    chars: list[str]
-
-
-class Raid(BaseModel):
-    date: datetime.date
-    report: str
-    player: list[str]
-
-
 class ConfigRoot(BaseModel):
     auth: Auth
     season: Season
-    player: list[Player]
-    raid: list[Raid]
 
 
 class Config:
@@ -62,8 +48,6 @@ class Config:
     def __init__(self) -> None:
         self.auth: Auth
         self.season: Season
-        self.player_list: list[Player]
-        self.raid_list: list[Raid]
 
     def __new__(cls):
         with cls._lock:
@@ -76,13 +60,6 @@ class Config:
         root = load_config()
         self.auth: Auth = root.auth
         self.season: Season = root.season
-        self.player_list: list[Player] = root.player
-        self.raid_list: list[Raid] = root.raid
-
-    def reload_config(self):
-        log.debug("reload_config")
-        with self._lock:
-            self._load_config()
 
 
 def load_config():

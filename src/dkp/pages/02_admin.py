@@ -18,10 +18,6 @@ if password != app.get_admin_password():
     st.error("Incorrect password. Access denied.")
     st.stop()
 
-# Reload config
-if st.button("Reload config"):
-    log.debug("reloading config")
-    app.reload_config()
 
 # Generate config snippet
 report_id = st.text_input("Enter warcraftlogs report id:", placeholder="e.g. JrYPGF9D1yLqtZhd")
@@ -50,6 +46,7 @@ session_state = st.session_state
 if 'textarea_value' not in session_state:
     session_state.textarea_value = ""
 
+# TODO use session_state or remove it
 json_string = st.text_area(export_ta_label, value=session_state.textarea_value, key=export_ta_key, placeholder='e.g. [{"player":"Moppi-Anub\'Arak", "date":"31/1/24", ...')
 if st.button("Submit LootCouncil export"):
     try:
@@ -67,13 +64,13 @@ loot_log_original = app.get_loot_log(raid_day)
 log.debug("show loot log of raid day")
 ## TODO: disable not editable columns
 loot_log_modified_df = st.data_editor(
-    pd.DataFrame(loot_log_original, columns=[ "id", "character", "note", "response", "item_name", "boss", "difficulty", "instance", "timestamp"])
+    pd.DataFrame([loot.model_dump() for loot in loot_log_original], columns=[ "id", "character", "note", "response", "item_name", "boss", "difficulty", "instance", "timestamp"])
     .sort_values(by=["id"], ascending=True)
     .set_index("id"),
 )
 
 changed_lines = loot_log_modified_df.compare(
-    pd.DataFrame(loot_log_original, columns=[ "id", "character", "note", "response", "item_name", "boss", "difficulty", "instance", "timestamp"])
+    pd.DataFrame([loot.model_dump() for loot in loot_log_original], columns=[ "id", "character", "note", "response", "item_name", "boss", "difficulty", "instance", "timestamp"])
     .sort_values(by=["id"], ascending=True)
     .set_index("id"),
     keep_shape=False,

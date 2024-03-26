@@ -81,3 +81,4 @@ python -m streamlit run src/dkp/01_overview.py
 - nice to have
   - fix: m+ chars in raid report, test with report vF2C8crAdja1QKhD
     - or show warning and abort if m+ logs in report
+  - after uploading a loot log, show entries in raid day below (select date automatically)
