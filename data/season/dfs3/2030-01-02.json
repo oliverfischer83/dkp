@@ -1,0 +1,26 @@
+[
+  {
+    "player": "Jnx-Aman'thul",
+    "date": "2/1/30",
+    "time": "21:11:47",
+    "id": "1701285107-32",
+    "itemID": 210947,
+    "itemString": "item:210947::::::::70:70::3:3:7979:1494:8767",
+    "response": "Gebot",
+    "votes": 0,
+    "class": "EVOKER",
+    "instance": "Amirdrassil, the Dream's Hope-Normal",
+    "boss": "Fyrakk the Blazing",
+    "gear1": "[Weyrnkeeper's Timeless Dracoif]",
+    "gear2": "[Weyrnkeeper's Timeless Raiment]",
+    "responseID": "1",
+    "isAwardReason": "false",
+    "rollType": "normal",
+    "subType": "Context Token",
+    "equipLoc": "",
+    "note": "ui",
+    "owner": "Moppi-Anub'arak",
+    "itemName": "Flame-Warped Curio",
+    "data_status": "original"
+  }
+]
