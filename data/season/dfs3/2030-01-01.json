@@ -2,30 +2,6 @@
   {
     "player": "Cheîra-Aman'thul",
     "date": "1/1/30",
-    "time": "19:35:51",
-    "id": "9999999999-0",
-    "itemID": 207117,
-    "itemString": "item:207117::::::::70:70::5:6:6652:9508:7980:9568:1498:8767",
-    "response": "Transmog",
-    "votes": 0,
-    "class": "WARLOCK",
-    "instance": "Amirdrassil, the Dream's Hope-Heroic",
-    "boss": "Gnarlroot",
-    "gear1": "[Devout Ashdevil's Hatespikes]",
-    "gear2": "",
-    "responseID": "2",
-    "isAwardReason": "false",
-    "rollType": "normal",
-    "subType": "Cloth",
-    "equipLoc": "Shoulder",
-    "note": "10",
-    "owner": "Moppi-Anub'arak",
-    "itemName": "Requiem Rootmantle",
-    "data_status": "fixed"
-  },
-  {
-    "player": "Cheîra-Aman'thul",
-    "date": "1/1/30",
     "time": "19:35:56",
     "id": "9999999999-1",
     "itemID": 207794,
@@ -46,6 +22,30 @@
     "owner": "Moppi-Anub'arak",
     "itemName": "Staff of Incandescent Torment",
     "data_status": "original"
+  },
+  {
+    "player": "Etegosch-Zuluhed",
+    "date": "1/1/30",
+    "time": "19:35:51",
+    "id": "9999999999-0",
+    "itemID": 207117,
+    "itemString": "item:207117::::::::70:70::5:6:6652:9508:7980:9568:1498:8767",
+    "response": "Pass",
+    "votes": 0,
+    "class": "WARLOCK",
+    "instance": "Amirdrassil, the Dream's Hope-Heroic",
+    "boss": "Gnarlroot",
+    "gear1": "[Devout Ashdevil's Hatespikes]",
+    "gear2": "",
+    "responseID": "2",
+    "isAwardReason": "false",
+    "rollType": "normal",
+    "subType": "Cloth",
+    "equipLoc": "Shoulder",
+    "note": "",
+    "owner": "Moppi-Anub'arak",
+    "itemName": "Requiem Rootmantle",
+    "data_status": "fixed"
   },
   {
     "player": "Etegosch-Zuluhed",
@@ -96,7 +96,7 @@
     "data_status": "original"
   },
   {
-    "player": "Unkno-Aman'thul",
+    "player": "Unknown-Aman'thul",
     "date": "1/1/30",
     "time": "19:35:56",
     "id": "9999999999-99",
@@ -117,6 +117,6 @@
     "note": "",
     "owner": "Moppi-Anub'arak",
     "itemName": "Staff of Incandescent Torment",
-    "data_status": "original"
+    "data_status": "fixed"
   }
 ]
