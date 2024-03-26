@@ -8,7 +8,7 @@
     "itemString": "item:207117::::::::70:70::5:6:6652:9508:7980:9568:1498:8767",
     "response": "Transmog",
     "votes": 0,
-    "class": "WARLOCK",
+    "class_": "WARLOCK",
     "instance": "Amirdrassil, the Dream's Hope-Heroic",
     "boss": "Gnarlroot",
     "gear1": "[Devout Ashdevil's Hatespikes]",
@@ -18,9 +18,9 @@
     "rollType": "normal",
     "subType": "Cloth",
     "equipLoc": "Shoulder",
-    "note": "10",
+    "note": "",
     "owner": "Moppi-Anub'arak",
-    "itemName": "Requiem Rootmantle",    
+    "itemName": "Requiem Rootmantle",
     "data_status": "fixed"
   },
   {
@@ -32,7 +32,7 @@
     "itemString": "item:207794::::::::70:70::5:5:6652:7980:9568:1498:8767",
     "response": "Transmog",
     "votes": 0,
-    "class": "WARLOCK",
+    "class_": "WARLOCK",
     "instance": "Amirdrassil, the Dream's Hope-Heroic",
     "boss": "Gnarlroot",
     "gear1": "[Iridal, the Earth's Master]",
@@ -44,7 +44,8 @@
     "equipLoc": "Two-Hand",
     "note": "",
     "owner": "Moppi-Anub'arak",
-    "itemName": "Staff of Incandescent Torment"
+    "itemName": "Staff of Incandescent Torment",
+    "data_status": "original"
   },
   {
     "player": "Etegosch-Zuluhed",
@@ -55,7 +56,7 @@
     "itemString": "item:207783::::::::70:70::5:5:41:7980:9568:1498:8767",
     "response": "Pass",
     "votes": 0,
-    "class": "ROGUE",
+    "class_": "ROGUE",
     "instance": "Amirdrassil, the Dream's Hope-Heroic",
     "boss": "Igira the Cruel",
     "gear1": "[Cruel Dreamcarver]",
@@ -67,7 +68,8 @@
     "equipLoc": "One-Hand",
     "note": "",
     "owner": "Moppi-Anub'arak",
-    "itemName": "Cruel Dreamcarver"
+    "itemName": "Cruel Dreamcarver",
+    "data_status": "original"
   },
   {
     "player": "Thylondur-Antonidas",
@@ -78,7 +80,7 @@
     "itemString": "item:207131::::::::70:70::5:7:6652:9599:9508:7980:9568:1498:8767",
     "response": "Pass",
     "votes": 0,
-    "class": "DEMONHUNTER",
+    "class_": "DEMONHUNTER",
     "instance": "Amirdrassil, the Dream's Hope-Heroic",
     "boss": "Igira the Cruel",
     "gear1": "[Screaming Torchfiend's Clasp]",
@@ -90,7 +92,8 @@
     "equipLoc": "Waist",
     "note": "20",
     "owner": "Moppi-Anub'arak",
-    "itemName": "Bloody Dragonhide Belt"
+    "itemName": "Bloody Dragonhide Belt",
+    "data_status": "original"
   },
   {
     "player": "Unkno-Aman'thul",
@@ -101,7 +104,7 @@
     "itemString": "item:207794::::::::70:70::5:5:6652:7980:9568:1498:8767",
     "response": "Transmog",
     "votes": 0,
-    "class": "WARLOCK",
+    "class_": "WARLOCK",
     "instance": "Amirdrassil, the Dream's Hope-Heroic",
     "boss": "Gnarlroot",
     "gear1": "[Iridal, the Earth's Master]",
@@ -113,6 +116,7 @@
     "equipLoc": "Two-Hand",
     "note": "",
     "owner": "Moppi-Anub'arak",
-    "itemName": "Staff of Incandescent Torment"
+    "itemName": "Staff of Incandescent Torment",
+    "data_status": "original"
   }
 ]
