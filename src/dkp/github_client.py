@@ -12,8 +12,7 @@ from typing import Optional
 
 from github import Auth, Github, UnknownObjectException
 from github.ContentFile import ContentFile
-from pydantic import BaseModel, Field
-
+from pydantic import BaseModel, Field, validator
 
 log = logging.getLogger(__name__)
 
@@ -35,6 +34,28 @@ class Loot(BaseModel):
     character: str
     response: str
 
+    @validator('note')
+    def validate_note(cls, note, values):
+        if note == "":  # empty note is valid
+            return note
+
+        message = f'Invalid note for entry "{values.get('id')}": "{note}". '
+
+        if not note.isdigit():
+            raise ValueError(message + "Note must be a parsable integer.")
+        if int(note) <= 0:
+            raise ValueError(message + "Note must be a positive value.")
+        if int(note) % 10 != 0:
+            raise ValueError(message + "Note must be a multiple of 10 (e.g. 10, 20, 30, ...).")
+        return note
+
+    # @validator('character')
+    # def validate_character(cls, character, values):
+    #     player_list: list[Player] = values.get('player_list')
+    #     for player in player_list:
+    #         if character in player.chars:
+    #             return character
+    #     raise ValueError(f'Unknown character: {character}')
 
 class RawLoot(BaseModel):
     player: str
@@ -186,7 +207,7 @@ def _cleanup_data(raw_loot: list[RawLoot], player_list: list[Player]) -> list[Lo
             id = raw_entry.id,
             timestamp = datetime.datetime.strptime(raw_entry.date + " " + raw_entry.time, "%d/%m/%y %H:%M:%S").strftime("%Y-%m-%d %H:%M:%S"),
             player = player_name,
-            note = raw_entry.note,
+            note = raw_entry.note.strip(),
             item_name = raw_entry.itemName,
             item_link = f"https://www.wowhead.com/item={raw_entry.itemID}",
             item_id = str(raw_entry.itemID),

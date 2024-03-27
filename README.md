@@ -79,3 +79,11 @@ python -m streamlit run src/dkp/01_overview.py
   - fix: m+ chars in raid report, test with report vF2C8crAdja1QKhD
     - or show warning and abort if m+ logs in report
   - after uploading a loot log, show entries in raid day below (select date automatically)
+
+
+- upload loot
+  - read inserted json
+  - try creating a Loot object (incl validation)
+  - show all invalid entries in editor
+  - click button to validate again
+  - only store validated loot

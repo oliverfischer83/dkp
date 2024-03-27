@@ -215,7 +215,6 @@ def get_admin_view(report_id):
     return AdminView(date=date, report_url=report_url, player_list=player_list, validations=None)
 
 
-# TODO test case
 def update_or_create_loot_log(new_log_str: str):
 
     # validate each date is the same
