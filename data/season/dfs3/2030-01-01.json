@@ -66,10 +66,10 @@
     "rollType": "normal",
     "subType": "Daggers",
     "equipLoc": "One-Hand",
-    "note": "",
+    "note": "20",
     "owner": "Moppi-Anub'arak",
     "itemName": "Cruel Dreamcarver",
-    "data_status": "original"
+    "data_status": "fixed"
   },
   {
     "player": "Thylondur-Antonidas",
