@@ -10,7 +10,6 @@ see request oauth doc: https://requests-oauthlib.readthedocs.io/en/latest/oauth2
 
 import datetime
 import logging
-import os
 
 import requests
 from oauthlib.oauth2 import BackendApplicationClient

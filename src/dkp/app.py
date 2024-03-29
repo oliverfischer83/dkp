@@ -7,12 +7,12 @@ Business logic for the DKP webapp.
 import datetime
 import logging
 import os
-from typing import Any, Optional
+from typing import Any
 
 from config_mapper import Config
 from dotenv import load_dotenv
-from github_client import Fix, FixEntry, GithubClient, Loot, Player, Raid, RawLoot, to_raw_loot_list
-from pydantic import BaseModel
+from data_classes import AdminView, BalanceView, Fix, FixEntry
+from github_client import GithubClient, Loot, Player, Raid, RawLoot, to_raw_loot_list
 from warcraftlogs_client import WclClient
 
 load_dotenv()
@@ -32,32 +32,6 @@ CONFIG = Config()
 WCL_CLIENT = WclClient(CONFIG.auth.wcl_client, WCL_CLIENT_ID, WCL_CLIENT_SECRET)
 DATABASE = GithubClient(GITHUB_TOKEN)
 
-
-
-class AdminView(BaseModel):
-    date: str
-    report_url: str
-    player_list: Optional[list[str]]
-    validations: Optional[list[str]]
-
-
-class LootHistory(BaseModel):
-    timestamp: datetime.datetime
-    player: str
-    cost: str
-    item: str
-    instance: str
-    difficulty: str
-    boss: str
-    character: str
-
-
-class BalanceView(BaseModel):
-    season_name: str
-    last_update: str
-    balance: Optional[dict[str, dict[int, Any]]]
-    loot_history: Optional[list[Loot]]
-    validations: Optional[list[str]]
 
 
 def get_admin_password():
@@ -214,7 +188,7 @@ def get_admin_view(report_id):
     return AdminView(date=date, report_url=report_url, player_list=player_list, validations=None)
 
 
-def update_or_create_loot_log(export: str):
+def update_or_create_loot_log(export: str) -> None:
     raw_loot_list = to_raw_loot_list(export)
     season = CONFIG.season.key
     raid_day = datetime.datetime.strptime(raw_loot_list[0].date, "%d/%m/%y").strftime("%Y-%m-%d")  # first entry

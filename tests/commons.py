@@ -1,4 +1,4 @@
-from github_client import Fix, FixEntry, RawLoot
+from data_classes import Fix, FixEntry, RawLoot
 
 
 def create_test_object_raw_loot(dict: dict) -> RawLoot:

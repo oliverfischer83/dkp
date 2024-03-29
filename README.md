@@ -86,9 +86,11 @@ python -m streamlit run src/dkp/01_overview.py
 - fix: m+ chars in raid report, test with report vF2C8crAdja1QKhD
   - or show warning and abort if m+ logs in report
 - find other cloud hosting as backup
+- after uploading a loot log, show entries in raid day below (select date automatically)
 - code quality
   - unit tests for balance functions
   - constants for string names
+  - remove "# type: ignore"
 
 ## Checklist
 - Raid button
@@ -128,8 +130,6 @@ python -m streamlit run src/dkp/01_overview.py
   - (maybe) if unknown character
 
 ## upload loot / Loot editor
-- before uploading loot data in admin page, validate values:
+- before uploading loot data, validate values:
   - if response=Gebot, then note=[0-9]+
   - characters are known
-- use commit messages to indicate fixes
-- after uploading a loot log, show entries in raid day below (select date automatically)
