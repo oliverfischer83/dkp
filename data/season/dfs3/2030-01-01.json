@@ -20,8 +20,7 @@
     "equipLoc": "Two-Hand",
     "note": "",
     "owner": "Moppi-Anub'arak",
-    "itemName": "Staff of Incandescent Torment",
-    "data_status": "original"
+    "itemName": "Staff of Incandescent Torment"
   },
   {
     "player": "Etegosch-Zuluhed",
@@ -44,8 +43,7 @@
     "equipLoc": "Shoulder",
     "note": "10",
     "owner": "Moppi-Anub'arak",
-    "itemName": "Requiem Rootmantle",
-    "data_status": "fixed"
+    "itemName": "Requiem Rootmantle"
   },
   {
     "player": "Etegosch-Zuluhed",
@@ -68,8 +66,7 @@
     "equipLoc": "One-Hand",
     "note": "",
     "owner": "Moppi-Anub'arak",
-    "itemName": "Cruel Dreamcarver",
-    "data_status": "fixed"
+    "itemName": "Cruel Dreamcarver"
   },
   {
     "player": "Thylondur-Antonidas",
@@ -92,8 +89,7 @@
     "equipLoc": "Waist",
     "note": "20",
     "owner": "Moppi-Anub'arak",
-    "itemName": "Bloody Dragonhide Belt",
-    "data_status": "original"
+    "itemName": "Bloody Dragonhide Belt"
   },
   {
     "player": "Unknown-Aman'thul",
@@ -116,7 +112,6 @@
     "equipLoc": "Two-Hand",
     "note": "",
     "owner": "Moppi-Anub'arak",
-    "itemName": "Staff of Incandescent Torment",
-    "data_status": "fixed"
+    "itemName": "Staff of Incandescent Torment"
   }
 ]
