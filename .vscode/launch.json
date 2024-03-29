@@ -15,7 +15,11 @@
       "type": "debugpy",
       "request": "launch",
       "module": "pytest",
-      "args": ["${workspaceFolder}/tests", "--capture=no"],
+      "args": [
+        "${workspaceFolder}/tests",
+        "--capture=no",               // show print statements
+        "-vv"                         // verbose
+      ],
       "console": "integratedTerminal"
     }
   ]

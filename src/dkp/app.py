@@ -9,9 +9,9 @@ import logging
 import os
 from typing import Any, Optional
 
-from dotenv import load_dotenv
 from config_mapper import Config
-from github_client import GithubClient, Loot, Player, Raid, RawLoot, to_raw_loot_list
+from dotenv import load_dotenv
+from github_client import Fix, FixEntry, GithubClient, Loot, Player, Raid, RawLoot, to_raw_loot_list
 from pydantic import BaseModel
 from warcraftlogs_client import WclClient
 
@@ -214,51 +214,27 @@ def get_admin_view(report_id):
     return AdminView(date=date, report_url=report_url, player_list=player_list, validations=None)
 
 
-def update_or_create_loot_log(new_log_str: str):
-
-    raw_loot_list = to_raw_loot_list(new_log_str)
-
-    first_date = raw_loot_list[0].date
+def update_or_create_loot_log(export: str):
+    raw_loot_list = to_raw_loot_list(export)
     season = CONFIG.season.key
-    raid_day = datetime.datetime.strptime(first_date, "%d/%m/%y").strftime("%Y-%m-%d")
+    raid_day = datetime.datetime.strptime(raw_loot_list[0].date, "%d/%m/%y").strftime("%Y-%m-%d")  # first entry
     existing_log = DATABASE.get_loot_log_raw(season, raid_day)
 
     if existing_log:
-        # appending new logs to existing loot log
-        unique_ids = set()
-        filtered_log = []
-        for item in existing_log + raw_loot_list:
-            if item.id not in unique_ids:
-                filtered_log.append(item)
-                unique_ids.add(item.id)
-        DATABASE.update_loot_log(filtered_log, season, raid_day)
+        result = merging_logs(existing_log, raw_loot_list)
+        DATABASE.update_loot_log(result, season, raid_day)
     else:
-        # create new loot log
         DATABASE.create_loot_log(raw_loot_list, season, raid_day)
 
 
 def apply_loot_log_fix(fixes: dict[str, dict[str, str]], raid_day: str, reason: str):
-
     season = CONFIG.season.key
     existing_log = DATABASE.get_loot_log_raw(season, raid_day)
     if not existing_log:
         raise Exception(f"No loot log found! season: {season}, raid day: {raid_day}")
 
-    # apply fixes
-    for fix_id, fix in fixes.items():
-        for loot in existing_log:
-            if loot.id == fix_id:
-                for key, value in fix.items():
-                    if key == "character":
-                        loot.player = value  # hack: clean up renamed player > character, need to revert here
-                    elif key == "note":
-                        loot.note = value
-                    elif key == "response":
-                        loot.response = value
-                    else:
-                        raise Exception(f"Invalid key: {key}")
-
-    DATABASE.fix_loot_log(existing_log, season, raid_day, reason)
+    result = apply_fixes(existing_log, transform_fixes(fixes))
+    DATABASE.fix_loot_log(result, season, raid_day, reason)
 
 
 def get_loot_log(raid_day: str) -> list[Loot]:
@@ -267,3 +243,44 @@ def get_loot_log(raid_day: str) -> list[Loot]:
     if loot_log_content is None:
         return []
     return loot_log_content
+
+
+def merging_logs(existing_log: list[RawLoot], new_log: list[RawLoot]):
+    result = existing_log
+    unique_ids = set(loot.id for loot in existing_log)
+    for item in new_log:
+        if item.id not in unique_ids:
+            result.append(item)
+            unique_ids.add(item.id)
+    return result
+
+
+
+def transform_fixes(fixes: dict[str, dict[str, str]]) -> list[Fix]:
+    result = []
+    for id, fix_entry in fixes.items():
+        entry = FixEntry(**fix_entry)
+        result.append(Fix(id=id, entries=[entry]))
+    return result
+
+
+def apply_fixes(existing_log: list[RawLoot], fixes: list[Fix]):
+    result = existing_log
+    for fix in fixes:
+        for loot in existing_log:
+            if loot.id == fix.id:
+                for e in fix.entries:
+                    if e.name == "character":
+                        # hack:
+                        #   due to naming clash between player and character
+                        #   clean up function shifted raw field 'player' to clean field 'character'
+                        #   need to revert here
+                        loot.player = e.value
+                    elif e.name == "note":
+                        loot.note = e.value
+                    elif e.name == "response":
+                        loot.response = e.value
+                    else:
+                        # sanity check
+                        raise Exception(f"Invalid key: {e.name}")
+    return result

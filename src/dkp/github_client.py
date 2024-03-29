@@ -80,6 +80,16 @@ class RawLoot(BaseModel):
     itemName: str
 
 
+class FixEntry(BaseModel):
+    name: str
+    value: str
+
+
+class Fix(BaseModel):
+    id: str
+    entries: list[FixEntry]
+
+
 class Player(BaseModel):
     name: str
     chars: list[str]
@@ -158,22 +168,22 @@ class GithubClient:
 
     def create_loot_log(self, content: list[RawLoot], season: str, raid_day: str):
         file_path = _get_loot_log_file_path(season, raid_day)
-        self.repo_api.create_file(file_path, "Create", to_str(content))
+        self.repo_api.create_file(file_path, "Create", to_json(content))
 
 
     def update_loot_log(self, content: list[RawLoot], season: str, raid_day: str):
         file_path = _get_loot_log_file_path(season, raid_day)
         file_hash = self._get_data_file(file_path).sha
-        self.repo_api.update_file(file_path, "Update", to_str(content), file_hash)
+        self.repo_api.update_file(file_path, "Update", to_json(content), file_hash)
 
 
     def fix_loot_log(self, content: list[RawLoot], season: str, raid_day: str, reason: str):
         file_path = _get_loot_log_file_path(season, raid_day)
         file_hash = self._get_data_file(file_path).sha
-        self.repo_api.update_file(file_path, f"Fix: {reason}", to_str(content), file_hash)
+        self.repo_api.update_file(file_path, f"Fix: {reason}", to_json(content), file_hash)
 
 
-def to_str(loot_list: list[RawLoot]) -> str:
+def to_json(loot_list: list[RawLoot]) -> str:
     """Converts loot lists into json str for database storage."""
     content = [loot.model_dump(by_alias=True) for loot in loot_list]
     sorted_content = sorted(content, key=lambda entry: entry['player'])  # sort by character name
@@ -192,20 +202,20 @@ def to_raw_loot_list(content: str) -> list[RawLoot]:
 def validate_raw_loot_list(raw_loot_list: list[RawLoot]):
     # validate list is not empty
     if not raw_loot_list:
-        raise Exception("Empty list.")
+        raise ValueError("Empty list.")
 
     # validate each entry has a unique id
     unique_ids = set()
     for entry in raw_loot_list:
         if entry.id in unique_ids:
-            raise Exception("Duplicate id found.")
+            raise ValueError("Duplicate id found.")
         unique_ids.add(entry.id)
 
     # validate each date is the same
     first_date = raw_loot_list[0].date
     for entry in raw_loot_list:
         if entry.date != first_date:
-            raise Exception("Dates in the new log differ from each other.")
+            raise ValueError("Dates differ from each other.")
 
 
 def _cleanup_data(raw_loot: list[RawLoot], player_list: list[Player]) -> list[Loot]:
