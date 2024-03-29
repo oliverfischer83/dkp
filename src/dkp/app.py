@@ -159,9 +159,9 @@ def get_balance_view():
     season_key = CONFIG.season.key
 
     all_loot = DATABASE.get_loot_logs_from_local_files(season_key)
-    first_entry = all_loot[0]
+    latest_entry = max(all_loot, key=lambda entry: entry.timestamp)
     relevant_loot = [entry for entry in all_loot if entry.response == "Gebot"]
-    last_update = f"{first_entry.timestamp} (Boss: {first_entry.boss}, {first_entry.difficulty})"
+    last_update = f"{latest_entry.timestamp} (Boss: {latest_entry.boss}, {latest_entry.difficulty})"
 
     balance = get_balance(player_list, DATABASE.get_raids(), relevant_loot)
 
