@@ -56,34 +56,85 @@ python -m streamlit run src/dkp/01_overview.py
 ```
 
 # TODO
-- GO live
-  - test run
-    - process if new char is in raid and gets loot
-    - process cleaning up data
-  - adding player and characters via admin page
-  - manage raid list in separate json file
-  - before uploading loot data in admin page, validate values:
-    - if response=Gebot, then note=[0-9]+
-    - characters are known
-  - checklist (video on, live log on, loot-council uptodate, ...)
-  - status sign, e.g. traffic jam lights: green=raid active, red=raid still active need to close, none=ok
-  - scenario:
-    - cannot do master looter (because ID already taken), so cannot loot, so cannot use RCLootCouncil
-    - do auction like bidding, and note down winner
-    - manually add entries afterwards
-    - use Excel sheet if necessary
+
+## page reload
+- auto refresh page
+- on loot data upload, clients get signal to refresh or waning banner that data outdated
+- make optional
+
+## Scenarios:
+- RCLootCouncil not useable at all (through bug, or similiar)
+  - add entries by hand on admin page, define simple default values for other fields of RawLoot
+- No Masterlooter (ID already taken, cant distribute loot)
+  - do auction like bidding and note down winner
+  - manually add entries afterwards
+- Normal use case:
+  - click Raid button: raid entry, status "started"
+  - add report id (live log)
+  - add loot: -> failed: unknown character
+  - add character in editor
+  - try again add loot: -> failed: invalid note
+  - fix note in editor
+  - try again add loot: -> succeeded
+  - click on raid button: status "finished" (adds 50pt. to balance)
+- use case "Same Day"
+  - add loot: raid entry, status "started"
+- use case "Next Day"
+  - add loot: raid entry, status "finished"
+
+## misc
+- fix: m+ chars in raid report, test with report vF2C8crAdja1QKhD
+  - or show warning and abort if m+ logs in report
+- find other cloud hosting as backup
 - code quality
   - unit tests for balance functions
   - constants for string names
-- nice to have
-  - fix: m+ chars in raid report, test with report vF2C8crAdja1QKhD
-    - or show warning and abort if m+ logs in report
-  - after uploading a loot log, show entries in raid day below (select date automatically)
 
+## upload loot
+- before uploading loot data in admin page, validate values:
+  - if response=Gebot, then note=[0-9]+
+  - characters are known
+- read inserted json
+- try creating a Loot object (incl validation)
+- show all invalid entries in editor
+- click button to validate again
+- only store validated loot
+- after uploading a loot log, show entries in raid day below (select date automatically)
 
-- upload loot
-  - read inserted json
-  - try creating a Loot object (incl validation)
-  - show all invalid entries in editor
-  - click button to validate again
-  - only store validated loot
+## Character Editor
+- on loot upload or raid finished ...
+  - if character missing
+    - don't save, show warning for every character missing, keep input data in field
+    - try getting name
+- on adding new player (chars optional)
+  - should be shown on balance view with 100 pt.
+- disable function to remove player somehow
+
+## Raid Editor
+- status
+  - started (log added same day or raid started manually)
+  - finished (log added from past or raid stopped manually)
+- report id
+  - show warning if raid finished and attendees/report id missing
+  - (maybe) if unknown character
+
+## Checklist
+- Raid button
+  - start Raid:
+    - create raid entry, set status started
+    - show checklist, show warning for each open checklist item
+  - finish Raid:
+    - set status finished
+    - get attendees from report one last time
+    - add 50 pt. to balance
+    - ends automatically on next day (german timezone)
+- checklist items
+  - video started
+  - live log started
+  - all attendees have RCLootCouncil started
+  - add new attendees
+
+  ## Info Page
+  - rules (copy from Excel Sheet)
+  - how to install and configure Addon RCLootCouncil using screenshots
+
