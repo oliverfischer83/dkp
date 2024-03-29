@@ -1,0 +1,25 @@
+[
+  {
+    "player": "Moppi-Anub'arak",
+    "date": "1/1/30",
+    "time": "19:35:56",
+    "id": "9999999999-99",
+    "itemID": 207794,
+    "itemString": "item:207794::::::::70:70::5:5:6652:7980:9568:1498:8767",
+    "response": "Transmog",
+    "votes": 0,
+    "class": "WARLOCK",
+    "instance": "Amirdrassil, the Dream's Hope-Heroic",
+    "boss": "Gnarlroot",
+    "gear1": "[Iridal, the Earth's Master]",
+    "gear2": "",
+    "responseID": "2",
+    "isAwardReason": "false",
+    "rollType": "normal",
+    "subType": "Staves",
+    "equipLoc": "Two-Hand",
+    "note": "",
+    "owner": "Moppi-Anub'arak",
+    "itemName": "Staff of Incandescent Torment"
+  }
+]
