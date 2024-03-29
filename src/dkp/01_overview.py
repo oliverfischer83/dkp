@@ -1,28 +1,13 @@
 # pylint: disable=missing-module-docstring
-import logging
-
 import pandas as pd
 import streamlit as st
 
 from app import get_balance_view
 
-log = logging.getLogger(__name__)
 
-log.debug("rendering page")
 view = get_balance_view()
 
-log.debug("validation")
-if view.validations:
-    for validation in view.validations:
-        st.error(validation)
-    st.stop()
-
-if view.loot_history is None:  # TODO: find better way to handle this (necessary to avoid type error below)
-    view.loot_history = []
-
-
 # Balance
-log.debug("show balance")
 st.markdown("# " + view.season_name)
 st.markdown("Letzte Aktualisierung: " + view.last_update)
 st.markdown("### DKP Liste")
@@ -41,7 +26,6 @@ st.dataframe(
 )
 
 # Loot history
-log.debug("show loot history")
 st.markdown("### Loot Liste")
 st.dataframe(
     pd.DataFrame([loot.model_dump() for loot in view.loot_history], columns=["timestamp", "player", "note", "item_name", "item_link", "boss", "difficulty", "instance", "character"]).sort_values(

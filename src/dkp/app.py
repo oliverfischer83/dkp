@@ -11,8 +11,8 @@ from typing import Any
 
 from config_mapper import Config
 from dotenv import load_dotenv
-from data_classes import AdminView, BalanceView, Fix, FixEntry
-from github_client import GithubClient, Loot, Player, Raid, RawLoot, to_raw_loot_list
+from core import AdminView, BalanceView, Fix
+from github_client import GithubClient, Loot, Player, Raid, RawLoot
 from warcraftlogs_client import WclClient
 
 load_dotenv()
@@ -38,10 +38,6 @@ def get_admin_password():
     return ADMIN_PASSWORD
 
 
-def filter_data(data: list[Loot]) -> list[Loot]:
-    # remove non-bid entries (irrelevant for loot history)
-    return [entry for entry in data if entry.response == "Gebot"]
-
 
 def get_player_to_cost_pair(player_list: list[Player], loot_table: list[Loot]) -> dict[str, int]:
     log.debug("get_player_to_cost_pair")
@@ -54,7 +50,7 @@ def get_player_to_cost_pair(player_list: list[Player], loot_table: list[Loot]) -
     return result
 
 
-def init_balance_table(player_list: list[Player]) -> dict[str, dict[int, Any]]:
+def init_balance_table(player_list: list[Player]) -> dict[str, dict[int, Any]]:  # TODO refactor: dict[int, Any] is not very descriptive
     log.debug("init_balance_table")
     balance_list = dict()
     balance_list["name"] = dict()
@@ -103,75 +99,80 @@ def get_balance(player_list: list[Player], raid_list: list[Raid], loot_table: li
     return balance_table
 
 
-def validate_characters_known(known_player, looting_characters):
-    log.debug("validate_characters_known")
+def validate_characters_known(known_player: list[Player], looting_characters: list[str]):
     known_characters = list()
     for player in known_player:
-        for char in player.chars:
-            known_characters.append(char)
+        known_characters.extend(player.chars)
 
-    result = []
     for char in looting_characters:
         if char not in known_characters:
-            result.append("Unknown character: " + char)
-    return result
+            raise ValueError("Unknown character: " + char)
 
 
-def validate_notes(cost_list):
-    log.debug("validate_notes")
-    result = []
-    for cost in cost_list:
+def validate_note_values(cost_list: list[str]):
+    for note in cost_list:
+        if note.strip() == "":
+            continue
         try:
-            int(cost)
+            int(note)
         except ValueError:
-            result.append("Cost must be an integer, but was: " + cost)
-            continue
-        if int(cost) < 10:
-            result.append("Cost minimum is 10, but was: " + cost)
-            continue
-        if int(cost) % 10 != 0:
-            result.append("Cost must be within steps of 10, but was: " + cost)
-            continue
-    return result
+            raise ValueError("Note must be a parsable integer, but was: " + note)
+        if int(note) < 10:
+            raise ValueError("Note minimum is 10, but was: " + note)
+        if int(note) % 10 != 0:
+            raise ValueError("Note must be within steps of 10, but was: " + note)
+
+
+def validate_expected_state(raw_loot_list: list[RawLoot]):
+    # validate list is not empty
+    if not raw_loot_list:
+        raise ValueError("Empty list. Updated same list before?")
+
+    # validate each entry has a unique id
+    unique_ids = set()
+    for entry in raw_loot_list:
+        if entry.id in unique_ids:
+            raise ValueError(f'Duplicate id found! (id="{entry.id}").')
+        unique_ids.add(entry.id)
+
+    # validate each date is the same
+    first_date = raw_loot_list[0].date
+    for entry in raw_loot_list:
+        if entry.date != first_date:
+            raise ValueError("Dates differ from each other.")
+
+    # each entry having response == "Gebot" must have a non empty note
+    for entry in raw_loot_list:
+        if entry.response == "Gebot" and entry.note.strip() == "":
+            raise ValueError(f'Respone is "Gebot" but empty note! (id="{entry.id}").')
+
+
+def validate_import(raw_loot_list: list[RawLoot]):
+    validate_expected_state(raw_loot_list)
+    validate_characters_known(DATABASE.get_players(), [entry.player for entry in raw_loot_list])
+    validate_note_values([entry.note for entry in raw_loot_list])
 
 
 def get_balance_view():
-    log.debug("get_balance_view")
-
     player_list = DATABASE.get_players()  # TODO refactor: player_list is already in all_loot, should not be necessary here
     season_name = CONFIG.season.name
     season_key = CONFIG.season.key
 
     all_loot = DATABASE.get_loot_logs_from_local_files(season_key)
     first_entry = all_loot[0]
-    filtered_loot = filter_data(all_loot)
-    looting_characters = list(set([entry.character for entry in filtered_loot]))
+    relevant_loot = [entry for entry in all_loot if entry.response == "Gebot"]
     last_update = f"{first_entry.timestamp} (Boss: {first_entry.boss}, {first_entry.difficulty})"
 
-    validations = []
-    validations.extend(validate_characters_known(player_list, looting_characters))
-    validations.extend(validate_notes([entry.note for entry in filtered_loot]))
+    balance = get_balance(player_list, DATABASE.get_raids(), relevant_loot)
 
-    if validations:
-        return BalanceView(
-            season_name=season_name,
-            last_update="",
-            balance=None,
-            loot_history=None,
-            validations=validations,
-        )
-
-    balance = get_balance(player_list, DATABASE.get_raids(), filtered_loot)
-
-    return BalanceView(season_name=season_name, balance=balance, loot_history=filtered_loot, last_update=last_update, validations=None)
+    return BalanceView(season_name=season_name, balance=balance, loot_history=relevant_loot, last_update=last_update)
 
 
 def get_admin_view(report_id):
-    log.debug("get_admin_view")
-
     all_players = DATABASE.get_players()
     date, report_url, raiding_char_list = WCL_CLIENT.get_raid_details(report_id)
 
+    # find attending players
     player_list = []
     for player in all_players:
         for char in raiding_char_list:
@@ -179,17 +180,10 @@ def get_admin_view(report_id):
                 player_list.append(player.name)
                 break
 
-    validations = []
-    validations.extend(validate_characters_known(all_players, raiding_char_list))
-
-    if validations:
-        return AdminView(date=date, report_url=report_url, player_list=None, validations=validations)
-
-    return AdminView(date=date, report_url=report_url, player_list=player_list, validations=None)
+    return AdminView(date=date, report_url=report_url, player_list=player_list)
 
 
-def update_or_create_loot_log(export: str) -> None:
-    raw_loot_list = to_raw_loot_list(export)
+def upload_loot_log(raw_loot_list: list[RawLoot]):
     season = CONFIG.season.key
     raid_day = datetime.datetime.strptime(raw_loot_list[0].date, "%d/%m/%y").strftime("%Y-%m-%d")  # first entry
     existing_log = DATABASE.get_loot_log_raw(season, raid_day)
@@ -201,40 +195,37 @@ def update_or_create_loot_log(export: str) -> None:
         DATABASE.create_loot_log(raw_loot_list, season, raid_day)
 
 
-def apply_loot_log_fix(fixes: dict[str, dict[str, str]], raid_day: str, reason: str):
+def apply_loot_log_fix(fixes: list[Fix], raid_day: str, reason: str):
     season = CONFIG.season.key
     existing_log = DATABASE.get_loot_log_raw(season, raid_day)
     if not existing_log:
         raise Exception(f"No loot log found! season: {season}, raid day: {raid_day}")
 
-    result = apply_fixes(existing_log, transform_fixes(fixes))
+    result = apply_fixes(existing_log, fixes)
     DATABASE.fix_loot_log(result, season, raid_day, reason)
 
 
 def get_loot_log(raid_day: str) -> list[Loot]:
     season = CONFIG.season.key
-    loot_log_content = DATABASE.get_loot_log(season, raid_day)
-    if loot_log_content is None:
-        return []
-    return loot_log_content
+    return DATABASE.get_loot_log(season, raid_day)
 
 
-def merging_logs(existing_log: list[RawLoot], new_log: list[RawLoot]):
+def get_loot_log_raw(raid_day: str) -> list[RawLoot]:
+    season = CONFIG.season.key
+    return DATABASE.get_loot_log_raw(season, raid_day)
+
+
+def filter_logs(existing_log: list[RawLoot], new_log: list[RawLoot]) -> list[RawLoot]:
+    existing_ids = {loot.id for loot in existing_log}
+    return [item for item in new_log if item.id not in existing_ids]
+
+
+def merging_logs(existing_log: list[RawLoot], new_log: list[RawLoot]) -> list[RawLoot]:
     result = existing_log
-    unique_ids = set(loot.id for loot in existing_log)
+    existing_ids = [loot.id for loot in existing_log]
     for item in new_log:
-        if item.id not in unique_ids:
+        if item.id not in existing_ids:
             result.append(item)
-            unique_ids.add(item.id)
-    return result
-
-
-
-def transform_fixes(fixes: dict[str, dict[str, str]]) -> list[Fix]:
-    result = []
-    for id, fix_entry in fixes.items():
-        entry = FixEntry(**fix_entry)
-        result.append(Fix(id=id, entries=[entry]))
     return result
 
 

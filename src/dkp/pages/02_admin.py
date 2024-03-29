@@ -1,15 +1,13 @@
 # pylint: disable=missing-module-docstring,missing-function-docstring,missing-class-docstring
 
 import datetime
-import logging
 import time
 
 import pandas as pd
 import streamlit as st
-from app import get_admin_view
+from app import filter_logs, get_admin_view, get_loot_log_raw
 import app
-
-log = logging.getLogger(__name__)
+from core import Fix, FixEntry, to_date, to_raw_date, to_raw_loot_list
 
 
 def main():
@@ -26,13 +24,7 @@ def main():
     with st.container():
         report_id = st.text_input("Enter warcraftlogs report id:", placeholder="e.g. JrYPGF9D1yLqtZhd")
         if st.button("Submit WCL report id"):
-            log.debug("generate config snippet")
             view = get_admin_view(report_id)
-            log.debug("validate")
-            if view.validations:
-                for validation in view.validations:
-                    st.error(validation)
-            log.debug("show config snippet")
             st.code(
                 f"""
             - date: {view.date}
@@ -45,15 +37,23 @@ def main():
 
     # Loot upload
     with st.container():
-        json_string = st.text_area("Add Loot Log for current active raid (RCLootCouncil export as JSON):",
-                                placeholder='e.g. [{"player":"Moppi-Anub\'Arak", "date":"31/1/24", ...')
-
+        json_string = st.text_area("Add Loot Log (RCLootCouncil export as JSON):", placeholder='e.g. [{"player":"Moppi-Anub\'Arak", "date":"31/1/24", ...')
         if st.button("Try submit ..."):
+            uploaded_log = to_raw_loot_list(json_string)
+            raid_day = to_date(uploaded_log[0].date)
+            existing_log = get_loot_log_raw(raid_day)
+            new_log = filter_logs(existing_log, uploaded_log)
             try:
-                app.update_or_create_loot_log(json_string)
+                # only validate the new loot, the existing loot in the json export could be invalid and was cleaned up before
+                # only the new loot is stored into the database
+                app.validate_import(new_log)
+
+                # upload clean logs
+                clean_logs = app.merging_logs(existing_log, new_log)
+                app.upload_loot_log(clean_logs)
                 st.success("Loot log uploaded.")
-            except Exception as e:
-                st.error(f"Loot log uploaded failed: {str(e)}")
+            except ValueError as e:
+                st.error(f"Validation failed! {str(e)}")
 
 
     # Loot explorer
@@ -77,8 +77,7 @@ def main():
                     st.error("Please provide a reason for the fix.")
                     st.stop()
 
-                result = transform(diff)
-                app.apply_loot_log_fix(result, raid_day, reason)  # type: ignore
+                app.apply_loot_log_fix(transform(diff), raid_day, reason)  # type: ignore
                 st.success("Fix applied." )
                 time.sleep(2)  # wait for the message to be displayed
                 st.rerun()  # clear streamlit widges responsible for the fix
@@ -86,7 +85,7 @@ def main():
 
 
 
-def transform(diff: pd.DataFrame) -> dict[str, dict[str, str]]:
+def transform(diff: pd.DataFrame) -> list[Fix]:
     # drop original values
     if ("character", "original") in diff.columns:
         diff = diff.drop(columns=[("character", "original")])
@@ -99,8 +98,16 @@ def transform(diff: pd.DataFrame) -> dict[str, dict[str, str]]:
     # swap columns and rows
     diff = diff.transpose()
     # remove NaN values
-    result = {id: {attr: value for attr, value in fix.items() if pd.notna(value)} for id, fix in diff.to_dict().items()}
-    return result  # type: ignore
+    clean_diff = {id: {attr: value for attr, value in fix.items() if pd.notna(value)} for id, fix in diff.to_dict().items()}
+    # into data objects
+    result = []
+    for id, fix_entry in clean_diff.items():
+        entries = []
+        for name, value in fix_entry.items():
+            entry = FixEntry(name=name, value=value)
+            entries.append(entry)
+        result.append(Fix(id=id, entries=entries)) # type: ignore
+    return result
 
 
 # entry point

@@ -91,6 +91,9 @@ python -m streamlit run src/dkp/01_overview.py
   - unit tests for balance functions
   - constants for string names
   - remove "# type: ignore"
+- add status flag to Player
+  - paused: dont show on balance view
+- unify data validation on export upload and loot editor changes
 
 ## Checklist
 - Raid button
@@ -129,7 +132,3 @@ python -m streamlit run src/dkp/01_overview.py
   - show warning if raid finished and attendees/report id missing
   - (maybe) if unknown character
 
-## upload loot / Loot editor
-- before uploading loot data, validate values:
-  - if response=Gebot, then note=[0-9]+
-  - characters are known

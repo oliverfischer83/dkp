@@ -1,4 +1,4 @@
-from data_classes import Fix, FixEntry, RawLoot
+from core import Fix, FixEntry, Loot, Player, RawLoot
 
 
 def create_test_object_raw_loot(dict: dict) -> RawLoot:
@@ -33,5 +33,31 @@ def create_test_object_raw_loot(dict: dict) -> RawLoot:
     return RawLoot(**fields)
 
 
+def create_test_object_loot(dict: dict) -> Loot:
+    fields = {
+        "id": dict.get("id", ""),
+        "timestamp": dict.get("timestamp", ""),
+        "player": dict.get("player", "somePlayer"),
+        "note": dict.get("note", "10"),
+        "item_name": dict.get("item_name", ""),
+        "item_link": dict.get("item_link", ""),
+        "item_id": dict.get("item_id", ""),
+        "boss": dict.get("boss", ""),
+        "difficulty": dict.get("difficulty", ""),
+        "instance": dict.get("instance", ""),
+        "character": dict.get("character", "someCharacter"),
+        "response": dict.get("response", "someResponse"),
+    }
+    # sanity check
+    for key in dict:
+        if key not in fields:
+            raise ValueError(f"Invalid field: {key}")
+    return Loot(**fields)
+
+
 def create_test_object_fixes(id: str, entries: dict[str, str]) -> Fix:
     return Fix(id=id, entries=[FixEntry(name=name, value=value) for name, value in entries.items()])
+
+
+def create_test_object_player_list(player_list: list[Player]) -> list[Player]:
+    return []
