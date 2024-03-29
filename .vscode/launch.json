@@ -6,21 +6,17 @@
       "type": "debugpy",
       "request": "launch",
       "module": "streamlit",
-      "justMyCode": true,
+      "justMyCode": true,     // toggle to also debug library code
       "args": ["run", "src/dkp/01_overview.py"],
       "console": "integratedTerminal"
     },
     {
-      "name": "Run all Tests",
+      "name": "All tests",
       "type": "debugpy",
       "request": "launch",
       "module": "pytest",
-      "cwd": "${workspaceFolder}",
+      "args": ["${workspaceFolder}/tests", "--capture=no"],
       "console": "integratedTerminal"
-      //   "args": ["tests"],
-      //   "env": {
-      //     "PYTHONPATH": "${workspaceFolder}${pathSeparator}${env:PYTHONPATH}"
-      //   }
     }
   ]
 }

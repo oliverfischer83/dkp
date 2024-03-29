@@ -9,10 +9,9 @@ import logging
 import os
 from typing import Any, Optional
 
-import yaml
 from dotenv import load_dotenv
 from config_mapper import Config
-from github_client import GithubClient, Loot, Player, Raid, to_lootlist_raw
+from github_client import GithubClient, Loot, Player, Raid, RawLoot, to_raw_loot_list
 from pydantic import BaseModel
 from warcraftlogs_client import WclClient
 
@@ -169,7 +168,7 @@ def get_balance_view():
     season_name = CONFIG.season.name
     season_key = CONFIG.season.key
 
-    all_loot = DATABASE.get_loot_log_all(season_key)
+    all_loot = DATABASE.get_loot_logs_from_local_files(season_key)
     first_entry = all_loot[0]
     filtered_loot = filter_data(all_loot)
     looting_characters = list(set([entry.character for entry in filtered_loot]))
@@ -217,29 +216,25 @@ def get_admin_view(report_id):
 
 def update_or_create_loot_log(new_log_str: str):
 
-    # validate each date is the same
-    new_log = to_lootlist_raw(new_log_str)
-    first_date = new_log[0].date
-    for entry in new_log:
-        if entry.date != first_date:
-            raise Exception("Dates in the new log differ from each other.")
+    raw_loot_list = to_raw_loot_list(new_log_str)
 
+    first_date = raw_loot_list[0].date
     season = CONFIG.season.key
     raid_day = datetime.datetime.strptime(first_date, "%d/%m/%y").strftime("%Y-%m-%d")
-    existing_log = DATABASE.get_loot_log(season, raid_day)
+    existing_log = DATABASE.get_loot_log_raw(season, raid_day)
 
     if existing_log:
         # appending new logs to existing loot log
         unique_ids = set()
         filtered_log = []
-        for item in existing_log + new_log:
+        for item in existing_log + raw_loot_list:
             if item.id not in unique_ids:
                 filtered_log.append(item)
                 unique_ids.add(item.id)
         DATABASE.update_loot_log(filtered_log, season, raid_day)
     else:
         # create new loot log
-        DATABASE.create_loot_log(new_log, season, raid_day)
+        DATABASE.create_loot_log(raw_loot_list, season, raid_day)
 
 
 def apply_loot_log_fix(fixes: dict[str, dict[str, str]], raid_day: str, reason: str):
@@ -262,7 +257,6 @@ def apply_loot_log_fix(fixes: dict[str, dict[str, str]], raid_day: str, reason: 
                         loot.response = value
                     else:
                         raise Exception(f"Invalid key: {key}")
-                    loot.data_status = "fixed"  # indicates that this loot has been fixed
 
     DATABASE.fix_loot_log(existing_log, season, raid_day, reason)
 

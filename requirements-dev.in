@@ -1,5 +1,6 @@
-pytest
-pytest-cov
-black[jupyter]
-isort
-pylint
+pytest~=8.1.1
+pytest-cov~=5.0.0
+pytest-mock~=3.14.0
+black~=24.3.0
+isort~=5.13.2
+pylint~=3.1.0

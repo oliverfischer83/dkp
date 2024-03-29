@@ -8,11 +8,10 @@ import datetime
 import json
 import logging
 import os
-from typing import Optional
 
 from github import Auth, Github, UnknownObjectException
 from github.ContentFile import ContentFile
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 
 log = logging.getLogger(__name__)
 
@@ -34,12 +33,12 @@ class Loot(BaseModel):
     character: str
     response: str
 
-    @validator('note')
-    def validate_note(cls, note, values):
+    @field_validator('note')
+    def validate_note(cls, note):
         if note == "":  # empty note is valid
             return note
 
-        message = f'Invalid note for entry "{values.get('id')}": "{note}". '
+        message = f'Invalid note for entry: "{note}". '
 
         if not note.isdigit():
             raise ValueError(message + "Note must be a parsable integer.")
@@ -79,7 +78,6 @@ class RawLoot(BaseModel):
     note: str
     owner: str
     itemName: str
-    data_status: Optional[str] = "original"  # indicates if the entry was modified
 
 
 class Player(BaseModel):
@@ -130,7 +128,7 @@ class GithubClient:
         file_path = _get_loot_log_file_path(season, raid_day)
         try:
             content = self._get_data_file(file_path).decoded_content.decode("utf-8")
-            return to_lootlist_raw(content)
+            return to_raw_loot_list(content)
         except UnknownObjectException:
             return None
 
@@ -140,18 +138,21 @@ class GithubClient:
         file_path = _get_loot_log_file_path(season, raid_day)
         try:
             content = self._get_data_file(file_path).decoded_content.decode("utf-8")
-            return to_lootlist(content, self.player_list)
+            raw_loot_list = to_raw_loot_list(content)
+            return _cleanup_data(raw_loot_list, self.player_list)
         except UnknownObjectException:
             return None
 
 
-    def get_loot_log_all(self, season: str) -> list[Loot]:
+    def get_loot_logs_from_local_files(self, season: str) -> list[Loot]:
         """"Get all loot logs for a season from LOCAL git repository."""
         dir_path = _get_loot_log_dir_path(season)
         result = []
         for file in os.listdir(dir_path):
             with open(os.path.join(dir_path, file), 'r') as file:
-                result += to_lootlist(file.read(), self.player_list)
+                content = file.read()
+                raw_loot_list = to_raw_loot_list(content)
+                result += _cleanup_data(raw_loot_list, self.player_list)
         return result
 
 
@@ -181,15 +182,30 @@ def to_str(loot_list: list[RawLoot]) -> str:
                       ensure_ascii=False)   # allow non-ascii characters
 
 
-def to_lootlist_raw(content: str) -> list[RawLoot]:
+def to_raw_loot_list(content: str) -> list[RawLoot]:
     loot_list = json.loads(content)
-    return [RawLoot(**entry) for entry in loot_list]
+    raw_loot_list = [RawLoot(**entry) for entry in loot_list]
+    validate_raw_loot_list(raw_loot_list)
+    return raw_loot_list
 
 
-def to_lootlist(content: str, player_list: list[Player]) -> list[Loot]:
-    data = json.loads(content)
-    loot_list_raw = [RawLoot(**entry) for entry in data]
-    return _cleanup_data(loot_list_raw, player_list)
+def validate_raw_loot_list(raw_loot_list: list[RawLoot]):
+    # validate list is not empty
+    if not raw_loot_list:
+        raise Exception("Empty list.")
+
+    # validate each entry has a unique id
+    unique_ids = set()
+    for entry in raw_loot_list:
+        if entry.id in unique_ids:
+            raise Exception("Duplicate id found.")
+        unique_ids.add(entry.id)
+
+    # validate each date is the same
+    first_date = raw_loot_list[0].date
+    for entry in raw_loot_list:
+        if entry.date != first_date:
+            raise Exception("Dates in the new log differ from each other.")
 
 
 def _cleanup_data(raw_loot: list[RawLoot], player_list: list[Player]) -> list[Loot]:

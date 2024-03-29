@@ -36,7 +36,7 @@ conda activate dkp
 pip install pip-tools
 pip-compile --all-extras pyproject.toml
 pip-sync
-pip install --editable=.[dev]
+pip install --editable=.[dev]  # installs dkp app incl. dev extras in edit mode (. indicates, where to find the setup file)
 ```
 
 ### Configuration
@@ -90,16 +90,25 @@ python -m streamlit run src/dkp/01_overview.py
   - unit tests for balance functions
   - constants for string names
 
-## upload loot
-- before uploading loot data in admin page, validate values:
-  - if response=Gebot, then note=[0-9]+
-  - characters are known
-- read inserted json
-- try creating a Loot object (incl validation)
-- show all invalid entries in editor
-- click button to validate again
-- only store validated loot
-- after uploading a loot log, show entries in raid day below (select date automatically)
+## Checklist
+- Raid button
+  - start Raid:
+    - create raid entry, set status started
+    - show checklist, show warning for each open checklist item
+  - finish Raid:
+    - set status finished
+    - get attendees from report one last time
+    - add 50 pt. to balance
+    - ends automatically on next day (german timezone)
+- checklist items
+  - video started
+  - live log started
+  - all attendees have RCLootCouncil started
+  - add new attendees
+
+## Info Page
+- rules (copy from Excel Sheet)
+- how to install and configure Addon RCLootCouncil using screenshots
 
 ## Character Editor
 - on loot upload or raid finished ...
@@ -118,23 +127,9 @@ python -m streamlit run src/dkp/01_overview.py
   - show warning if raid finished and attendees/report id missing
   - (maybe) if unknown character
 
-## Checklist
-- Raid button
-  - start Raid:
-    - create raid entry, set status started
-    - show checklist, show warning for each open checklist item
-  - finish Raid:
-    - set status finished
-    - get attendees from report one last time
-    - add 50 pt. to balance
-    - ends automatically on next day (german timezone)
-- checklist items
-  - video started
-  - live log started
-  - all attendees have RCLootCouncil started
-  - add new attendees
-
-  ## Info Page
-  - rules (copy from Excel Sheet)
-  - how to install and configure Addon RCLootCouncil using screenshots
-
+## upload loot / Loot editor
+- before uploading loot data in admin page, validate values:
+  - if response=Gebot, then note=[0-9]+
+  - characters are known
+- use commit messages to indicate fixes
+- after uploading a loot log, show entries in raid day below (select date automatically)
