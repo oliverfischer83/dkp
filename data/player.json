@@ -1,110 +1,191 @@
 [
-    {
-        "name": "Carmen",
-        "chars": ["Cheîra-Aman'thul"]
-    },
-    {
-        "name": "Christoph",
-        "chars": ["Thýráel-Antonidas","Thyraldur-Blackhand","Thyrân-Antonidas","Thyrodor-Antonidas","Thyrondir-Antonidas","Thyrondur-Antonidas","Thylondur-Antonidas"]
-    },
-    {
-        "name": "Dave",
-        "chars": ["Schorsé-Antonidas","Failpuller-Antonidas","Angstblasé-Antonidas"]
-    },
-    {
-        "name": "Dennis",
-        "chars": ["Mirady-Antonidas"]
-    },
-    {
-        "name": "Dimi",
-        "chars": ["Fanfaron-Dalvengyr"]
-    },
-    {
-        "name": "Franzi",
-        "chars": ["Lelu-Anub'arak"]
-    },
-    {
-        "name": "Janine",
-        "chars": ["Motsognir-Anub'arak"]
-    },
-    {
-        "name": "Jan",
-        "chars": ["Dâtä-Antonidas"]
-    },
-    {
-        "name": "Jessica",
-        "chars": ["Roselyn-Aman'thul"]
-    },
-    {
-        "name": "Joseph",
-        "chars": ["Etegosch-Zuluhed"]
-    },
-    {
-        "name": "Kalle",
-        "chars": ["Gameofthrows-Blackhand","Gameofthrows-Antonidas"]
-    },
-    {
-        "name": "Kevin",
-        "chars": ["Xenqt-Blackhand","Xenzqt-Blackhand","Heartdivine-Blackhand"]
-    },
-    {
-        "name": "Leon",
-        "chars": ["Gómèz-Antonidas","Sancticia-Antonidas","Simplecia-Antonidas"]
-    },
-    {
-        "name": "Lutz",
-        "chars": ["Jnx-Aman'thul","Pokusan-Aman'thul"]
-    },
-    {
-        "name": "Marco",
-        "chars": ["Nay-Anub'arak","Fadrim-Anub'arak","Nirí-Anub'arak"]
-    },
-    {
-        "name": "Marc",
-        "chars": ["Seysey-Aman'thul","Loryxius-Aman'thul"]
-    },
-    {
-        "name": "Maxi",
-        "chars": ["Zhòrá-Thrall","Zhòráqt-Thrall"]
-    },
-    {
-        "name": "Micha",
-        "chars": ["Wurzelpeter-Anub'arak"]
-    },
-    {
-        "name": "Mischa",
-        "chars": ["Kellykiller-Aman'thul"]
-    },
-    {
-        "name": "Nadja",
-        "chars": ["Shanya-Antonidas"]
-    },
-    {
-        "name": "Olli",
-        "chars": ["Moppi-Anub'arak", "Zelma-Anub'arak"]
-    },
-    {
-        "name": "Stephan",
-        "chars": ["Madherby-Nazjatar"]
-    },
-    {
-        "name": "Tanja",
-        "chars": ["Blair-Dalvengyr","Icheule-Anub'arak"]
-    },
-    {
-        "name": "Thomas",
-        "chars": ["Tiranôu-Frostmourne","Dvalin-Frostmourne"]
-    },
-    {
-        "name": "Tobi",
-        "chars": ["Dinkelheit-Antonidas","Klauwn-Antonidas"]
-    },
-    {
-        "name": "Tom",
-        "chars": ["Schäppert-Anub'arak"]
-    },
-    {
-        "name": "Yasmin",
-        "chars": ["Yäzmin-Antonidas","Crêpesuzette-Antonidas"]
-    }
+  {
+    "name": "Carmen",
+    "chars": [
+      "Cheîra-Aman'thul"
+    ]
+  },
+  {
+    "name": "Christoph",
+    "chars": [
+      "Thýráel-Antonidas",
+      "Thyraldur-Blackhand",
+      "Thyrân-Antonidas",
+      "Thyrodor-Antonidas",
+      "Thyrondir-Antonidas",
+      "Thyrondur-Antonidas",
+      "Thylondur-Antonidas"
+    ]
+  },
+  {
+    "name": "Dave",
+    "chars": [
+      "Schorsé-Antonidas",
+      "Failpuller-Antonidas",
+      "Angstblasé-Antonidas"
+    ]
+  },
+  {
+    "name": "Dennis",
+    "chars": [
+      "Mirady-Antonidas"
+    ]
+  },
+  {
+    "name": "Dimi",
+    "chars": [
+      "Fanfaron-Dalvengyr"
+    ]
+  },
+  {
+    "name": "Franzi",
+    "chars": [
+      "Lelu-Anub'arak"
+    ]
+  },
+  {
+    "name": "Jan",
+    "chars": [
+      "Dâtä-Antonidas"
+    ]
+  },
+  {
+    "name": "Janine",
+    "chars": [
+      "Motsognir-Anub'arak"
+    ]
+  },
+  {
+    "name": "Jessica",
+    "chars": [
+      "Roselyn-Aman'thul"
+    ]
+  },
+  {
+    "name": "Joseph",
+    "chars": [
+      "Etegosch-Zuluhed"
+    ]
+  },
+  {
+    "name": "Kalle",
+    "chars": [
+      "Gameofthrows-Blackhand",
+      "Gameofthrows-Antonidas"
+    ]
+  },
+  {
+    "name": "Kevin",
+    "chars": [
+      "Xenqt-Blackhand",
+      "Xenzqt-Blackhand",
+      "Heartdivine-Blackhand"
+    ]
+  },
+  {
+    "name": "Leon",
+    "chars": [
+      "Gómèz-Antonidas",
+      "Sancticia-Antonidas",
+      "Simplecia-Antonidas"
+    ]
+  },
+  {
+    "name": "Lutz",
+    "chars": [
+      "Jnx-Aman'thul",
+      "Pokusan-Aman'thul"
+    ]
+  },
+  {
+    "name": "Marc",
+    "chars": [
+      "Seysey-Aman'thul",
+      "Loryxius-Aman'thul"
+    ]
+  },
+  {
+    "name": "Marco",
+    "chars": [
+      "Nay-Anub'arak",
+      "Fadrim-Anub'arak",
+      "Nirí-Anub'arak"
+    ]
+  },
+  {
+    "name": "Max",
+    "chars": []
+  },
+  {
+    "name": "Maxi",
+    "chars": [
+      "Zhòrá-Thrall",
+      "Zhòráqt-Thrall"
+    ]
+  },
+  {
+    "name": "Micha",
+    "chars": [
+      "Wurzelpeter-Anub'arak"
+    ]
+  },
+  {
+    "name": "Mischa",
+    "chars": [
+      "Kellykiller-Aman'thul"
+    ]
+  },
+  {
+    "name": "Nadja",
+    "chars": [
+      "Shanya-Antonidas"
+    ]
+  },
+  {
+    "name": "Olli",
+    "chars": [
+      "Moppi-Anub'arak",
+      "Zelma-Anub'arak"
+    ]
+  },
+  {
+    "name": "Stephan",
+    "chars": [
+      "Madherby-Nazjatar"
+    ]
+  },
+  {
+    "name": "Tanja",
+    "chars": [
+      "Blair-Dalvengyr",
+      "Icheule-Anub'arak"
+    ]
+  },
+  {
+    "name": "Thomas",
+    "chars": [
+      "Tiranôu-Frostmourne",
+      "Dvalin-Frostmourne"
+    ]
+  },
+  {
+    "name": "Tobi",
+    "chars": [
+      "Dinkelheit-Antonidas",
+      "Klauwn-Antonidas"
+    ]
+  },
+  {
+    "name": "Tom",
+    "chars": [
+      "Schäppert-Anub'arak"
+    ]
+  },
+  {
+    "name": "Yasmin",
+    "chars": [
+      "Yäzmin-Antonidas",
+      "Crêpesuzette-Antonidas"
+    ]
+  }
 ]
