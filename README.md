@@ -131,6 +131,8 @@ python -m streamlit run src/dkp/01_overview.py
 
 # Refactor
 - load loot logs into DATABASE object at start up and work with objects (fixes development issues with local and remote repo)
+  - reload button? -> no restart debug session
+  - reload data objects on persist (update to github)
 - balance and loot-history should have an own data class
 
 

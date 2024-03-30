@@ -1,8 +1,16 @@
+from unittest.mock import patch
 from app import apply_fixes, merging_logs, validate_characters_known, validate_note_values
-from github_client import Player
 
+from core import Player
 from tests.commons import create_test_object_fixes, create_test_object_raw_loot
 import pytest
+
+
+@pytest.fixture(autouse=True)
+def mock_github_client():
+    # prevents github_client initialization, which loads all data from github
+    with patch('app.DATABASE') as mock:
+        yield mock
 
 
 def test_validate_characters_known_fails():

@@ -7,10 +7,9 @@ Client for interaction with github.com API
 import datetime
 import json
 import logging
-import os
 
-from core import Loot, Player, Raid, RawLoot, Season, to_player_json, to_raw_loot_json, to_raw_loot_list
-from github import Auth, Github, UnknownObjectException
+from core import Loot, Player, Raid, RawLoot, Season, to_date, to_player_json, to_raw_loot_json, to_raw_loot_list
+from github import Auth, Github
 from github.ContentFile import ContentFile
 
 log = logging.getLogger(__name__)
@@ -25,32 +24,58 @@ class GithubClient:
         github_api = Github(auth=Auth.Token(token))
         self.repo_api = github_api.get_user(USER_NAME).get_repo(REPO_NAME)
         self.player_list = self._load_players()
-        self.raid_list = self._load_raids()
         self.season_list = self._load_seasons()
+        self.raid_list = self._load_raids()
+        self.raw_loot_list = self._load_raw_loot_list()
 
 
-    def _get_data_file(self, file_path: str) -> ContentFile:
+    def _get_data_file_hash(self, file_path: str) -> str:
         result = self.repo_api.get_contents(file_path)
-        if result is list:
+        if isinstance(result, list):
             raise ValueError(f"Multiple files found for {file_path}")
-        return result # type: ignore
+        return result.sha
+
+
+    def _get_data_file_content(self, file_path: str) -> str:
+        result = self.repo_api.get_contents(file_path)
+        if isinstance(result, list):
+            raise ValueError(f"Multiple files found for {file_path}")
+        return result.decoded_content.decode("utf-8")
+
+
+    def _load_raw_loot_list(self) -> dict[Season, dict[Raid, list[RawLoot]]]:
+        result = {}
+        for season in self.season_list:
+            dir_path = _get_loot_log_dir_path(season.key)
+            file_list = self.repo_api.get_contents(dir_path)
+            if isinstance(file_list, ContentFile):
+                file_list = [file_list]
+            raid_dict = []
+            for file in file_list:
+                content = file.decoded_content.decode("utf-8")
+                raw_loot_list = to_raw_loot_list(content)
+                raid_day = file.name.split(".")[0]
+                raid = get_raid_by_date(self.raid_list, raid_day)
+                raid_dict[raid] = raw_loot_list  # type: ignore
+            result[season] = raid_dict
+        return result
 
 
     def _load_raids(self) -> list[Raid]:
-        content = self._get_data_file(_get_raid_file()).decoded_content.decode("utf-8")
+        content = self._get_data_file_content(_get_raid_file())
         return [Raid(**entry) for entry in json.loads(content)]
 
 
     def _load_players(self) -> list[Player]:
-        content = self._get_data_file(_get_player_file()).decoded_content.decode("utf-8")
+        content = self._get_data_file_content(_get_player_file())
         player_list = [Player(**entry) for entry in json.loads(content)]
-        return sorted(player_list, key=lambda player: player.name)
+        return player_list
 
 
     def _load_seasons(self) -> list[Season]:
-        content = self._get_data_file(_get_season_file()).decoded_content.decode("utf-8")
+        content = self._get_data_file_content(_get_season_file())
         season_list = [Season(**entry) for entry in json.loads(content)]
-        return sorted(season_list, key=lambda season: season.id, reverse=True)
+        return season_list
 
 
     def add_player(self, player_name: str):
@@ -68,57 +93,49 @@ class GithubClient:
 
     def _update_player_list(self):
         file_path = _get_player_file()
-        file_hash = self._get_data_file(file_path).sha
+        file_hash = self._get_data_file_hash(file_path)
         self.repo_api.update_file(file_path, "Update", to_player_json(self.player_list), file_hash)
 
 
-    def get_loot_log_raw(self, season: str, raid_day: str) -> list[RawLoot]:
-        """"Get loot log for a specific raid day from REMOTE repository at github.com."""
-        file_path = _get_loot_log_file_path(season, raid_day)
-        try:
-            content = self._get_data_file(file_path).decoded_content.decode("utf-8")
-            return to_raw_loot_list(content)
-        except UnknownObjectException:
-            return []
+    def get_loot_log_raw(self, season: Season, raid_day: str) -> list[RawLoot]:
+        season_logs = self.raw_loot_list[season]
+        for raid, loot_list in season_logs.items():
+            if to_date(raid.date) == raid_day:
+                return loot_list
+        return []
 
 
-    def get_loot_log(self, season: str, raid_day: str) -> list[Loot]:
-        """"Get loot log for a specific raid day from REMOTE repository at github.com."""
-        file_path = _get_loot_log_file_path(season, raid_day)
-        try:
-            content = self._get_data_file(file_path).decoded_content.decode("utf-8")
-            raw_loot_list = to_raw_loot_list(content)
-            return _cleanup_data(raw_loot_list, self.player_list)
-        except UnknownObjectException:
-            return []
+    def get_loot_log(self, season: Season, raid_day: str) -> list[Loot]:
+        log = self.get_loot_log_raw(season, raid_day)
+        return _cleanup_data(log, self.player_list)
 
 
-    def get_loot_logs_from_local_files(self, season: str) -> list[Loot]:
-        """"Get all loot logs for a season from LOCAL git repository."""
-        dir_path = _get_loot_log_dir_path(season)
-        result = []
-        for file in os.listdir(dir_path):
-            with open(os.path.join(dir_path, file), 'r') as file:
-                content = file.read()
-                raw_loot_list = to_raw_loot_list(content)
-                result += _cleanup_data(raw_loot_list, self.player_list)
-        return result
+    def get_all_loot_logs(self, season: Season) -> list[Loot]:
+        season_logs = []
+        for _, loot_list in self.raw_loot_list[season].items():
+            season_logs += loot_list
+        return _cleanup_data(season_logs, self.player_list)
 
 
-    def create_loot_log(self, content: list[RawLoot], season: str, raid_day: str):
-        file_path = _get_loot_log_file_path(season, raid_day)
+    def create_loot_log(self, content: list[RawLoot], season: Season, raid_day: str):
+        file_path = _get_loot_log_file_path(season.key, raid_day)
         self.repo_api.create_file(file_path, "Create", to_raw_loot_json(content))
+        # TODO update self.raw_loot_list
 
 
-    def update_loot_log(self, content: list[RawLoot], season: str, raid_day: str):
-        file_path = _get_loot_log_file_path(season, raid_day)
-        file_hash = self._get_data_file(file_path).sha
+    def update_loot_log(self, content: list[RawLoot], season: Season, raid_day: str):
+        # update file on github
+        file_path = _get_loot_log_file_path(season.key, raid_day)
+        file_hash = self._get_data_file_hash(file_path)
         self.repo_api.update_file(file_path, "Update", to_raw_loot_json(content), file_hash)
+        # update loot list
+        raid = get_raid_by_date(self.raid_list, raid_day)
+        self.raw_loot_list[season][raid] = content
 
 
-    def fix_loot_log(self, content: list[RawLoot], season: str, raid_day: str, reason: str):
-        file_path = _get_loot_log_file_path(season, raid_day)
-        file_hash = self._get_data_file(file_path).sha
+    def fix_loot_log(self, content: list[RawLoot], season: Season, raid_day: str, reason: str):
+        file_path = _get_loot_log_file_path(season.key, raid_day)
+        file_hash = self._get_data_file_hash(file_path)
         self.repo_api.update_file(file_path, f"Fix: {reason}", to_raw_loot_json(content), file_hash)
 
 
@@ -153,12 +170,19 @@ def _cleanup_data(raw_loot: list[RawLoot], player_list: list[Player]) -> list[Lo
 
 
 def _get_raid_file():
-    return f"data/raid.json"
+    return "data/raid.json"
 def _get_player_file():
-    return f"data/player.json"
+    return "data/player.json"
 def _get_season_file():
-    return f"data/season.json"
+    return "data/season.json"
 def _get_loot_log_dir_path(season: str):
     return f"data/season/{season}"
 def _get_loot_log_file_path(season: str, raid_day: str):
     return f"data/season/{season}/{raid_day}.json"
+
+
+def get_raid_by_date(raid_list: list[Raid], raid_day: str) -> Raid:
+    raid  = next((raid for raid in raid_list if raid.date == raid_day), None)
+    if raid is None:
+        raise Exception(f"No raid found for {raid_day}")
+    return raid

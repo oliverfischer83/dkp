@@ -160,12 +160,12 @@ def get_balance(season: Season):
 
 
 def get_last_update(season: Season):
-    all_loot = DATABASE.get_loot_logs_from_local_files(season.key)
+    all_loot = DATABASE.get_all_loot_logs(season)
     latest_entry = max(all_loot, key=lambda entry: entry.timestamp)
     return f"{latest_entry.timestamp} (Boss: {latest_entry.boss}, {latest_entry.difficulty})"
 
 def get_loot_history(season: Season):
-    all_loot = DATABASE.get_loot_logs_from_local_files(season.key)
+    all_loot = DATABASE.get_all_loot_logs(season)
     relevant_loot = [entry for entry in all_loot if entry.response == "Gebot"]
     return relevant_loot
 
@@ -186,7 +186,7 @@ def get_admin_view(report_id):
 
 
 def upload_loot_log(raw_loot_list: list[RawLoot]):
-    season = get_current_season().key
+    season = get_current_season()
     raid_day = datetime.datetime.strptime(raw_loot_list[0].date, "%d/%m/%y").strftime("%Y-%m-%d")  # first entry
     existing_log = DATABASE.get_loot_log_raw(season, raid_day)
 
@@ -198,7 +198,7 @@ def upload_loot_log(raw_loot_list: list[RawLoot]):
 
 
 def apply_loot_log_fix(fixes: list[Fix], raid_day: str, reason: str):
-    season = get_current_season().key
+    season = get_current_season()
     existing_log = DATABASE.get_loot_log_raw(season, raid_day)
     if not existing_log:
         raise Exception(f"No loot log found! season: {season}, raid day: {raid_day}")
@@ -207,12 +207,12 @@ def apply_loot_log_fix(fixes: list[Fix], raid_day: str, reason: str):
     DATABASE.fix_loot_log(result, season, raid_day, reason)
 
 
-def get_loot_log(raid_day: str) -> list[Loot]:
-    return DATABASE.get_loot_log(get_current_season().key, raid_day)
+def get_loot_log_for_current_season(raid_day: str) -> list[Loot]:
+    return DATABASE.get_loot_log(get_current_season(), raid_day)
 
 
-def get_loot_log_raw(raid_day: str) -> list[RawLoot]:
-    return DATABASE.get_loot_log_raw(get_current_season().key, raid_day)
+def get_loot_log_raw_for_current_season(raid_day: str) -> list[RawLoot]:
+    return DATABASE.get_loot_log_raw(get_current_season(), raid_day)
 
 
 def filter_logs(existing_log: list[RawLoot], new_log: list[RawLoot]) -> list[RawLoot]:
@@ -270,4 +270,7 @@ def get_season_list() -> list[Season]:
     return DATABASE.season_list
 
 def get_current_season() -> Season:
-    return sorted(DATABASE.season_list, key=lambda season: season.id, reverse=True)[0]
+    # return sorted(DATABASE.season_list, key=lambda season: season.id, reverse=True)[0]
+    # changed sorting so that season 3 is the current season
+    # TODO revert once season 4 is live
+    return sorted(DATABASE.season_list, key=lambda season: season.id, reverse=False)[0]
