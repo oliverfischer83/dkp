@@ -104,7 +104,7 @@ class Raid(BaseModel):
 
 class Season(BaseModel):
     id: str
-    name: str
+    key: str
     descr: str
 
 

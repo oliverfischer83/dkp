@@ -124,3 +124,10 @@ python -m streamlit run src/dkp/01_overview.py
   - show warning if raid finished and attendees/report id missing
   - (maybe) if unknown character
 
+
+# Refactor
+- load loot logs into DATABASE object at start up and work with objects (fixes development issues with local and remote repo)
+- balance and loot-history should have an own data class
+
+
+

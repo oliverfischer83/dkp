@@ -90,7 +90,7 @@ def add_cost_to_balance_table(balance_table: dict[str, dict[int, Any]], player_t
     return balance_table
 
 
-def get_balance(player_list: list[Player], raid_list: list[Raid], loot_table: list[Loot]) -> dict[str, dict[int, Any]]:
+def calc_balance(player_list: list[Player], raid_list: list[Raid], loot_table: list[Loot]) -> dict[str, dict[int, Any]]:
     log.debug("get_balance")
     player_to_cost_pair = get_player_to_cost_pair(player_list, loot_table)
     balance_table = init_balance_table(player_list)
@@ -153,18 +153,21 @@ def validate_import(raw_loot_list: list[RawLoot]):
     validate_note_values([entry.note for entry in raw_loot_list])
 
 
-def get_balance_view():
-    player_list = DATABASE.player_list  # TODO refactor: player_list is already in all_loot, should not be necessary here
-    season = get_current_season()
+def get_balance(season: Season):
+    player_list = DATABASE.player_list
+    relevant_loot = get_loot_history(season)
+    return calc_balance(player_list, DATABASE.raid_list, relevant_loot)
 
-    all_loot = DATABASE.get_loot_logs_from_local_files(season.name)
+
+def get_last_update(season: Season):
+    all_loot = DATABASE.get_loot_logs_from_local_files(season.key)
     latest_entry = max(all_loot, key=lambda entry: entry.timestamp)
+    return f"{latest_entry.timestamp} (Boss: {latest_entry.boss}, {latest_entry.difficulty})"
+
+def get_loot_history(season: Season):
+    all_loot = DATABASE.get_loot_logs_from_local_files(season.key)
     relevant_loot = [entry for entry in all_loot if entry.response == "Gebot"]
-    last_update = f"{latest_entry.timestamp} (Boss: {latest_entry.boss}, {latest_entry.difficulty})"
-
-    balance = get_balance(player_list, DATABASE.raid_list, relevant_loot)
-
-    return BalanceView(season_descr=season.descr, balance=balance, loot_history=relevant_loot, last_update=last_update)
+    return relevant_loot
 
 
 def get_admin_view(report_id):
@@ -183,7 +186,7 @@ def get_admin_view(report_id):
 
 
 def upload_loot_log(raw_loot_list: list[RawLoot]):
-    season = get_current_season().name
+    season = get_current_season().key
     raid_day = datetime.datetime.strptime(raw_loot_list[0].date, "%d/%m/%y").strftime("%Y-%m-%d")  # first entry
     existing_log = DATABASE.get_loot_log_raw(season, raid_day)
 
@@ -195,7 +198,7 @@ def upload_loot_log(raw_loot_list: list[RawLoot]):
 
 
 def apply_loot_log_fix(fixes: list[Fix], raid_day: str, reason: str):
-    season = get_current_season().name
+    season = get_current_season().key
     existing_log = DATABASE.get_loot_log_raw(season, raid_day)
     if not existing_log:
         raise Exception(f"No loot log found! season: {season}, raid day: {raid_day}")
@@ -205,11 +208,11 @@ def apply_loot_log_fix(fixes: list[Fix], raid_day: str, reason: str):
 
 
 def get_loot_log(raid_day: str) -> list[Loot]:
-    return DATABASE.get_loot_log(get_current_season().name, raid_day)
+    return DATABASE.get_loot_log(get_current_season().key, raid_day)
 
 
 def get_loot_log_raw(raid_day: str) -> list[RawLoot]:
-    return DATABASE.get_loot_log_raw(get_current_season().name, raid_day)
+    return DATABASE.get_loot_log_raw(get_current_season().key, raid_day)
 
 
 def filter_logs(existing_log: list[RawLoot], new_log: list[RawLoot]) -> list[RawLoot]:

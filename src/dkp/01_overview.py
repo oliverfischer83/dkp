@@ -4,19 +4,17 @@ import streamlit as st
 import app
 
 
-view = app.get_balance_view()
-
 # Season
-seasons = [season.descr for season in sorted(app.get_season_list(), key=lambda season: season.id, reverse=True)]
-season = st.selectbox("WoW Season:", seasons)
+season_list = sorted(app.get_season_list(), key=lambda season: season.id, reverse=True)
+selected_season = st.selectbox("", [season.descr for season in season_list])
+season = next((season for season in season_list if season.descr == selected_season), None)
 
-st.markdown("# " + view.season_descr)
-st.markdown("Letzte Aktualisierung: " + view.last_update)
+st.markdown("Letzte Aktualisierung: " + app.get_last_update(season))  # type: ignore
 
 # DKP list
 st.markdown("### DKP Liste")
 st.dataframe(
-    pd.DataFrame(view.balance, columns=["name", "value", "income", "cost", "characters"]).sort_values(
+    pd.DataFrame(app.get_balance(season), columns=["name", "value", "income", "cost", "characters"]).sort_values(   # type: ignore
         by=["name"], ascending=True, ignore_index=False
     ),
     column_config={
@@ -32,7 +30,7 @@ st.dataframe(
 # Loot history
 st.markdown("### Loot Liste")
 st.dataframe(
-    pd.DataFrame([loot.model_dump() for loot in view.loot_history], columns=["timestamp", "player", "note", "item_name", "item_link", "boss", "difficulty", "instance", "character"]).sort_values(
+    pd.DataFrame([loot.model_dump() for loot in app.get_loot_history(season)], columns=["timestamp", "player", "note", "item_name", "item_link", "boss", "difficulty", "instance", "character"]).sort_values(  # type: ignore
         by=["timestamp"], ascending=False, ignore_index=False
     ),
     column_config={
