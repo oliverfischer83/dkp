@@ -22,7 +22,7 @@ st.dataframe(
         "cost": "ausgegeben",
         "characters": "Charaktere",
     },
-    # hide_index=True,
+    hide_index=True,
 )
 
 # Loot history
@@ -48,5 +48,5 @@ st.dataframe(
         "instance": "Raid",
         "character": "Charakter",
     },
-    # hide_index=True,
+    hide_index=True,
 )

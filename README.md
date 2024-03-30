@@ -94,6 +94,7 @@ python -m streamlit run src/dkp/01_overview.py
 - add status flag to Player
   - paused: dont show on balance view
 - unify data validation on export upload and loot editor changes
+- loot statistics (which loot dropt how often, raid progress, raid attendence, ...)
 
 ## Checklist
 - Raid button
@@ -114,15 +115,6 @@ python -m streamlit run src/dkp/01_overview.py
 ## Info Page
 - rules (copy from Excel Sheet)
 - how to install and configure Addon RCLootCouncil using screenshots
-
-## Character Editor
-- on loot upload or raid finished ...
-  - if character missing
-    - don't save, show warning for every character missing, keep input data in field
-    - try getting name
-- on adding new player (chars optional)
-  - should be shown on balance view with 100 pt.
-- disable function to remove player somehow
 
 ## Raid Editor
 - status

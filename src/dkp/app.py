@@ -249,3 +249,15 @@ def apply_fixes(existing_log: list[RawLoot], fixes: list[Fix]):
                         # sanity check
                         raise Exception(f"Invalid key: {e.name}")
     return result
+
+
+def get_player_list():
+    return DATABASE.get_players()
+
+
+def add_player(player_name: str):
+    DATABASE.add_player(player_name)
+
+
+def add_character(player_name: str, character_name: str):
+    DATABASE.add_character(player_name, character_name)

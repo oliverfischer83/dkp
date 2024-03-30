@@ -9,7 +9,7 @@ import json
 import logging
 import os
 
-from core import Loot, Player, Raid, RawLoot, to_json, to_raw_loot_list
+from core import Loot, Player, Raid, RawLoot, to_player_json, to_raw_loot_json, to_raw_loot_list
 from github import Auth, Github, UnknownObjectException
 from github.ContentFile import ContentFile
 
@@ -45,10 +45,32 @@ class GithubClient:
 
     def _load_players(self) -> list[Player]:
         content = self._get_data_file(_get_player_file()).decoded_content.decode("utf-8")
-        return [Player(**entry) for entry in json.loads(content)]
+        player_list = [Player(**entry) for entry in json.loads(content)]
+        return sorted(player_list, key=lambda player: player.name)
+
 
     def get_players(self) -> list[Player]:
+        self.player_list = sorted(self.player_list, key=lambda player: player.name)
         return self.player_list
+
+
+    def add_player(self, player_name: str):
+        self.player_list.append(Player(name=player_name, chars=[]))
+        self._update_player_list()
+
+
+    def add_character(self, player_name: str, character_name: str):
+        for player in self.player_list:
+            if player.name == player_name:
+                player.chars.append(character_name)
+                break
+        self._update_player_list()
+
+
+    def _update_player_list(self):
+        file_path = _get_player_file()
+        file_hash = self._get_data_file(file_path).sha
+        self.repo_api.update_file(file_path, "Update", to_player_json(self.player_list), file_hash)
 
 
     def get_loot_log_raw(self, season: str, raid_day: str) -> list[RawLoot]:
@@ -86,19 +108,19 @@ class GithubClient:
 
     def create_loot_log(self, content: list[RawLoot], season: str, raid_day: str):
         file_path = _get_loot_log_file_path(season, raid_day)
-        self.repo_api.create_file(file_path, "Create", to_json(content))
+        self.repo_api.create_file(file_path, "Create", to_raw_loot_json(content))
 
 
     def update_loot_log(self, content: list[RawLoot], season: str, raid_day: str):
         file_path = _get_loot_log_file_path(season, raid_day)
         file_hash = self._get_data_file(file_path).sha
-        self.repo_api.update_file(file_path, "Update", to_json(content), file_hash)
+        self.repo_api.update_file(file_path, "Update", to_raw_loot_json(content), file_hash)
 
 
     def fix_loot_log(self, content: list[RawLoot], season: str, raid_day: str, reason: str):
         file_path = _get_loot_log_file_path(season, raid_day)
         file_hash = self._get_data_file(file_path).sha
-        self.repo_api.update_file(file_path, f"Fix: {reason}", to_json(content), file_hash)
+        self.repo_api.update_file(file_path, f"Fix: {reason}", to_raw_loot_json(content), file_hash)
 
 
 def _cleanup_data(raw_loot: list[RawLoot], player_list: list[Player]) -> list[Loot]:
