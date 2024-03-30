@@ -125,13 +125,6 @@ class LootHistory(BaseModel):
     character: str
 
 
-class BalanceView(BaseModel):
-    season_descr: str
-    last_update: str
-    balance: dict[str, dict[int, Any]]
-    loot_history: list[Loot]
-
-
 def to_raw_loot_list(content: str) -> list[RawLoot]:
     """Converts json str into raw loot lists."""
     loot_list = json.loads(content)

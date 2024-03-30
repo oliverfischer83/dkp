@@ -11,7 +11,7 @@ from typing import Any
 
 from config_mapper import Config
 from dotenv import load_dotenv
-from core import AdminView, BalanceView, Fix, Season
+from core import AdminView, Fix, Season
 from github_client import GithubClient, Loot, Player, Raid, RawLoot
 from warcraftlogs_client import WclClient
 

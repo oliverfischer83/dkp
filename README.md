@@ -93,8 +93,10 @@ python -m streamlit run src/dkp/01_overview.py
   - remove "# type: ignore"
 - add status flag to Player
   - paused: dont show on balance view
+  - or only add player to dkp list, which has atleast one raid
 - unify data validation on export upload and loot editor changes
 - loot statistics (which loot dropt how often, raid progress, raid attendence, ...)
+- hidden area for data management, so that its no longer necessary to edit any json file on github
 
 ## Checklist
 - Raid button
@@ -116,6 +118,9 @@ python -m streamlit run src/dkp/01_overview.py
 - rules (copy from Excel Sheet)
 - how to install and configure Addon RCLootCouncil using screenshots
 
+## Season management
+- button to add season and reloads data
+
 ## Raid Editor
 - status
   - started (log added same day or raid started manually)
@@ -124,10 +129,10 @@ python -m streamlit run src/dkp/01_overview.py
   - show warning if raid finished and attendees/report id missing
   - (maybe) if unknown character
 
-
 # Refactor
 - load loot logs into DATABASE object at start up and work with objects (fixes development issues with local and remote repo)
 - balance and loot-history should have an own data class
 
 
 
+- upload last raid report

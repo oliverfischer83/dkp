@@ -6,7 +6,7 @@ import app
 
 # Season
 season_list = sorted(app.get_season_list(), key=lambda season: season.id, reverse=True)
-selected_season = st.selectbox("", [season.descr for season in season_list])
+selected_season = st.selectbox("WoW season:", [season.descr for season in season_list], label_visibility="collapsed")
 season = next((season for season in season_list if season.descr == selected_season), None)
 
 st.markdown("Letzte Aktualisierung: " + app.get_last_update(season))  # type: ignore
