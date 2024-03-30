@@ -102,6 +102,12 @@ class Raid(BaseModel):
     attendees: list[str] = Field(alias="player")
 
 
+class Season(BaseModel):
+    id: str
+    name: str
+    descr: str
+
+
 class AdminView(BaseModel):
     date: str
     report_url: str
@@ -120,7 +126,7 @@ class LootHistory(BaseModel):
 
 
 class BalanceView(BaseModel):
-    season_name: str
+    season_descr: str
     last_update: str
     balance: dict[str, dict[int, Any]]
     loot_history: list[Loot]

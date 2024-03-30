@@ -1,15 +1,19 @@
 # pylint: disable=missing-module-docstring
 import pandas as pd
 import streamlit as st
+import app
 
-from app import get_balance_view
 
+view = app.get_balance_view()
 
-view = get_balance_view()
+# Season
+seasons = [season.descr for season in sorted(app.get_season_list(), key=lambda season: season.id, reverse=True)]
+season = st.selectbox("WoW Season:", seasons)
 
-# Balance
-st.markdown("# " + view.season_name)
+st.markdown("# " + view.season_descr)
 st.markdown("Letzte Aktualisierung: " + view.last_update)
+
+# DKP list
 st.markdown("### DKP Liste")
 st.dataframe(
     pd.DataFrame(view.balance, columns=["name", "value", "income", "cost", "characters"]).sort_values(

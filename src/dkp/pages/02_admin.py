@@ -1,13 +1,11 @@
 # pylint: disable=missing-module-docstring,missing-function-docstring,missing-class-docstring
 
-import datetime
 import time
 
+import app
 import pandas as pd
 import streamlit as st
-from app import filter_logs, get_admin_view, get_loot_log_raw
-import app
-from core import Fix, FixEntry, to_date, to_raw_date, to_raw_loot_list
+from core import Fix, FixEntry, to_date, to_raw_loot_list
 
 
 def main():
@@ -25,7 +23,7 @@ def main():
         st.header("Raid snippet")
         report_id = st.text_input("Enter warcraftlogs report id:", placeholder="e.g. JrYPGF9D1yLqtZhd")
         if st.button("Submit WCL report id"):
-            view = get_admin_view(report_id)
+            view = app.get_admin_view(report_id)
             st.code(
                 f"""
             - date: {view.date}
@@ -43,8 +41,8 @@ def main():
         if st.button("Try submit ..."):
             uploaded_log = to_raw_loot_list(json_string)
             raid_day = to_date(uploaded_log[0].date)
-            existing_log = get_loot_log_raw(raid_day)
-            new_log = filter_logs(existing_log, uploaded_log)
+            existing_log = app.get_loot_log_raw(raid_day)
+            new_log = app.filter_logs(existing_log, uploaded_log)
             try:
                 # only validate the new loot, the existing loot in the json export could be invalid and was cleaned up before
                 # only the new loot is stored into the database
@@ -61,8 +59,8 @@ def main():
     # Loot editor
     with st.container():
         st.header("Loot editor")
-        raid_day = st.date_input("Show Loot Log of Raid day:", value=datetime.date.today(), format="YYYY-MM-DD").strftime("%Y-%m-%d")  # type: ignore
-        loot_log_original = app.get_loot_log(raid_day)
+        raid_day = st.selectbox("Select raid:", sorted([raid.date for raid in app.get_raid_list()], reverse=True))
+        loot_log_original = app.get_loot_log(raid_day)  # type: ignore
 
         data=[loot.model_dump() for loot in loot_log_original]
         columns=[ "id", "character", "note", "response", "item_name", "boss", "difficulty", "instance", "timestamp"]
@@ -73,7 +71,7 @@ def main():
         if not diff.empty:
             st.write("Changed Loot:")
             st.write(diff)
-            reason = st.text_input("Reason for fix:", key="reason")
+            reason = st.text_input("Reason for fix:", key="reason", placeholder="e.g. clean up, player traded item, fixed response, ...")
 
             if st.button("Submit changed Loot"):
                 if not reason:
@@ -101,7 +99,7 @@ def main():
             st.rerun()  # realoads the assign button
 
         new_char = st.text_input("Enter new character name:", placeholder="e.g. Lümmel-Anub'arak")
-        selected_player = st.selectbox("Select player:", [f'{item.name}' for item in app.get_player_list()])
+        selected_player = st.selectbox("Select player:", sorted([player.name for player in app.get_player_list()]))
         if st.button("Add character"):
             if not new_char:
                 st.error("Please enter a character name.")

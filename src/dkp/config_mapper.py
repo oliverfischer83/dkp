@@ -28,14 +28,8 @@ class Auth(BaseModel):
     github_client: GithubClient
 
 
-class Season(BaseModel):
-    name: str
-    key: str
-
-
 class ConfigRoot(BaseModel):
     auth: Auth
-    season: Season
 
 
 class Config:
@@ -47,7 +41,6 @@ class Config:
 
     def __init__(self) -> None:
         self.auth: Auth
-        self.season: Season
 
     def __new__(cls):
         with cls._lock:
@@ -59,7 +52,6 @@ class Config:
     def _load_config(self):
         root = load_config()
         self.auth: Auth = root.auth
-        self.season: Season = root.season
 
 
 def load_config():

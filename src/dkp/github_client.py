@@ -9,7 +9,7 @@ import json
 import logging
 import os
 
-from core import Loot, Player, Raid, RawLoot, to_player_json, to_raw_loot_json, to_raw_loot_list
+from core import Loot, Player, Raid, RawLoot, Season, to_player_json, to_raw_loot_json, to_raw_loot_list
 from github import Auth, Github, UnknownObjectException
 from github.ContentFile import ContentFile
 
@@ -26,6 +26,7 @@ class GithubClient:
         self.repo_api = github_api.get_user(USER_NAME).get_repo(REPO_NAME)
         self.player_list = self._load_players()
         self.raid_list = self._load_raids()
+        self.season_list = self._load_seasons()
 
 
     def _get_data_file(self, file_path: str) -> ContentFile:
@@ -39,9 +40,6 @@ class GithubClient:
         content = self._get_data_file(_get_raid_file()).decoded_content.decode("utf-8")
         return [Raid(**entry) for entry in json.loads(content)]
 
-    def get_raids(self) -> list[Raid]:
-        return self.raid_list
-
 
     def _load_players(self) -> list[Player]:
         content = self._get_data_file(_get_player_file()).decoded_content.decode("utf-8")
@@ -49,9 +47,10 @@ class GithubClient:
         return sorted(player_list, key=lambda player: player.name)
 
 
-    def get_players(self) -> list[Player]:
-        self.player_list = sorted(self.player_list, key=lambda player: player.name)
-        return self.player_list
+    def _load_seasons(self) -> list[Season]:
+        content = self._get_data_file(_get_season_file()).decoded_content.decode("utf-8")
+        season_list = [Season(**entry) for entry in json.loads(content)]
+        return sorted(season_list, key=lambda season: season.id, reverse=True)
 
 
     def add_player(self, player_name: str):
@@ -157,6 +156,8 @@ def _get_raid_file():
     return f"data/raid.json"
 def _get_player_file():
     return f"data/player.json"
+def _get_season_file():
+    return f"data/season.json"
 def _get_loot_log_dir_path(season: str):
     return f"data/season/{season}"
 def _get_loot_log_file_path(season: str, raid_day: str):

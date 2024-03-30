@@ -11,7 +11,7 @@ from typing import Any
 
 from config_mapper import Config
 from dotenv import load_dotenv
-from core import AdminView, BalanceView, Fix
+from core import AdminView, BalanceView, Fix, Season
 from github_client import GithubClient, Loot, Player, Raid, RawLoot
 from warcraftlogs_client import WclClient
 
@@ -149,27 +149,26 @@ def validate_expected_state(raw_loot_list: list[RawLoot]):
 
 def validate_import(raw_loot_list: list[RawLoot]):
     validate_expected_state(raw_loot_list)
-    validate_characters_known(DATABASE.get_players(), [entry.player for entry in raw_loot_list])
+    validate_characters_known(DATABASE.player_list, [entry.player for entry in raw_loot_list])
     validate_note_values([entry.note for entry in raw_loot_list])
 
 
 def get_balance_view():
-    player_list = DATABASE.get_players()  # TODO refactor: player_list is already in all_loot, should not be necessary here
-    season_name = CONFIG.season.name
-    season_key = CONFIG.season.key
+    player_list = DATABASE.player_list  # TODO refactor: player_list is already in all_loot, should not be necessary here
+    season = get_current_season()
 
-    all_loot = DATABASE.get_loot_logs_from_local_files(season_key)
+    all_loot = DATABASE.get_loot_logs_from_local_files(season.name)
     latest_entry = max(all_loot, key=lambda entry: entry.timestamp)
     relevant_loot = [entry for entry in all_loot if entry.response == "Gebot"]
     last_update = f"{latest_entry.timestamp} (Boss: {latest_entry.boss}, {latest_entry.difficulty})"
 
-    balance = get_balance(player_list, DATABASE.get_raids(), relevant_loot)
+    balance = get_balance(player_list, DATABASE.raid_list, relevant_loot)
 
-    return BalanceView(season_name=season_name, balance=balance, loot_history=relevant_loot, last_update=last_update)
+    return BalanceView(season_descr=season.descr, balance=balance, loot_history=relevant_loot, last_update=last_update)
 
 
 def get_admin_view(report_id):
-    all_players = DATABASE.get_players()
+    all_players = DATABASE.player_list
     date, report_url, raiding_char_list = WCL_CLIENT.get_raid_details(report_id)
 
     # find attending players
@@ -184,7 +183,7 @@ def get_admin_view(report_id):
 
 
 def upload_loot_log(raw_loot_list: list[RawLoot]):
-    season = CONFIG.season.key
+    season = get_current_season().name
     raid_day = datetime.datetime.strptime(raw_loot_list[0].date, "%d/%m/%y").strftime("%Y-%m-%d")  # first entry
     existing_log = DATABASE.get_loot_log_raw(season, raid_day)
 
@@ -196,7 +195,7 @@ def upload_loot_log(raw_loot_list: list[RawLoot]):
 
 
 def apply_loot_log_fix(fixes: list[Fix], raid_day: str, reason: str):
-    season = CONFIG.season.key
+    season = get_current_season().name
     existing_log = DATABASE.get_loot_log_raw(season, raid_day)
     if not existing_log:
         raise Exception(f"No loot log found! season: {season}, raid day: {raid_day}")
@@ -206,13 +205,11 @@ def apply_loot_log_fix(fixes: list[Fix], raid_day: str, reason: str):
 
 
 def get_loot_log(raid_day: str) -> list[Loot]:
-    season = CONFIG.season.key
-    return DATABASE.get_loot_log(season, raid_day)
+    return DATABASE.get_loot_log(get_current_season().name, raid_day)
 
 
 def get_loot_log_raw(raid_day: str) -> list[RawLoot]:
-    season = CONFIG.season.key
-    return DATABASE.get_loot_log_raw(season, raid_day)
+    return DATABASE.get_loot_log_raw(get_current_season().name, raid_day)
 
 
 def filter_logs(existing_log: list[RawLoot], new_log: list[RawLoot]) -> list[RawLoot]:
@@ -252,8 +249,7 @@ def apply_fixes(existing_log: list[RawLoot], fixes: list[Fix]):
 
 
 def get_player_list():
-    return DATABASE.get_players()
-
+    return DATABASE.player_list
 
 def add_player(player_name: str):
     DATABASE.add_player(player_name)
@@ -261,3 +257,14 @@ def add_player(player_name: str):
 
 def add_character(player_name: str, character_name: str):
     DATABASE.add_character(player_name, character_name)
+
+
+def get_raid_list() -> list[Raid]:
+    return DATABASE.raid_list
+
+
+def get_season_list() -> list[Season]:
+    return DATABASE.season_list
+
+def get_current_season() -> Season:
+    return sorted(DATABASE.season_list, key=lambda season: season.id, reverse=True)[0]
