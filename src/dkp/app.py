@@ -10,8 +10,8 @@ import os
 from typing import Any
 
 from config_mapper import Config
-from dotenv import load_dotenv
 from core import AdminView, Fix, Season
+from dotenv import load_dotenv
 from github_client import GithubClient, Loot, Player, Raid, RawLoot
 from warcraftlogs_client import WclClient
 
@@ -71,7 +71,7 @@ def add_income_to_balance_table(balance_table: dict[str, dict[int, Any]], raid_l
     log.debug("add_income_to_balance_table")
     for i, name in balance_table["name"].items():
         for raid in raid_list:
-            for raid_player_name in raid.attendees:
+            for raid_player_name in raid.player:
                 if name == raid_player_name:
                     balance_table["value"][i] += ATTENDANCE_BONUS
                     balance_table["income"][i] += ATTENDANCE_BONUS
@@ -188,7 +188,7 @@ def get_admin_view(report_id):
 def upload_loot_log(raw_loot_list: list[RawLoot]):
     season = get_current_season()
     raid_day = datetime.datetime.strptime(raw_loot_list[0].date, "%d/%m/%y").strftime("%Y-%m-%d")  # first entry
-    existing_log = DATABASE.get_loot_log_raw(season, raid_day)
+    existing_log = DATABASE.get_loot_log_raw(raid_day)
 
     if existing_log:
         result = merging_logs(existing_log, raw_loot_list)
@@ -198,21 +198,19 @@ def upload_loot_log(raw_loot_list: list[RawLoot]):
 
 
 def apply_loot_log_fix(fixes: list[Fix], raid_day: str, reason: str):
-    season = get_current_season()
-    existing_log = DATABASE.get_loot_log_raw(season, raid_day)
+    existing_log = DATABASE.get_loot_log_raw(raid_day)
     if not existing_log:
-        raise Exception(f"No loot log found! season: {season}, raid day: {raid_day}")
-
+        raise Exception(f"No loot log found! raid day: {raid_day}")
     result = apply_fixes(existing_log, fixes)
-    DATABASE.fix_loot_log(result, season, raid_day, reason)
+    DATABASE.fix_loot_log(result, get_current_season(), raid_day, reason)
 
 
 def get_loot_log_for_current_season(raid_day: str) -> list[Loot]:
-    return DATABASE.get_loot_log(get_current_season(), raid_day)
+    return DATABASE.get_loot_log(raid_day)
 
 
 def get_loot_log_raw_for_current_season(raid_day: str) -> list[RawLoot]:
-    return DATABASE.get_loot_log_raw(get_current_season(), raid_day)
+    return DATABASE.get_loot_log_raw(raid_day)
 
 
 def filter_logs(existing_log: list[RawLoot], new_log: list[RawLoot]) -> list[RawLoot]:
@@ -258,8 +256,8 @@ def add_player(player_name: str):
     DATABASE.add_player(player_name)
 
 
-def add_character(player_name: str, character_name: str):
-    DATABASE.add_character(player_name, character_name)
+def add_player_character(player_name: str, character_name: str):
+    DATABASE.add_player_character(player_name, character_name)
 
 
 def get_raid_list() -> list[Raid]:

@@ -11,8 +11,8 @@ def test_get_raid_by_date(mocker):
     mocker.patch.object(cls, '_load_raids', return_value=raid_list)
 
     # Test case for existing raid
-    assert cls.get_raid_by_date("2024-01-01").date == "2024-01-01"
+    assert cls.find_raid_by_date("2024-01-01").date == "2024-01-01"
 
     # Test case for non-existing raid
     with pytest.raises(Exception, match="No raid found for 2099-12-31"):
-        cls.get_raid_by_date("2099-12-31")
+        cls.find_raid_by_date("2099-12-31")

@@ -7,8 +7,20 @@ Client for interaction with github.com API
 import datetime
 import json
 import logging
+from threading import Lock
 
-from core import Loot, Player, Raid, RawLoot, Season, to_date, to_player_json, to_raw_loot_json, to_raw_loot_list
+from core import (
+    Loot,
+    Player,
+    Raid,
+    RawLoot,
+    Season,
+    to_player_json,
+    to_raid_json,
+    to_raw_loot_json,
+    to_raw_loot_list,
+    to_season_json,
+)
 from github import Auth, Github
 from github.ContentFile import ContentFile
 
@@ -27,6 +39,10 @@ class GithubClient:
         self._season_list = None
         self._raid_list = None
         self._raw_loot_list = None
+        self._lock_player = Lock()
+        self._lock_raid = Lock()
+        self._lock_season = Lock()
+        self._lock_loot = Lock()
 
     @property
     def repo_api(self):
@@ -37,25 +53,29 @@ class GithubClient:
     @property
     def player_list(self):
         if self._player_list is None:
-            self._player_list = self._load_players()
+            with self._lock_player:
+                self._player_list = self._load_players()
         return self._player_list
 
     @property
     def season_list(self):
         if self._season_list is None:
-            self._season_list = self._load_seasons()
+            with self._lock_season:
+                self._season_list = self._load_seasons()
         return self._season_list
 
     @property
     def raid_list(self):
         if self._raid_list is None:
-            self._raid_list = self._load_raids()
+            with self._lock_raid:
+                self._raid_list = self._load_raids()
         return self._raid_list
 
     @property
     def raw_loot_list(self):
         if self._raw_loot_list is None:
-            self._raw_loot_list = self._load_raw_loot_list()
+            with self._lock_loot:
+                self._raw_loot_list = self._load_raw_loot_list()
         return self._raw_loot_list
 
     def _load_raw_loot_list(self) -> dict[Season, dict[Raid, list[RawLoot]]]:
@@ -70,7 +90,7 @@ class GithubClient:
                 content = file.decoded_content.decode("utf-8")
                 raw_loot_list = to_raw_loot_list(content)
                 raid_day = file.name.split(".")[0]
-                raid = self.get_raid_by_date(raid_day)
+                raid = self.find_raid_by_date(raid_day)
                 raid_dict[raid] = raw_loot_list
             result[season] = raid_dict
         return result
@@ -94,28 +114,46 @@ class GithubClient:
     def _get_data_file_hash(self, file_path: str) -> str:
         result = self.repo_api.get_contents(file_path)
         if isinstance(result, list):
-            raise ValueError(f"Multiple files found for {file_path}")
+            raise Exception(f"Multiple files found for {file_path}")
         return result.sha
 
 
     def _get_data_file_content(self, file_path: str) -> str:
         result = self.repo_api.get_contents(file_path)
         if isinstance(result, list):
-            raise ValueError(f"Multiple files found for {file_path}")
+            raise Exception(f"Multiple files found for {file_path}")
         return result.decoded_content.decode("utf-8")
 
 
     def add_player(self, player_name: str):
-        self.player_list.append(Player(name=player_name, chars=[]))
+        id = max([player.id for player in self.player_list]) + 1
+        self.player_list.append(Player(id=id, name=player_name, chars=[]))
         self._update_player_list()
 
 
-    def add_character(self, player_name: str, character_name: str):
-        for player in self.player_list:
-            if player.name == player_name:
-                player.chars.append(character_name)
-                break
+    def add_player_character(self, player_name: str, character_name: str):
+        player = self.find_player_by_name(player_name)
+        player.chars.append(character_name)
         self._update_player_list()
+
+
+    def add_raid(self, date: str):
+        id = max([raid.id for raid in self.raid_list]) + 1
+        self.raid_list.append(Raid(id=id, date=date, report="", player=[]))
+        self._update_raid_list()
+
+
+    def set_raid_details(self, report: str ,attendees: list[str]):
+        raid = self.find_raid_by_date("2021-01-01")
+        raid.player = attendees
+        raid.report = report
+        self._update_raid_list()
+
+
+    def add_season(self, name: str, descr: str):
+        id = max([season.id for season in self.season_list]) + 1
+        self.season_list.append(Season(id=id, name=name, descr=descr))
+        self._update_season_list()
 
 
     def _update_player_list(self):
@@ -124,16 +162,30 @@ class GithubClient:
         self.repo_api.update_file(file_path, "Update", to_player_json(self.player_list), file_hash)
 
 
-    def get_loot_log_raw(self, season: Season, raid_day: str) -> list[RawLoot]:
+    def _update_raid_list(self):
+        file_path = _get_raid_file()
+        file_hash = self._get_data_file_hash(file_path)
+        self.repo_api.update_file(file_path, "Update", to_raid_json(self.raid_list), file_hash)
+
+
+    def _update_season_list(self):
+        file_path = _get_season_file()
+        file_hash = self._get_data_file_hash(file_path)
+        self.repo_api.update_file(file_path, "Update", to_season_json(self.season_list), file_hash)
+
+
+    def get_loot_log_raw(self, raid_day: str) -> list[RawLoot]:
+        raid = self.find_raid_by_date(raid_day)
+        season = self.find_season_by_raid(raid)
         season_logs = self.raw_loot_list[season]
         for raid, loot_list in season_logs.items():
-            if to_date(raid.date) == raid_day:
+            if raid.date == raid_day:
                 return loot_list
         return []
 
 
-    def get_loot_log(self, season: Season, raid_day: str) -> list[Loot]:
-        log = self.get_loot_log_raw(season, raid_day)
+    def get_loot_log(self, raid_day: str) -> list[Loot]:
+        log = self.get_loot_log_raw(raid_day)
         return _cleanup_data(log, self.player_list)
 
 
@@ -144,11 +196,25 @@ class GithubClient:
         return _cleanup_data(season_logs, self.player_list)
 
 
-    def get_raid_by_date(self, raid_day: str) -> Raid:
+    def find_season_by_raid(self, raid: Raid) -> Season:
+        for season in self.season_list:
+            if raid in self.raw_loot_list[season]:
+                return season
+        raise Exception(f"No season found for raid {raid.date}")
+
+
+    def find_raid_by_date(self, raid_day: str) -> Raid:
         for raid in self.raid_list:
             if raid.date == raid_day:
                 return raid
         raise Exception(f"No raid found for {raid_day}")
+
+
+    def find_player_by_name(self, player_name: str) -> Player:
+        for player in self.player_list:
+            if player.name == player_name:
+                return player
+        raise ValueError(f"No player found for {player_name}")
 
 
     def create_loot_log(self, content: list[RawLoot], season: Season, raid_day: str):
@@ -156,7 +222,7 @@ class GithubClient:
         file_path = _get_loot_log_file_path(season.name, raid_day)
         self.repo_api.create_file(file_path, "Create", to_raw_loot_json(content))
         # update loot list
-        raid = self.get_raid_by_date(raid_day)
+        raid = self.find_raid_by_date(raid_day)
         self.raw_loot_list[season][raid] = content
 
 
@@ -166,7 +232,7 @@ class GithubClient:
         file_hash = self._get_data_file_hash(file_path)
         self.repo_api.update_file(file_path, "Update", to_raw_loot_json(content), file_hash)
         # update loot list
-        raid = self.get_raid_by_date(raid_day)
+        raid = self.find_raid_by_date(raid_day)
         self.raw_loot_list[season][raid] = content
 
 
@@ -176,7 +242,7 @@ class GithubClient:
         file_hash = self._get_data_file_hash(file_path)
         self.repo_api.update_file(file_path, f"Fix: {reason}", to_raw_loot_json(content), file_hash)
         # update loot list
-        raid = self.get_raid_by_date(raid_day)
+        raid = self.find_raid_by_date(raid_day)
         self.raw_loot_list[season][raid] = content
 
 

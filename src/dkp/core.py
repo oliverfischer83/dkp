@@ -92,7 +92,7 @@ class Fix(BaseModel):
 
 
 class Player(BaseModel):
-    id: int
+    id: int = 0
     name: str
     chars: list[str]
 
@@ -103,10 +103,10 @@ class Player(BaseModel):
         return hash((self.id))
 
 class Raid(BaseModel):
-    id: int
+    id: int = 0
     date: str
-    report_url: str = Field(alias="report")
-    attendees: list[str] = Field(alias="player")
+    report: str
+    player: list[str]
 
     def __eq__(self, other):
         return isinstance(other, Raid) and self.id == other.id
@@ -115,7 +115,7 @@ class Raid(BaseModel):
         return hash((self.id))
 
 class Season(BaseModel):
-    id: int
+    id: int = 0
     name: str
     descr: str
 
@@ -131,16 +131,6 @@ class AdminView(BaseModel):
     report_url: str
     player_list: list[str]
 
-
-class LootHistory(BaseModel):
-    timestamp: datetime.datetime
-    player: str
-    cost: str
-    item: str
-    instance: str
-    difficulty: str
-    boss: str
-    character: str
 
 
 def to_raw_loot_list(content: str) -> list[RawLoot]:
@@ -167,9 +157,20 @@ def to_raw_loot_json(loot_list: list[RawLoot]) -> str:
 
 
 def to_player_json(player_list: list[Player]) -> str:
-    """Converts player list into json str for database storage."""
     content = [player.model_dump() for player in player_list]
     sorted_content = sorted(content, key=lambda entry: entry['name'])  # sort by player name
+    return to_json(sorted_content)
+
+
+def to_raid_json(raid_list: list[Raid]) -> str:
+    content = [raid.model_dump() for raid in raid_list]
+    sorted_content = sorted(content, key=lambda entry: entry['date'])  # sort by raid date
+    return to_json(sorted_content)
+
+
+def to_season_json(season_list: list[Season]) -> str:
+    content = [season.model_dump() for season in season_list]
+    sorted_content = sorted(content, key=lambda entry: entry['id'])  # sort by raid id
     return to_json(sorted_content)
 
 

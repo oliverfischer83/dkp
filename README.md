@@ -134,6 +134,8 @@ python -m streamlit run src/dkp/01_overview.py
   - reload button? -> no restart debug session
   - reload data objects on persist (update to github)
 - balance and loot-history should have an own data class
+- unify methods
+  - create_loot_log, update_loot_log, fix_loot_log
 
 
 

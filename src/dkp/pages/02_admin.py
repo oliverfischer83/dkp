@@ -107,7 +107,7 @@ def main():
             if not selected_player:
                 st.error("Please select a player.")
                 st.stop()
-            app.add_character(selected_player, new_char)
+            app.add_player_character(selected_player, new_char)
             st.success("Character assignment saved.")
 
 
