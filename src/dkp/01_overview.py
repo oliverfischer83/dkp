@@ -12,7 +12,7 @@ season = next((season for season in season_list if season.descr == selected_seas
 st.markdown("Letzte Aktualisierung: " + app.get_last_update(season))  # type: ignore
 
 # DKP list
-st.markdown("### DKP Liste")
+st.markdown("### DKP Übersicht")
 st.dataframe(
     pd.DataFrame(app.get_balance(season), columns=["name", "value", "income", "cost", "characters"]).sort_values(   # type: ignore
         by=["name"], ascending=True, ignore_index=False

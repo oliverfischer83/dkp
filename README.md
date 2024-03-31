@@ -154,3 +154,6 @@ ADMIN_PASSWORD="..."
 - unify methods
   - create_loot_log, update_loot_log, fix_loot_log
 
+
+- try editor for raid, season, player update with text input for lists
+- use different branch for deployment
