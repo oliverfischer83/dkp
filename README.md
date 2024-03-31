@@ -44,9 +44,6 @@ Dotenv file at "<workspace>/.env" with following content:
 ```bash
 WCL_CLIENT_ID=...
 WCL_CLIENT_SECRET=...
-AWS_ACCESS_KEY_ID=...
-AWS_SECRET_ACCESS_KEY=...
-AWS_REGION=eu-central-1
 ```
 
 ### Start locally
@@ -54,6 +51,26 @@ AWS_REGION=eu-central-1
 cd ~/Projects/private/dkp
 python -m streamlit run src/dkp/01_overview.py
 ```
+
+## Deployment on streamlit community cloud
+
+- login to steamlit cloud: https://share.streamlit.io/
+- new app
+  - repo: `oliverfischer83/dkp`
+  - branch: `main`
+  - file: `src/dkp/01_overview.py`
+  - url: `dkp-vipers.streamlit.app`
+  - advanced:
+    - python version: `3.12`
+    - secrets (see keepass):
+```shell
+WCL_CLIENT_ID="..."
+WCL_CLIENT_SECRET="..."
+GITHUB_CLIENT_TOKEN="..."
+ADMIN_PASSWORD="..."
+```
+- after deployment finished, an Actions workflow is created called `pages build and deployment` and responsible for auto deployment on code changes
+
 
 # TODO
 
@@ -137,6 +154,3 @@ python -m streamlit run src/dkp/01_overview.py
 - unify methods
   - create_loot_log, update_loot_log, fix_loot_log
 
-
-
-- upload last raid report
