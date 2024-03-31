@@ -218,7 +218,8 @@ class GithubClient:
         raise ValueError(f"No player found for {player_name}")
 
 
-    def create_loot_log(self, content: list[RawLoot], season: Season, raid_day: str):
+    def create_loot_log(self, content: list[RawLoot], raid_day: str):
+        season = self.find_season_by_raid(self.find_raid_by_date(raid_day))
         # update file on github
         file_path = _get_loot_log_file_path(season.name, raid_day)
         self.repo_api.create_file(file_path, "Create", to_raw_loot_json(content), BRANCH)
@@ -227,7 +228,8 @@ class GithubClient:
         self.raw_loot_list[season][raid] = content
 
 
-    def update_loot_log(self, content: list[RawLoot], season: Season, raid_day: str):
+    def update_loot_log(self, content: list[RawLoot], raid_day: str):
+        season = self.find_season_by_raid(self.find_raid_by_date(raid_day))
         # update file on github
         file_path = _get_loot_log_file_path(season.name, raid_day)
         file_hash = self._get_data_file_hash(file_path)
@@ -237,7 +239,8 @@ class GithubClient:
         self.raw_loot_list[season][raid] = content
 
 
-    def fix_loot_log(self, content: list[RawLoot], season: Season, raid_day: str, reason: str):
+    def fix_loot_log(self, content: list[RawLoot], raid_day: str, reason: str):
+        season = self.find_season_by_raid(self.find_raid_by_date(raid_day))
         # update file on github
         file_path = _get_loot_log_file_path(season.name, raid_day)
         file_hash = self._get_data_file_hash(file_path)

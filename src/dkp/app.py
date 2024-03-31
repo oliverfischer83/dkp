@@ -182,15 +182,14 @@ def get_raid_entry_for_manual_storage(report_id):
 
 
 def upload_loot_log(raw_loot_list: list[RawLoot]):
-    season = get_current_season()
     raid_day = datetime.datetime.strptime(raw_loot_list[0].date, "%d/%m/%y").strftime("%Y-%m-%d")  # first entry
     existing_log = DATABASE.get_loot_log_raw(raid_day)
 
     if existing_log:
         result = merging_logs(existing_log, raw_loot_list)
-        DATABASE.update_loot_log(result, season, raid_day)
+        DATABASE.update_loot_log(result, raid_day)
     else:
-        DATABASE.create_loot_log(raw_loot_list, season, raid_day)
+        DATABASE.create_loot_log(raw_loot_list, raid_day)
 
 
 def apply_loot_log_fix(fixes: list[Fix], raid_day: str, reason: str):
@@ -198,7 +197,7 @@ def apply_loot_log_fix(fixes: list[Fix], raid_day: str, reason: str):
     if not existing_log:
         raise Exception(f"No loot log found! raid day: {raid_day}")
     result = apply_fixes(existing_log, fixes)
-    DATABASE.fix_loot_log(result, get_current_season(), raid_day, reason)
+    DATABASE.fix_loot_log(result, raid_day, reason)
 
 
 def get_loot_log_for_current_season(raid_day: str) -> list[Loot]:
@@ -251,20 +250,11 @@ def get_player_list():
 def add_player(player_name: str):
     DATABASE.add_player(player_name)
 
-
 def add_player_character(player_name: str, character_name: str):
     DATABASE.add_player_character(player_name, character_name)
-
 
 def get_raid_list() -> list[Raid]:
     return DATABASE.raid_list
 
-
 def get_season_list() -> list[Season]:
     return DATABASE.season_list
-
-def get_current_season() -> Season:
-    # return sorted(DATABASE.season_list, key=lambda season: season.id, reverse=True)[0]
-    # changed sorting so that season 3 is the current season
-    # TODO revert once season 4 is live
-    return sorted(DATABASE.season_list, key=lambda season: season.id, reverse=False)[0]
