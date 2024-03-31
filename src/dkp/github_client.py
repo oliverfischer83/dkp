@@ -65,13 +65,13 @@ class GithubClient:
             file_list = self.repo_api.get_contents(dir_path)
             if isinstance(file_list, ContentFile):
                 file_list = [file_list]
-            raid_dict = []
+            raid_dict = {}
             for file in file_list:
                 content = file.decoded_content.decode("utf-8")
                 raw_loot_list = to_raw_loot_list(content)
                 raid_day = file.name.split(".")[0]
                 raid = self.get_raid_by_date(raid_day)
-                raid_dict[raid.date] = raw_loot_list  # type: ignore
+                raid_dict[raid] = raw_loot_list
             result[season] = raid_dict
         return result
 

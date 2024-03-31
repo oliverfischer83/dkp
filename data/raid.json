@@ -160,5 +160,11 @@
         "date": "2024-03-17",
         "report": "https://www.warcraftlogs.com/reports/cxQAbgTXJ2Z8yjPt",
         "player": ["Carmen", "Christoph", "Jan", "Kalle", "Kevin", "Lutz", "Marco", "Nadja", "Olli", "Thomas", "Tobi", "Yasmin"]
+    },
+    {
+        "id": 28,
+        "date": "2024-03-24",
+        "report": "",
+        "player": []
     }
 ]
