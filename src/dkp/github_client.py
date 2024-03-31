@@ -51,64 +51,65 @@ class GithubClient:
     @property
     def player_list(self):
         if self._player_list is None:
-            with self._lock_player:
-                self._player_list = self._load_players()
+            self._player_list = self._load_players()
         return self._player_list
 
     @property
     def season_list(self):
         if self._season_list is None:
-            with self._lock_season:
-                self._season_list = self._load_seasons()
+            self._season_list = self._load_seasons()
         return self._season_list
 
     @property
     def raid_list(self):
         if self._raid_list is None:
-            with self._lock_raid:
-                self._raid_list = self._load_raids()
+            self._raid_list = self._load_raids()
         return self._raid_list
 
     @property
     def raw_loot_list(self):
         if self._raw_loot_list is None:
-            with self._lock_loot:
-                self._raw_loot_list = self._load_raw_loot_list()
+            self._raw_loot_list = self._load_raw_loot_list()
         return self._raw_loot_list
 
+
     def _load_raw_loot_list(self) -> dict[Season, dict[Raid, list[RawLoot]]]:
-        result = {}
-        for season in self.season_list:
-            dir_path = _get_loot_log_dir_path(season.name)
-            file_list = self.repo_api.get_contents(dir_path, ref=BRANCH)
-            if isinstance(file_list, ContentFile):
-                file_list = [file_list]
-            raid_dict = {}
-            for file in reversed(file_list):  # get latest files first (only relevant for local development)
-                content = file.decoded_content.decode("utf-8")
-                raw_loot_list = to_raw_loot_list(content)
-                raid_day = file.name.split(".")[0]
-                raid = self.find_raid_by_date(raid_day)
-                raid_dict[raid] = raw_loot_list
-                if is_local_development() and len(raid_dict) >= 2:
-                    break
-            result[season] = raid_dict
-        return result
+        with self._lock_loot:
+            result = {}
+            for season in self.season_list:
+                dir_path = _get_loot_log_dir_path(season.name)
+                file_list = self.repo_api.get_contents(dir_path, ref=BRANCH)
+                if isinstance(file_list, ContentFile):
+                    file_list = [file_list]
+                raid_dict = {}
+                for file in reversed(file_list):  # get latest files first (only relevant for local development)
+                    content = file.decoded_content.decode("utf-8")
+                    raw_loot_list = to_raw_loot_list(content)
+                    raid_day = file.name.split(".")[0]
+                    raid = self.find_raid_by_date(raid_day)
+                    raid_dict[raid] = raw_loot_list
+                    if is_local_development() and len(raid_dict) >= 2:
+                        break
+                result[season] = raid_dict
+            return result
 
 
     def _load_raids(self) -> list[Raid]:
-        content = self._get_data_file_content(_get_raid_file())
-        return [Raid(**entry) for entry in json.loads(content)]
+        with self._lock_raid:
+            content = self._get_data_file_content(_get_raid_file())
+            return [Raid(**entry) for entry in json.loads(content)]
 
 
     def _load_players(self) -> list[Player]:
-        content = self._get_data_file_content(_get_player_file())
-        return [Player(**entry) for entry in json.loads(content)]
+        with self._lock_player:
+            content = self._get_data_file_content(_get_player_file())
+            return [Player(**entry) for entry in json.loads(content)]
 
 
     def _load_seasons(self) -> list[Season]:
-        content = self._get_data_file_content(_get_season_file())
-        return [Season(**entry) for entry in json.loads(content)]
+        with self._lock_season:
+            content = self._get_data_file_content(_get_season_file())
+            return [Season(**entry) for entry in json.loads(content)]
 
 
     def _get_data_file_hash(self, file_path: str) -> str:
