@@ -10,7 +10,7 @@ import os
 from typing import Any
 
 from config_mapper import Config
-from core import AdminView, Fix, Season
+from core import AdminView, Fix, Season, is_local_development
 from dotenv import load_dotenv
 from github_client import GithubClient, Loot, Player, Raid, RawLoot
 from warcraftlogs_client import WclClient
@@ -35,8 +35,7 @@ DATABASE = GithubClient(GITHUB_TOKEN)
 
 
 def get_admin_password():
-    return ADMIN_PASSWORD
-
+    return ADMIN_PASSWORD if not is_local_development() else ""
 
 
 def get_player_to_cost_pair(player_list: list[Player], loot_table: list[Loot]) -> dict[str, int]:

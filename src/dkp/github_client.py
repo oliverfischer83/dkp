@@ -15,6 +15,7 @@ from core import (
     Raid,
     RawLoot,
     Season,
+    is_local_development,
     to_player_json,
     to_raid_json,
     to_raw_loot_json,
@@ -92,6 +93,8 @@ class GithubClient:
                 raid_day = file.name.split(".")[0]
                 raid = self.find_raid_by_date(raid_day)
                 raid_dict[raid] = raw_loot_list
+                if is_local_development() and len(raid_dict) >= 2:
+                    break
             result[season] = raid_dict
         return result
 

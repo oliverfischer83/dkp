@@ -4,8 +4,14 @@ Data classes concentrated into a single file to omit cyclic imports.
 
 import datetime
 import json
+import os
 from typing import Any
 from pydantic import BaseModel, Field, ValidationInfo, field_validator
+
+
+def is_local_development() -> bool:
+     # used to speed up testing
+    return os.environ.get("LOCAL_DEVELOPMENT", "false").lower() == "true"
 
 
 class Loot(BaseModel):
