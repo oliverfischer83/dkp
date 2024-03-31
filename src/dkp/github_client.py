@@ -61,7 +61,7 @@ class GithubClient:
     def _load_raw_loot_list(self) -> dict[Season, dict[Raid, list[RawLoot]]]:
         result = {}
         for season in self.season_list:
-            dir_path = _get_loot_log_dir_path(season.id)
+            dir_path = _get_loot_log_dir_path(season.name)
             file_list = self.repo_api.get_contents(dir_path)
             if isinstance(file_list, ContentFile):
                 file_list = [file_list]
@@ -153,7 +153,7 @@ class GithubClient:
 
     def create_loot_log(self, content: list[RawLoot], season: Season, raid_day: str):
         # update file on github
-        file_path = _get_loot_log_file_path(season.id, raid_day)
+        file_path = _get_loot_log_file_path(season.name, raid_day)
         self.repo_api.create_file(file_path, "Create", to_raw_loot_json(content))
         # update loot list
         raid = self.get_raid_by_date(raid_day)
@@ -162,7 +162,7 @@ class GithubClient:
 
     def update_loot_log(self, content: list[RawLoot], season: Season, raid_day: str):
         # update file on github
-        file_path = _get_loot_log_file_path(season.id, raid_day)
+        file_path = _get_loot_log_file_path(season.name, raid_day)
         file_hash = self._get_data_file_hash(file_path)
         self.repo_api.update_file(file_path, "Update", to_raw_loot_json(content), file_hash)
         # update loot list
@@ -172,7 +172,7 @@ class GithubClient:
 
     def fix_loot_log(self, content: list[RawLoot], season: Season, raid_day: str, reason: str):
         # update file on github
-        file_path = _get_loot_log_file_path(season.id, raid_day)
+        file_path = _get_loot_log_file_path(season.name, raid_day)
         file_hash = self._get_data_file_hash(file_path)
         self.repo_api.update_file(file_path, f"Fix: {reason}", to_raw_loot_json(content), file_hash)
         # update loot list

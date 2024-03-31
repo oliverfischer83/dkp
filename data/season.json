@@ -1,12 +1,12 @@
 [
     {
-        "id": "dfs3",
-        "descr": "Dragonflight - Season 3",
-        "order": "1"
+        "id": "1",
+        "name": "dfs3",
+        "descr": "Dragonflight - Season 3"
     },
     {
-        "id": "dfs4",
-        "descr": "Dragonflight - Season 4",
-        "order": "2"
+        "id": "2",
+        "name": "dfs4",
+        "descr": "Dragonflight - Season 4"
     }
 ]

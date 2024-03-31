@@ -273,4 +273,4 @@ def get_current_season() -> Season:
     # return sorted(DATABASE.season_list, key=lambda season: season.id, reverse=True)[0]
     # changed sorting so that season 3 is the current season
     # TODO revert once season 4 is live
-    return sorted(DATABASE.season_list, key=lambda season: season.order, reverse=False)[0]
+    return sorted(DATABASE.season_list, key=lambda season: season.id, reverse=False)[0]

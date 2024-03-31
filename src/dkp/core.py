@@ -92,30 +92,32 @@ class Fix(BaseModel):
 
 
 class Player(BaseModel):
+    id: int
     name: str
     chars: list[str]
 
     def __eq__(self, other):
-        return isinstance(other, Player) and self.name == other.name
+        return isinstance(other, Player) and self.id == other.id
 
     def __hash__(self):
-        return hash((self.name))
+        return hash((self.id))
 
 class Raid(BaseModel):
+    id: int
     date: str
     report_url: str = Field(alias="report")
     attendees: list[str] = Field(alias="player")
 
     def __eq__(self, other):
-        return isinstance(other, Raid) and self.date == other.date
+        return isinstance(other, Raid) and self.id == other.id
 
     def __hash__(self):
-        return hash((self.date))
+        return hash((self.id))
 
 class Season(BaseModel):
-    id: str
+    id: int
+    name: str
     descr: str
-    order: str
 
     def __eq__(self, other):
         return isinstance(other, Season) and self.id == other.id
