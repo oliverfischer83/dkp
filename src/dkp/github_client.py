@@ -16,11 +16,7 @@ from core import (
     RawLoot,
     Season,
     is_local_development,
-    to_player_json,
-    to_raid_json,
-    to_raw_loot_json,
     to_raw_loot_list,
-    to_season_json,
 )
 from github import Auth, Github
 from github.ContentFile import ContentFile
@@ -29,6 +25,7 @@ log = logging.getLogger(__name__)
 
 USER_NAME = "oliverfischer83"
 REPO_NAME = "dkp"
+BRANCH = "develop" if is_local_development() else "main"
 
 
 class GithubClient:
@@ -83,7 +80,7 @@ class GithubClient:
         result = {}
         for season in self.season_list:
             dir_path = _get_loot_log_dir_path(season.name)
-            file_list = self.repo_api.get_contents(dir_path)
+            file_list = self.repo_api.get_contents(dir_path, ref=BRANCH)
             if isinstance(file_list, ContentFile):
                 file_list = [file_list]
             raid_dict = {}
@@ -115,14 +112,14 @@ class GithubClient:
 
 
     def _get_data_file_hash(self, file_path: str) -> str:
-        result = self.repo_api.get_contents(file_path)
+        result = self.repo_api.get_contents(file_path, ref=BRANCH)
         if isinstance(result, list):
             raise Exception(f"Multiple files found for {file_path}")
         return result.sha
 
 
     def _get_data_file_content(self, file_path: str) -> str:
-        result = self.repo_api.get_contents(file_path)
+        result = self.repo_api.get_contents(file_path, ref=BRANCH)
         if isinstance(result, list):
             raise Exception(f"Multiple files found for {file_path}")
         return result.decoded_content.decode("utf-8")
@@ -162,19 +159,19 @@ class GithubClient:
     def _update_player_list(self):
         file_path = _get_player_file()
         file_hash = self._get_data_file_hash(file_path)
-        self.repo_api.update_file(file_path, "Update", to_player_json(self.player_list), file_hash)
+        self.repo_api.update_file(file_path, "Update", to_player_json(self.player_list), file_hash, BRANCH)
 
 
     def _update_raid_list(self):
         file_path = _get_raid_file()
         file_hash = self._get_data_file_hash(file_path)
-        self.repo_api.update_file(file_path, "Update", to_raid_json(self.raid_list), file_hash)
+        self.repo_api.update_file(file_path, "Update", to_raid_json(self.raid_list), file_hash, BRANCH)
 
 
     def _update_season_list(self):
         file_path = _get_season_file()
         file_hash = self._get_data_file_hash(file_path)
-        self.repo_api.update_file(file_path, "Update", to_season_json(self.season_list), file_hash)
+        self.repo_api.update_file(file_path, "Update", to_season_json(self.season_list), file_hash, BRANCH)
 
 
     def get_loot_log_raw(self, raid_day: str) -> list[RawLoot]:
@@ -223,7 +220,7 @@ class GithubClient:
     def create_loot_log(self, content: list[RawLoot], season: Season, raid_day: str):
         # update file on github
         file_path = _get_loot_log_file_path(season.name, raid_day)
-        self.repo_api.create_file(file_path, "Create", to_raw_loot_json(content))
+        self.repo_api.create_file(file_path, "Create", to_raw_loot_json(content), BRANCH)
         # update loot list
         raid = self.find_raid_by_date(raid_day)
         self.raw_loot_list[season][raid] = content
@@ -233,7 +230,7 @@ class GithubClient:
         # update file on github
         file_path = _get_loot_log_file_path(season.name, raid_day)
         file_hash = self._get_data_file_hash(file_path)
-        self.repo_api.update_file(file_path, "Update", to_raw_loot_json(content), file_hash)
+        self.repo_api.update_file(file_path, "Update", to_raw_loot_json(content), file_hash, BRANCH)
         # update loot list
         raid = self.find_raid_by_date(raid_day)
         self.raw_loot_list[season][raid] = content
@@ -243,7 +240,7 @@ class GithubClient:
         # update file on github
         file_path = _get_loot_log_file_path(season.name, raid_day)
         file_hash = self._get_data_file_hash(file_path)
-        self.repo_api.update_file(file_path, f"Fix: {reason}", to_raw_loot_json(content), file_hash)
+        self.repo_api.update_file(file_path, f"Fix: {reason}", to_raw_loot_json(content), file_hash, BRANCH)
         # update loot list
         raid = self.find_raid_by_date(raid_day)
         self.raw_loot_list[season][raid] = content
@@ -289,3 +286,34 @@ def _get_loot_log_dir_path(season: str):
     return f"data/season/{season}"
 def _get_loot_log_file_path(season: str, raid_day: str):
     return f"data/season/{season}/{raid_day}.json"
+
+
+def to_raw_loot_json(loot_list: list[RawLoot]) -> str:
+    """Converts raw loot lists into json str for database storage."""
+    content = [loot.model_dump(by_alias=True) for loot in loot_list]
+    sorted_content = sorted(content, key=lambda entry: entry['player'])  # sort by character name
+    return to_json(sorted_content)
+
+
+def to_player_json(player_list: list[Player]) -> str:
+    content = [player.model_dump() for player in player_list]
+    sorted_content = sorted(content, key=lambda entry: entry['name'])  # sort by player name
+    return to_json(sorted_content)
+
+
+def to_raid_json(raid_list: list[Raid]) -> str:
+    content = [raid.model_dump() for raid in raid_list]
+    sorted_content = sorted(content, key=lambda entry: entry['date'])  # sort by raid date
+    return to_json(sorted_content)
+
+
+def to_season_json(season_list: list[Season]) -> str:
+    content = [season.model_dump() for season in season_list]
+    sorted_content = sorted(content, key=lambda entry: entry['id'])  # sort by raid id
+    return to_json(sorted_content)
+
+
+def to_json(content: list) -> str:
+    return json.dumps(content,
+                      indent=2,             # beautify
+                      ensure_ascii=False)   # allow non-ascii characters

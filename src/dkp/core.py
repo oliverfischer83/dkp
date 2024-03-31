@@ -5,7 +5,6 @@ Data classes concentrated into a single file to omit cyclic imports.
 import datetime
 import json
 import os
-from typing import Any
 from pydantic import BaseModel, Field, ValidationInfo, field_validator
 
 
@@ -154,33 +153,3 @@ def to_date(raw_date: str) -> str:
     """Converts date from %d/%m/%y to %Y-%m-%d."""
     return datetime.datetime.strptime(raw_date, "%d/%m/%y").strftime("%Y-%m-%d")  # like 2024-01-01
 
-
-def to_raw_loot_json(loot_list: list[RawLoot]) -> str:
-    """Converts raw loot lists into json str for database storage."""
-    content = [loot.model_dump(by_alias=True) for loot in loot_list]
-    sorted_content = sorted(content, key=lambda entry: entry['player'])  # sort by character name
-    return to_json(sorted_content)
-
-
-def to_player_json(player_list: list[Player]) -> str:
-    content = [player.model_dump() for player in player_list]
-    sorted_content = sorted(content, key=lambda entry: entry['name'])  # sort by player name
-    return to_json(sorted_content)
-
-
-def to_raid_json(raid_list: list[Raid]) -> str:
-    content = [raid.model_dump() for raid in raid_list]
-    sorted_content = sorted(content, key=lambda entry: entry['date'])  # sort by raid date
-    return to_json(sorted_content)
-
-
-def to_season_json(season_list: list[Season]) -> str:
-    content = [season.model_dump() for season in season_list]
-    sorted_content = sorted(content, key=lambda entry: entry['id'])  # sort by raid id
-    return to_json(sorted_content)
-
-
-def to_json(content: Any) -> str:
-    return json.dumps(content,
-                      indent=2,             # beautify
-                      ensure_ascii=False)   # allow non-ascii characters

@@ -69,7 +69,7 @@ WCL_CLIENT_SECRET="..."
 GITHUB_CLIENT_TOKEN="..."
 ADMIN_PASSWORD="..."
 ```
-- after deployment finished, an Actions workflow is created called `pages build and deployment` and responsible for auto deployment on code changes
+- use pull requests for release from `develop` branch to `main` branch
 
 
 # TODO
@@ -114,6 +114,10 @@ ADMIN_PASSWORD="..."
 - unify data validation on export upload and loot editor changes
 - loot statistics (which loot dropt how often, raid progress, raid attendence, ...)
 - hidden area for data management, so that its no longer necessary to edit any json file on github
+
+# Release info
+- tagging releases
+- show release info bottom of side pane
 
 ## Checklist
 - Raid button
