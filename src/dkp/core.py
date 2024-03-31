@@ -131,13 +131,6 @@ class Season(BaseModel):
         return hash((self.id))
 
 
-class AdminView(BaseModel):
-    date: str
-    report_url: str
-    player_list: list[str]
-
-
-
 def to_raw_loot_list(content: str) -> list[RawLoot]:
     """Converts json str into raw loot lists."""
     loot_list = json.loads(content)

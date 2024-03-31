@@ -84,7 +84,7 @@ class GithubClient:
             if isinstance(file_list, ContentFile):
                 file_list = [file_list]
             raid_dict = {}
-            for file in file_list:
+            for file in reversed(file_list):  # get latest files first (only relevant for local development)
                 content = file.decoded_content.decode("utf-8")
                 raw_loot_list = to_raw_loot_list(content)
                 raid_day = file.name.split(".")[0]

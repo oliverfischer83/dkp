@@ -10,7 +10,7 @@ import os
 from typing import Any
 
 from config_mapper import Config
-from core import AdminView, Fix, Season, is_local_development
+from core import Fix, Season, is_local_development
 from dotenv import load_dotenv
 from github_client import GithubClient, Loot, Player, Raid, RawLoot
 from warcraftlogs_client import WclClient
@@ -158,30 +158,27 @@ def get_balance(season: Season):
     return calc_balance(player_list, DATABASE.raid_list, relevant_loot)
 
 
-def get_last_update(season: Season):
+def get_last_update(season: Season) -> str:
     all_loot = DATABASE.get_all_loot_logs(season)
     latest_entry = max(all_loot, key=lambda entry: entry.timestamp)
     return f"{latest_entry.timestamp} (Boss: {latest_entry.boss}, {latest_entry.difficulty})"
 
-def get_loot_history(season: Season):
+def get_loot_history(season: Season) -> list[Loot]:
     all_loot = DATABASE.get_all_loot_logs(season)
     relevant_loot = [entry for entry in all_loot if entry.response == "Gebot"]
     return relevant_loot
 
 
-def get_admin_view(report_id):
-    all_players = DATABASE.player_list
+def get_raid_entry_for_manual_storage(report_id):
     date, report_url, raiding_char_list = WCL_CLIENT.get_raid_details(report_id)
-
     # find attending players
     player_list = []
-    for player in all_players:
+    for player in DATABASE.player_list:
         for char in raiding_char_list:
             if char in player.chars:
                 player_list.append(player.name)
                 break
-
-    return AdminView(date=date, report_url=report_url, player_list=player_list)
+    return date, report_url, player_list
 
 
 def upload_loot_log(raw_loot_list: list[RawLoot]):
