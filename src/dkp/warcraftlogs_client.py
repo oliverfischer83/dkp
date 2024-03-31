@@ -25,17 +25,19 @@ class WclClient:
         self.token_uri = config.token_url
         self.api_endpoint = config.api_endpoint
 
-        self.client = BackendApplicationClient(client_id=self.client_id)
-        self.oauth = OAuth2Session(client=self.client)
-        self.token_json = self.oauth.fetch_token(
-            token_url=self.token_uri,
-            client_id=self.client_id,
-            client_secret=self.client_secret,
-        )
+        self.client = OAuth2Session(client=BackendApplicationClient(client_id=self.client_id))
+        self._headers = None
 
-        self.access_token = self.token_json.get("access_token")
-        self.headers = {
-            "Authorization": f"Bearer {self.access_token}",
+    @property
+    def headers(self):
+        if self._headers is None:
+            self._headers = self._get_headers()
+        return self._headers
+
+    def _get_headers(self):
+        token = self.client.fetch_token(token_url=self.token_uri, client_id=self.client_id, client_secret=self.client_secret)
+        return {
+            "Authorization": f"Bearer {token.get("access_token")}",
             "Content-Type": "application/json",
         }
 

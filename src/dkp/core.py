@@ -95,17 +95,33 @@ class Player(BaseModel):
     name: str
     chars: list[str]
 
+    def __eq__(self, other):
+        return isinstance(other, Player) and self.name == other.name
+
+    def __hash__(self):
+        return hash((self.name))
 
 class Raid(BaseModel):
     date: str
     report_url: str = Field(alias="report")
     attendees: list[str] = Field(alias="player")
 
+    def __eq__(self, other):
+        return isinstance(other, Raid) and self.date == other.date
+
+    def __hash__(self):
+        return hash((self.date))
 
 class Season(BaseModel):
     id: str
-    key: str
     descr: str
+    order: str
+
+    def __eq__(self, other):
+        return isinstance(other, Season) and self.id == other.id
+
+    def __hash__(self):
+        return hash((self.id))
 
 
 class AdminView(BaseModel):

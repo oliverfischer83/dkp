@@ -59,7 +59,7 @@ def create_test_object_raid(dict: dict) -> Raid:
     fields = {
         "date": dict.get("date", ""),
         "report": dict.get("report", ""),
-        "player": dict.get("player", ""),
+        "player": dict.get("player", []),
     }
     # sanity check
     for key in dict:
