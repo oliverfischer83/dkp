@@ -57,7 +57,7 @@ python -m streamlit run src/dkp/01_overview.py
 - login to steamlit cloud: https://share.streamlit.io/
 - new app
   - repo: `oliverfischer83/dkp`
-  - branch: `main`
+  - branch: `release` or `main`
   - file: `src/dkp/01_overview.py`
   - url: `dkp-vipers.streamlit.app`
   - advanced:
