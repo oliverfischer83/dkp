@@ -4,6 +4,12 @@ import streamlit as st
 import app
 
 
+st.set_page_config(
+    page_title='DKP - Punkte',
+    page_icon='🟢',  # see https://twemoji-cheatsheet.vercel.app/
+    layout="wide",
+    initial_sidebar_state="expanded")
+
 # Season
 season_list = sorted(app.get_season_list(), key=lambda season: season.id, reverse=True)
 selected_season = st.selectbox("WoW season:", [season.descr for season in season_list], label_visibility="collapsed")

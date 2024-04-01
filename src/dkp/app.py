@@ -192,14 +192,6 @@ def upload_loot_log(raw_loot_list: list[RawLoot]):
         DATABASE.create_loot_log(raw_loot_list, raid_day)
 
 
-def get_loot_log_for_current_season(raid_day: str) -> list[Loot]:
-    return DATABASE.get_loot_log(raid_day)
-
-
-def get_loot_log_raw_for_current_season(raid_day: str) -> list[RawLoot]:
-    return DATABASE.get_loot_log_raw(raid_day)
-
-
 def filter_logs(existing_log: list[RawLoot], new_log: list[RawLoot]) -> list[RawLoot]:
     existing_ids = {loot.id for loot in existing_log}
     return [item for item in new_log if item.id not in existing_ids]
@@ -244,10 +236,22 @@ def apply_fixes(existing_log: list[RawLoot], fixes: list[Fix]) -> list[RawLoot]:
     return result
 
 
+# delegators
 
+def get_loot_log(raid_day: str) -> list[Loot]:
+    return DATABASE.get_loot_log(raid_day)
 
-def get_player_list():
+def get_loot_log_raw(raid_day: str) -> list[RawLoot]:
+    return DATABASE.get_loot_log_raw(raid_day)
+
+def get_player_list() -> list[Player]:
     return DATABASE.player_list
+
+def get_raid_list() -> list[Raid]:
+    return DATABASE.raid_list
+
+def get_season_list() -> list[Season]:
+    return DATABASE.season_list
 
 def add_player(player_name: str):
     DATABASE.add_player(player_name)
@@ -255,8 +259,8 @@ def add_player(player_name: str):
 def update_player(fixes: list[Fix]):
     DATABASE.update_player(fixes)
 
-def get_raid_list() -> list[Raid]:
-    return DATABASE.raid_list
+# def add_raid(date: str):
+    # DATABASE.add_raid(date)
 
-def get_season_list() -> list[Season]:
-    return DATABASE.season_list
+# def update_raid(fixes: list[Fix]):
+    # DATABASE.update_raid(fixes)
