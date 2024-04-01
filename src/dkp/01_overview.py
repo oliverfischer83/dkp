@@ -1,4 +1,5 @@
 # pylint: disable=missing-module-docstring
+from datetime import date
 import pandas as pd
 import streamlit as st
 import app
@@ -10,12 +11,25 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded")
 
-# Season
-season_list = sorted(app.get_season_list(), key=lambda season: season.id, reverse=True)
-selected_season = st.selectbox("WoW season:", [season.descr for season in season_list], label_visibility="collapsed")
-season = next((season for season in season_list if season.descr == selected_season), None)
 
-st.markdown("Letzte Aktualisierung: " + app.get_last_update(season))  # type: ignore
+
+# Season
+col_1, _, _ = st.columns(3)
+with col_1:
+    season_list = sorted(app.get_season_list(), key=lambda season: season.id, reverse=True)
+    selected_season = st.selectbox("WoW season:", [season.descr for season in season_list], label_visibility="collapsed")
+    season = next((season for season in season_list if season.descr == selected_season))
+
+
+# Info - last update
+timestamp, boss, difficulty = app.get_info_last_update(season)
+timestamp = pd.to_datetime(timestamp)
+if timestamp.date() == date.today():
+    timestamp = f"Heute, {timestamp.strftime("%H:%M")} Uhr"
+else:
+    timestamp = f"{timestamp.strftime("%d.%m.%Y, %H:%M")} Uhr"
+st.sidebar.markdown(f'#### Letzte Änderung:\n- {timestamp}\n- {boss} ({difficulty})')
+
 
 # DKP list
 st.markdown("### DKP Liste")

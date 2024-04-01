@@ -133,6 +133,12 @@ class GithubClient:
         self._update_player_list()
 
 
+    def delete_player(self, player_name: str):
+        player = self.find_player_by_name(player_name)
+        self.player_list.remove(player)
+        self._update_player_list()
+
+
     def update_player(self, fixes: list[Fix]):
         for fix in fixes:
             for player in self.player_list:
