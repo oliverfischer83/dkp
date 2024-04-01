@@ -153,13 +153,12 @@ def validate_import(raw_loot_list: list[RawLoot]):
 
 
 def get_balance(season: Season):
-    player_list = DATABASE.player_list
     relevant_loot = get_loot_history(season)
-    return calc_balance(player_list, DATABASE.raid_list, relevant_loot)
+    return calc_balance(DATABASE.player_list, DATABASE.raid_list, relevant_loot)
 
 
 def get_info_last_update(season: Season) -> tuple[str, str, str]:
-    all_loot = DATABASE.get_all_loot_logs(season)
+    all_loot = DATABASE.get_season_loot(season)
     if not all_loot:
         return "1970-01-01 00:00:00", "unknown", "unknown"
     last_entry = max(all_loot, key=lambda entry: entry.timestamp)
@@ -167,7 +166,7 @@ def get_info_last_update(season: Season) -> tuple[str, str, str]:
 
 
 def get_loot_history(season: Season) -> list[Loot]:
-    all_loot = DATABASE.get_all_loot_logs(season)
+    all_loot = DATABASE.get_season_loot(season)
     relevant_loot = [entry for entry in all_loot if entry.response == "Gebot"]
     return relevant_loot
 
@@ -186,7 +185,7 @@ def get_raid_entry_for_manual_storage(report_id):
 
 def upload_loot_log(raw_loot_list: list[RawLoot]):
     raid_day = datetime.datetime.strptime(raw_loot_list[0].date, "%d/%m/%y").strftime("%Y-%m-%d")  # first entry
-    existing_log = DATABASE.get_loot_log_raw(raid_day)
+    existing_log = DATABASE.get_raid_loot_raw(raid_day)
 
     if existing_log:
         result = merging_logs(existing_log, raw_loot_list)
@@ -210,7 +209,7 @@ def merging_logs(existing_log: list[RawLoot], new_log: list[RawLoot]) -> list[Ra
 
 
 def apply_fix_to_loot_log(fixes: list[Fix], raid_day: str, reason: str):
-    existing_log = DATABASE.get_loot_log_raw(raid_day)
+    existing_log = DATABASE.get_raid_loot_raw(raid_day)
     if not existing_log:
         raise Exception(f"No loot log found! raid day: {raid_day}")
     result = apply_fixes(existing_log, fixes)
@@ -257,11 +256,11 @@ def get_season_list_starting_with_current() -> list[Season]:
 
 # delegators
 
-def get_loot_log(raid_day: str) -> list[Loot]:
-    return DATABASE.get_loot_log(raid_day)
+def get_raid_loot(raid_day: str) -> list[Loot]:
+    return DATABASE.get_raid_loot(raid_day)
 
-def get_loot_log_raw(raid_day: str) -> list[RawLoot]:
-    return DATABASE.get_loot_log_raw(raid_day)
+def get_raid_loot_raw(raid_day: str) -> list[RawLoot]:
+    return DATABASE.get_raid_loot_raw(raid_day)
 
 def get_player_list() -> list[Player]:
     return DATABASE.player_list

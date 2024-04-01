@@ -54,3 +54,17 @@ with st.container():
     # If the button has been clicked an odd number of times, show the text
     if st.session_state.button_clicked4 % 2 == 1:
         st.write('Button clicked4')
+
+# Section 5
+    pop = st.popover("Button label")
+    pop.checkbox("Show all")
+
+
+    st.balloons()
+    st.snow()
+    st.toast("Warming up...")
+    st.error("Error message")
+    st.warning("Warning message")
+    st.info("Info message")
+    st.success("Success message")
+    st.exception(RuntimeError('This is an exception of type RuntimeError'))

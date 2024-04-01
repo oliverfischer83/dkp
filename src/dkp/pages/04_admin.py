@@ -5,7 +5,7 @@ import time
 import app
 import pandas as pd
 import streamlit as st
-from core import CHANGE, ORIGINAL, Fix, FixEntry, Loot, Player, to_date, to_raw_loot_list
+from core import CHANGE, ORIGINAL, Fix, FixEntry, to_date, to_raw_loot_list
 
 st.set_page_config(
     page_title='DKP - admin',
@@ -31,7 +31,7 @@ def main():
             if st.button("Try submit ..."):
                 uploaded_log = to_raw_loot_list(json_string)
                 raid_day = to_date(uploaded_log[0].date)
-                existing_log = app.get_loot_log_raw(raid_day)
+                existing_log = app.get_raid_loot_raw(raid_day)
                 new_log = app.filter_logs(existing_log, uploaded_log)
                 try:
                     # only validate the new loot, the existing loot in the json export could be invalid and was cleaned up before
@@ -49,11 +49,11 @@ def main():
     # Loot editor
     with st.container():
         with st.expander('🟡 Loot editor'):
-            col1, col2, col3, col4 = st.columns(4)
+            col1, _, _, _ = st.columns(4)
             with col1:
                 raid_day = st.selectbox("Select raid:", sorted([raid.date for raid in app.get_raid_list()], reverse=True))
 
-            loot_log_original = app.get_loot_log(raid_day)  # type: ignore
+            loot_log_original = app.get_raid_loot(raid_day)  # type: ignore
 
             data=[loot.model_dump() for loot in loot_log_original]
             columns=[ "id", "character", "note", "response", "item_name", "boss", "difficulty", "instance", "timestamp"]

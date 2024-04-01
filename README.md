@@ -78,13 +78,9 @@ ADMIN_PASSWORD="..."
 - auto refresh page
 - on loot data upload, clients get signal to refresh or waning banner that data outdated
 - make optional
+- try: https://github.com/kmcgrady/streamlit-autorefresh
 
 ## Scenarios:
-- RCLootCouncil not useable at all (through bug, or similiar)
-  - add entries by hand on admin page, define simple default values for other fields of RawLoot
-- No Masterlooter (ID already taken, cant distribute loot)
-  - do auction like bidding and note down winner
-  - manually add entries afterwards
 - Normal use case:
   - click Raid button: raid entry, status "started"
   - add report id (live log)
@@ -106,14 +102,13 @@ ADMIN_PASSWORD="..."
 - after uploading a loot log, show entries in raid day below (select date automatically)
 - code quality
   - unit tests for balance functions
-  - constants for string names
+  - constants for string field names where possible
   - remove "# type: ignore"
 - add status flag to Player
   - paused: dont show on balance view
   - or only add player to dkp list, which has atleast one raid
 - unify data validation on export upload and loot editor changes
 - loot statistics (which loot dropt how often, raid progress, raid attendence, ...)
-- hidden area for data management, so that its no longer necessary to edit any json file on github
 
 # Release info
 - tagging releases
@@ -135,6 +130,14 @@ ADMIN_PASSWORD="..."
   - all attendees have RCLootCouncil started
   - add new attendees
 
+# Fallback Excel list
+- after each raid, generate table entries which can be used within excel as a fallback solution
+- RCLootCouncil not useable at all (through bug, or similiar)
+  - add entries by hand on admin page, define simple default values for other fields of RawLoot
+- No Masterlooter (ID already taken, cant distribute loot)
+  - do auction like bidding and note down winner
+  - manually add entries afterwards
+
 ## Info Page
 - rules (copy from Excel Sheet)
 - how to install and configure Addon RCLootCouncil using screenshots
@@ -154,3 +157,8 @@ ADMIN_PASSWORD="..."
 - report id
   - show warning if raid finished and attendees/report id missing
   - (maybe) if unknown character
+
+- bugfix: show correct balance for each season
+- player can be deleted only, if none of their chars raided yet
+- loot editor: add season button, pre-select current season, pre-select current/last raid
+-
