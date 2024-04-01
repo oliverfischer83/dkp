@@ -10,11 +10,5 @@
     "name": "dfs4",
     "descr": "Dragonflight - Season 4",
     "start": "2024-05-07"
-  },
-  {
-    "id": 3,
-    "name": "abc",
-    "descr": "def",
-    "start": "2024-06-12"
   }
 ]
