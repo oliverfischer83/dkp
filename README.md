@@ -139,6 +139,14 @@ ADMIN_PASSWORD="..."
 - rules (copy from Excel Sheet)
 - how to install and configure Addon RCLootCouncil using screenshots
 
+# Refactor
+- load loot logs into DATABASE object at start up and work with objects (fixes development issues with local and remote repo)
+  - reload button? -> no restart debug session
+  - reload data objects on persist (update to github)
+- balance and loot-history should have an own data class
+- unify methods
+  - create_loot_log, update_loot_log, fix_loot_log
+
 ## Season management
 - button to add season and reloads data
 
@@ -149,14 +157,3 @@ ADMIN_PASSWORD="..."
 - report id
   - show warning if raid finished and attendees/report id missing
   - (maybe) if unknown character
-
-# Refactor
-- load loot logs into DATABASE object at start up and work with objects (fixes development issues with local and remote repo)
-  - reload button? -> no restart debug session
-  - reload data objects on persist (update to github)
-- balance and loot-history should have an own data class
-- unify methods
-  - create_loot_log, update_loot_log, fix_loot_log
-
-
-- try editor for raid, season, player update with text input for lists

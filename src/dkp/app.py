@@ -192,14 +192,6 @@ def upload_loot_log(raw_loot_list: list[RawLoot]):
         DATABASE.create_loot_log(raw_loot_list, raid_day)
 
 
-def apply_loot_log_fix(fixes: list[Fix], raid_day: str, reason: str):
-    existing_log = DATABASE.get_loot_log_raw(raid_day)
-    if not existing_log:
-        raise Exception(f"No loot log found! raid day: {raid_day}")
-    result = apply_fixes(existing_log, fixes)
-    DATABASE.fix_loot_log(result, raid_day, reason)
-
-
 def get_loot_log_for_current_season(raid_day: str) -> list[Loot]:
     return DATABASE.get_loot_log(raid_day)
 
@@ -222,7 +214,15 @@ def merging_logs(existing_log: list[RawLoot], new_log: list[RawLoot]) -> list[Ra
     return result
 
 
-def apply_fixes(existing_log: list[RawLoot], fixes: list[Fix]):
+def apply_fix_to_loot_log(fixes: list[Fix], raid_day: str, reason: str):
+    existing_log = DATABASE.get_loot_log_raw(raid_day)
+    if not existing_log:
+        raise Exception(f"No loot log found! raid day: {raid_day}")
+    result = apply_fixes(existing_log, fixes)
+    DATABASE.fix_loot_log(result, raid_day, reason)
+
+
+def apply_fixes(existing_log: list[RawLoot], fixes: list[Fix]) -> list[RawLoot]:
     result = existing_log
     for fix in fixes:
         for loot in existing_log:
@@ -244,14 +244,16 @@ def apply_fixes(existing_log: list[RawLoot], fixes: list[Fix]):
     return result
 
 
+
+
 def get_player_list():
     return DATABASE.player_list
 
 def add_player(player_name: str):
     DATABASE.add_player(player_name)
 
-def add_player_character(player_name: str, character_name: str):
-    DATABASE.add_player_character(player_name, character_name)
+def update_player(fixes: list[Fix]):
+    DATABASE.update_player(fixes)
 
 def get_raid_list() -> list[Raid]:
     return DATABASE.raid_list

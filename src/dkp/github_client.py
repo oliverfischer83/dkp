@@ -10,6 +10,7 @@ import logging
 from threading import Lock
 
 from core import (
+    Fix,
     Loot,
     Player,
     Raid,
@@ -132,9 +133,18 @@ class GithubClient:
         self._update_player_list()
 
 
-    def add_player_character(self, player_name: str, character_name: str):
-        player = self.find_player_by_name(player_name)
-        player.chars.append(character_name)
+    def update_player(self, fixes: list[Fix]):
+        for fix in fixes:
+            for player in self.player_list:
+                if player.id == int(fix.id):
+                    for e in fix.entries:
+                        if e.name == "name":
+                            player.name = e.value
+                        elif e.name == "chars":
+                            player.chars = [char.strip() for char in e.value.split(",") if e.value]  # "a, b, c" -> ["a", "b", "c"] and "" -> []
+                        else:
+                            raise Exception(f"Invalid key: {e.name}") # sanity check
+                    break
         self._update_player_list()
 
 
@@ -144,7 +154,7 @@ class GithubClient:
         self._update_raid_list()
 
 
-    def set_raid_details(self, report: str ,attendees: list[str]):
+    def change_raid(self, report: str ,attendees: list[str]):
         raid = self.find_raid_by_date("2021-01-01")
         raid.player = attendees
         raid.report = report

@@ -5,7 +5,7 @@ import time
 import app
 import pandas as pd
 import streamlit as st
-from core import Fix, FixEntry, to_date, to_raw_loot_list
+from core import CHANGE, ORIGINAL, Fix, FixEntry, Loot, Player, to_date, to_raw_loot_list
 
 
 def main():
@@ -67,9 +67,9 @@ def main():
         dataframe = pd.DataFrame(data, columns=columns).sort_values(by=["id"], ascending=True).set_index("id")
 
         editor = st.data_editor(dataframe, disabled=["id", "item_name", "boss", "difficulty", "instance", "timestamp"])
-        diff = editor.compare(dataframe, keep_shape=False, keep_equal=False, result_names=("fix", "original"))
+        diff = editor.compare(dataframe, keep_shape=False, keep_equal=False, result_names=(CHANGE, ORIGINAL))
         if not diff.empty:
-            st.write("Changed Loot:")
+            st.write("Changed loot:")
             st.write(diff)
             reason = st.text_input("Reason for fix:", key="reason", placeholder="e.g. clean up, player traded item, fixed response, ...")
 
@@ -78,53 +78,57 @@ def main():
                     st.error("Please provide a reason for the fix.")
                     st.stop()
 
-                app.apply_loot_log_fix(transform_loot_diff(diff), raid_day, reason)  # type: ignore
+                app.apply_fix_to_loot_log(transform(diff), raid_day, reason)  # type: ignore
                 st.success("Fix applied." )
-                time.sleep(2)  # wait for the message to be displayed
-                st.rerun()  # clear streamlit widges responsible for the fix
+                time.sleep(2)
+                st.rerun()
 
 
     # Player editor
     with st.container():
-        st.header("New player")
+        st.header("Player editor")
 
-        new_player = st.text_input("Enter new player name:", placeholder="e.g. Jürgen")
+        new_player = st.text_input("Enter new player name:", placeholder="e.g. Alfons")
         if st.button("Add player"):
             if not new_player:
                 st.error("Please enter a name for the new player.")
                 st.stop()
             app.add_player(new_player)
             st.success("Player added.")
-            time.sleep(2)  # wait for the message to be displayed
-            st.rerun()  # realoads the assign button
+            time.sleep(2)
+            st.rerun()
 
-        new_char = st.text_input("Enter new character name:", placeholder="e.g. Lümmel-Anub'arak")
-        selected_player = st.selectbox("Select player:", sorted([player.name for player in app.get_player_list()]))
-        if st.button("Add character"):
-            if not new_char:
-                st.error("Please enter a character name.")
-                st.stop()
-            if not selected_player:
-                st.error("Please select a player.")
-                st.stop()
-            app.add_player_character(selected_player, new_char)
-            st.success("Character assignment saved.")
+        data=[{"id": player.id, "name": player.name, "chars": ", ".join(player.chars)} for player in app.get_player_list()]
+        columns=[ "id", "name", "chars"]
+        dataframe = pd.DataFrame(data, columns=columns).sort_values(by=["name"], ascending=True).set_index("id")
+
+        editor = st.data_editor(dataframe, disabled=["id"])
+        diff = editor.compare(dataframe, keep_shape=False, keep_equal=False, result_names=(CHANGE, ORIGINAL))
+        if not diff.empty:
+            st.write("Changed player:")
+            st.write(diff)
+
+            if st.button("Submit changed player"):
+                app.update_player(transform(diff))  # type: ignore
+                st.success("Player added." )
+                time.sleep(2)
+                st.rerun()
 
 
-def transform_loot_diff(diff: pd.DataFrame) -> list[Fix]:
+
+
+def transform(diff: pd.DataFrame) -> list[Fix]:
     # drop original values
-    if ("character", "original") in diff.columns:
-        diff = diff.drop(columns=[("character", "original")])
-    if ("note", "original") in diff.columns:
-        diff = diff.drop(columns=[("note", "original")])
-    if ("response", "original") in diff.columns:
-        diff = diff.drop(columns=[("response", "original")])
+    for col in diff.columns:
+        if col[1] == ORIGINAL:
+            diff = diff.drop(columns=[col])
     # drop the second index used for original and fixed values
     diff = diff.droplevel(1, axis=1)
     # swap columns and rows
     diff = diff.transpose()
     # remove NaN values
-    clean_diff = {id: {attr: value for attr, value in fix.items() if pd.notna(value)} for id, fix in diff.to_dict().items()}
+    # BUG: when deleting cells value also is None and gets removed, effectivly ignoring the change
+    clean_diff = {id: {name: value for name, value in entry.items() if pd.notna(value)} for id, entry in diff.to_dict().items()}
     # into data objects
     result = []
     for id, fix_entry in clean_diff.items():
@@ -132,7 +136,7 @@ def transform_loot_diff(diff: pd.DataFrame) -> list[Fix]:
         for name, value in fix_entry.items():
             entry = FixEntry(name=name, value=value)
             entries.append(entry)
-        result.append(Fix(id=id, entries=entries)) # type: ignore
+        result.append(Fix(id=str(id), entries=entries))
     return result
 
 
