@@ -2,13 +2,15 @@
   {
     "id": 29,
     "name": "Albert",
-    "chars": []
+    "chars": [
+      "ghz"
+    ]
   },
   {
     "id": 28,
     "name": "Alfons",
     "chars": [
-      ""
+      "tzu"
     ]
   },
   {
