@@ -16,7 +16,7 @@ st.set_page_config(
 # Season
 col_1, _, _ = st.columns(3)
 with col_1:
-    season_list = sorted(app.get_season_list(), key=lambda season: season.id, reverse=True)
+    season_list = app.get_season_list_starting_with_current()
     selected_season = st.selectbox("WoW season:", [season.descr for season in season_list], label_visibility="collapsed")
     season = next((season for season in season_list if season.descr == selected_season))
 

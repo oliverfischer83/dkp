@@ -9,16 +9,7 @@ import json
 import logging
 from threading import Lock
 
-from core import (
-    Fix,
-    Loot,
-    Player,
-    Raid,
-    RawLoot,
-    Season,
-    is_local_development,
-    to_raw_loot_list,
-)
+from core import Fix, Loot, Player, Raid, RawLoot, Season, is_local_development, to_raw_loot_list
 from github import Auth, Github, UnknownObjectException
 from github.ContentFile import ContentFile
 

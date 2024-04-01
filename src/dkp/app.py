@@ -239,6 +239,22 @@ def apply_fixes(existing_log: list[RawLoot], fixes: list[Fix]) -> list[RawLoot]:
     return result
 
 
+def get_current_season() -> Season:
+    current_date = datetime.date.today().isoformat()
+    past_start_season_list = [season for season in DATABASE.season_list if season.start < current_date]
+    if past_start_season_list:
+        return max(past_start_season_list, key=lambda season: season.start)
+    else:
+        raise Exception("No season found for current date: " + current_date)
+
+
+def get_season_list_starting_with_current() -> list[Season]:
+    current_season = get_current_season()
+    other_seasons = DATABASE.season_list.copy()
+    other_seasons.remove(current_season)
+    return [current_season] + other_seasons
+
+
 # delegators
 
 def get_loot_log(raid_day: str) -> list[Loot]:

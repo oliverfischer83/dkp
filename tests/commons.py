@@ -1,4 +1,4 @@
-from core import Fix, FixEntry, Loot, Player, Raid, RawLoot
+from core import Fix, FixEntry, Loot, Player, Raid, RawLoot, Season
 
 
 def create_test_object_raw_loot(dict: dict) -> RawLoot:
@@ -66,6 +66,20 @@ def create_test_object_raid(dict: dict) -> Raid:
         if key not in fields:
             raise ValueError(f"Invalid field: {key}")
     return Raid(**fields)
+
+
+def create_test_object_season(dict: dict) -> Season:
+    fields = {
+        "id": dict.get("id", ""),
+        "name": dict.get("name", ""),
+        "descr": dict.get("descr", ""),
+        "start": dict.get("start", ""),
+    }
+    # sanity check
+    for key in dict:
+        if key not in fields:
+            raise ValueError(f"Invalid field: {key}")
+    return Season(**fields)
 
 
 def create_test_object_fixes(id: str, entries: dict[str, str]) -> Fix:
