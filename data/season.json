@@ -16,11 +16,5 @@
     "name": "abc",
     "descr": "def",
     "start": "2024-06-12"
-  },
-  {
-    "id": 4,
-    "name": "abc2",
-    "descr": "2def2",
-    "start": "2024-06-12"
   }
 ]
