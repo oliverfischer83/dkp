@@ -158,7 +158,6 @@ ADMIN_PASSWORD="..."
   - show warning if raid finished and attendees/report id missing
   - (maybe) if unknown character
 
-- bugfix: show correct balance for each season
 - player can be deleted only, if none of their chars raided yet
 - loot editor: add season button, pre-select current season, pre-select current/last raid
--
+- player ignore list per season (add to season.json)

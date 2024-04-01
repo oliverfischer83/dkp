@@ -239,6 +239,31 @@ class GithubClient:
         return sorted(result, key=lambda entry: entry.timestamp, reverse=True)
 
 
+    def _get_season_end(self, season: Season) -> str | None:
+        next_season = self._get_next_season(season)
+        if next_season:
+            return next_season.start
+        else:
+            return None
+
+
+    def _get_next_season(self, season: Season) -> Season | None:
+        sorted_list = sorted(self.season_list, key=lambda season: season.start)
+        for i, s in enumerate(sorted_list):
+            if s == season:
+                if i + 1 < len(sorted_list):
+                    return sorted_list[i + 1]
+        return None
+
+
+    def get_raid_list(self, season: Season) -> list[Raid]:
+        season_end = self._get_season_end(season)
+        if season_end:
+            return [raid for raid in self.raid_list if season.start <= raid.date < season_end]
+        else:
+            return [raid for raid in self.raid_list if season.start <= raid.date]
+
+
     def get_empty_season_list(self) -> list[Season]:
         result = []
         for season in self.season_list:

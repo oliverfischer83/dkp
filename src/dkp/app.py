@@ -66,7 +66,7 @@ def init_balance_table(player_list: list[Player]) -> dict[str, dict[int, Any]]: 
     return balance_list
 
 
-def add_income_to_balance_table(balance_table: dict[str, dict[int, Any]], raid_list: list[Raid]) -> dict[str, dict[int, Any]]:
+def add_income_to_balance_table(season: Season, balance_table: dict[str, dict[int, Any]], raid_list: list[Raid]) -> dict[str, dict[int, Any]]:
     log.debug("add_income_to_balance_table")
     for i, name in balance_table["name"].items():
         for raid in raid_list:
@@ -89,11 +89,12 @@ def add_cost_to_balance_table(balance_table: dict[str, dict[int, Any]], player_t
     return balance_table
 
 
-def calc_balance(player_list: list[Player], raid_list: list[Raid], loot_table: list[Loot]) -> dict[str, dict[int, Any]]:
+def get_balance(season: Season):
     log.debug("get_balance")
-    player_to_cost_pair = get_player_to_cost_pair(player_list, loot_table)
-    balance_table = init_balance_table(player_list)
-    balance_table = add_income_to_balance_table(balance_table, raid_list)
+    loot = get_loot_history(season)
+    player_to_cost_pair = get_player_to_cost_pair(DATABASE.player_list, loot)
+    balance_table = init_balance_table(DATABASE.player_list)
+    balance_table = add_income_to_balance_table(season, balance_table, DATABASE.get_raid_list(season))
     balance_table = add_cost_to_balance_table(balance_table, player_to_cost_pair)
     return balance_table
 
@@ -152,11 +153,6 @@ def validate_import(raw_loot_list: list[RawLoot]):
     validate_note_values([entry.note for entry in raw_loot_list])
 
 
-def get_balance(season: Season):
-    relevant_loot = get_loot_history(season)
-    return calc_balance(DATABASE.player_list, DATABASE.raid_list, relevant_loot)
-
-
 def get_info_last_update(season: Season) -> tuple[str, str, str]:
     all_loot = DATABASE.get_season_loot(season)
     if not all_loot:
@@ -166,9 +162,8 @@ def get_info_last_update(season: Season) -> tuple[str, str, str]:
 
 
 def get_loot_history(season: Season) -> list[Loot]:
-    all_loot = DATABASE.get_season_loot(season)
-    relevant_loot = [entry for entry in all_loot if entry.response == "Gebot"]
-    return relevant_loot
+    season_loot = DATABASE.get_season_loot(season)
+    return [entry for entry in season_loot if entry.response == "Gebot"]
 
 
 def get_raid_entry_for_manual_storage(report_id):
