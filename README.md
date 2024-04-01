@@ -147,9 +147,6 @@ ADMIN_PASSWORD="..."
 - unify methods
   - create_loot_log, update_loot_log, fix_loot_log
 
-## Season management
-- button to add season and reloads data
-
 ## Raid Editor
 - status
   - started (log added same day or raid started manually)

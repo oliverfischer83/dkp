@@ -19,7 +19,7 @@ from core import (
     is_local_development,
     to_raw_loot_list,
 )
-from github import Auth, Github
+from github import Auth, Github, UnknownObjectException
 from github.ContentFile import ContentFile
 
 log = logging.getLogger(__name__)
@@ -79,7 +79,10 @@ class GithubClient:
             result = {}
             for season in self.season_list:
                 dir_path = _get_loot_log_dir_path(season.name)
-                file_list = self.repo_api.get_contents(dir_path, ref=BRANCH)
+                try:
+                    file_list = self.repo_api.get_contents(dir_path, ref=BRANCH)
+                except UnknownObjectException:
+                    continue    # no loot logs for this season yet
                 if isinstance(file_list, ContentFile):
                     file_list = [file_list]
                 raid_dict = {}
@@ -167,9 +170,14 @@ class GithubClient:
         self._update_raid_list()
 
 
-    def add_season(self, name: str, descr: str):
+    def add_season(self, name: str, descr: str, start: str):
         id = max([season.id for season in self.season_list]) + 1
-        self.season_list.append(Season(id=id, name=name, descr=descr))
+        self.season_list.append(Season(id=id, name=name, descr=descr, start=start))
+        self._update_season_list()
+
+
+    def delete_season(self, season: Season):
+        self.season_list.remove(season)
         self._update_season_list()
 
 
@@ -207,10 +215,20 @@ class GithubClient:
 
 
     def get_all_loot_logs(self, season: Season) -> list[Loot]:
+        if season not in self.raw_loot_list:
+            return []
         season_logs = []
         for _, loot_list in self.raw_loot_list[season].items():
             season_logs += loot_list
         return _cleanup_data(season_logs, self.player_list)
+
+
+    def get_empty_season_list(self) -> list[Season]:
+        result = []
+        for season in self.season_list:
+            if season not in self.raw_loot_list:
+                result.append(season)
+        return result
 
 
     def find_season_by_raid(self, raid: Raid) -> Season:

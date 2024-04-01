@@ -138,7 +138,35 @@ def main():
     # Season editor
     with st.container():
         with st.expander('🟣 Season editor'):
-            st.write("Season entries:")
+            left, right = st.columns(2)
+            with left:
+                with st.form('season_form'):
+                    st.subheader('New season')
+                    season_name = st.text_input("Name:", placeholder="e.g. dfs3")
+                    season_desc = st.text_input("Description:", placeholder="e.g. Dragonflight - Season 3")
+                    season_start = str(st.date_input("Start date:", format="YYYY-MM-DD"))
+                    season_add_submitted = st.form_submit_button('Add season')
+
+                if season_add_submitted:
+                    if not season_name or not season_desc or not season_start:
+                        st.error("Please fill out all fields.")
+                    else:
+                        app.add_season(season_name, season_desc, season_start)
+                        st.success(f"Season added: {season_name} - {season_desc}")
+                        time.sleep(2)
+                        st.rerun()
+
+            with right:
+                season_list = app.get_empty_season_list()
+                selected_season = st.selectbox("Select empty season:", [season.descr for season in season_list])
+                if selected_season:
+                    season = next((season for season in season_list if season.descr == selected_season))
+
+                if st.button('Delete season'):
+                    app.delete_season(season)
+                    st.success(f"Season deleted: {season.descr}")
+                    time.sleep(2)
+                    st.rerun()
 
 
 def transform(diff: pd.DataFrame) -> list[Fix]:

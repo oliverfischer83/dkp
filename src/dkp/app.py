@@ -160,6 +160,8 @@ def get_balance(season: Season):
 
 def get_info_last_update(season: Season) -> tuple[str, str, str]:
     all_loot = DATABASE.get_all_loot_logs(season)
+    if not all_loot:
+        return "1970-01-01 00:00:00", "unknown", "unknown"
     last_entry = max(all_loot, key=lambda entry: entry.timestamp)
     return last_entry.timestamp, last_entry.boss, last_entry.difficulty
 
@@ -254,6 +256,9 @@ def get_raid_list() -> list[Raid]:
 def get_season_list() -> list[Season]:
     return DATABASE.season_list
 
+def get_empty_season_list() -> list[Season]:
+    return DATABASE.get_empty_season_list()
+
 def add_player(player_name: str):
     DATABASE.add_player(player_name)
 
@@ -268,3 +273,9 @@ def update_player(fixes: list[Fix]):
 
 # def update_raid(fixes: list[Fix]):
     # DATABASE.update_raid(fixes)
+
+def add_season(season_name: str, season_desc: str, season_start: str):
+    DATABASE.add_season(season_name, season_desc, season_start)
+
+def delete_season(season: Season):
+    DATABASE.delete_season(season)
