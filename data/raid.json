@@ -166,5 +166,11 @@
         "date": "2024-03-24",
         "report": "https://www.warcraftlogs.com/reports/L9ZrWwPcBGht7dpN",
         "player": ["Carmen", "Christoph", "Joseph", "Kalle", "Kevin", "Marco", "Micha", "Olli", "Thomas", "Tobi", "Yasmin"]
+    },
+    {
+        "id": 99,
+        "date": "2040-01-01",
+        "report": "https://www.warcraftlogs.com/reports/...",
+        "player": ["Carmen", "Christoph", "Joseph", "Kalle", "Kevin", "Marco", "Micha", "Olli", "Thomas", "Tobi", "Yasmin"]
     }
 ]
