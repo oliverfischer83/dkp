@@ -260,8 +260,8 @@ def get_raid_loot_raw(raid_day: str) -> list[RawLoot]:
 def get_player_list() -> list[Player]:
     return DATABASE.player_list
 
-def get_raid_list() -> list[Raid]:
-    return DATABASE.raid_list
+def get_raid_list(season: Season) -> list[Raid]:
+    return DATABASE.get_raid_list(season)
 
 def get_season_list() -> list[Season]:
     return DATABASE.season_list

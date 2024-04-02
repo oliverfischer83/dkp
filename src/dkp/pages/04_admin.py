@@ -7,16 +7,25 @@ import pandas as pd
 import streamlit as st
 from core import CHANGE, ORIGINAL, Fix, FixEntry, to_date, to_raw_loot_list
 
-st.set_page_config(
-    page_title='DKP - admin',
-    page_icon='🟠',  # see https://twemoji-cheatsheet.vercel.app/
-    initial_sidebar_state="expanded")
-
-st.sidebar.write('###### Version: 0.1.0')
 
 def main():
 
-    # Password protection
+    st.set_page_config(
+        page_title='DKP - admin',
+        page_icon='🟠',  # see https://twemoji-cheatsheet.vercel.app/
+        initial_sidebar_state="expanded")
+
+    st.sidebar.write('###### Version: 0.1.0')
+
+    build_password_protection()
+    build_loot_upload()
+    build_loot_editor()
+    build_player_editor()
+    build_raid_editor()
+    build_season_editor()
+
+
+def build_password_protection():
     with st.container():
         password = st.text_input("Enter password:", type="password")
         if password != app.get_admin_password():
@@ -24,7 +33,7 @@ def main():
             st.stop()
 
 
-    # Loot upload
+def build_loot_upload():
     with st.container():
         with st.expander('🟢 Loot upload'):
             json_string = st.text_area("Add Loot Log (RCLootCouncil export as JSON):", placeholder='e.g. [{"player":"Moppi-Anub\'Arak", "date":"31/1/24", ...')
@@ -46,37 +55,43 @@ def main():
                     st.error(f"Validation failed! {str(e)}")
 
 
-    # Loot editor
+def build_loot_editor():
     with st.container():
         with st.expander('🟡 Loot editor'):
-            col1, _, _, _ = st.columns(4)
+            col1, col2, _, _ = st.columns(4)
             with col1:
-                raid_day = st.selectbox("Select raid:", sorted([raid.date for raid in app.get_raid_list()], reverse=True))
+                season_list = app.get_season_list_starting_with_current()
+                selected_season = st.selectbox("Select season:", [season.name for season in season_list])
+                season = next((season for season in app.get_season_list() if season.name == selected_season))
+            with col2:
+                raid_list = app.get_raid_list(season)
+                raid_day = st.selectbox("Select raid:", sorted([raid.date for raid in raid_list], reverse=True))
 
-            loot_log_original = app.get_raid_loot(raid_day)  # type: ignore
+            if season and raid_day:
+                loot_log_original = app.get_raid_loot(raid_day)
 
-            data=[loot.model_dump() for loot in loot_log_original]
-            columns=[ "id", "character", "note", "response", "item_name", "boss", "difficulty", "instance", "timestamp"]
-            dataframe = pd.DataFrame(data, columns=columns).sort_values(by=["id"], ascending=True).set_index("id")
+                data=[loot.model_dump() for loot in loot_log_original]
+                columns=[ "id", "character", "note", "response", "item_name", "boss", "difficulty", "instance", "timestamp"]
+                dataframe = pd.DataFrame(data, columns=columns).sort_values(by=["id"], ascending=True).set_index("id")
 
-            editor = st.data_editor(dataframe, disabled=["id", "item_name", "boss", "difficulty", "instance", "timestamp"])
-            diff = editor.compare(dataframe, keep_shape=False, keep_equal=False, result_names=(CHANGE, ORIGINAL))
-            if not diff.empty:
-                st.write("Changed loot:")
-                st.write(diff)
-                reason = st.text_input("Reason for fix:", key="reason", placeholder="e.g. clean up, player traded item, fixed response, ...")
+                editor = st.data_editor(dataframe, disabled=["id", "item_name", "boss", "difficulty", "instance", "timestamp"])
+                diff = editor.compare(dataframe, keep_shape=False, keep_equal=False, result_names=(CHANGE, ORIGINAL))
+                if not diff.empty:
+                    st.write("Changed loot:")
+                    st.write(diff)
+                    reason = st.text_input("Reason for fix:", key="reason", placeholder="e.g. clean up, player traded item, fixed response, ...")
 
-                if st.button("Submit changed Loot"):
-                    if not reason:
-                        st.error("Please provide a reason for the fix.")
-                    else:
-                        app.apply_fix_to_loot_log(transform(diff), raid_day, reason)  # type: ignore
-                        st.success("Fix applied." )
-                        time.sleep(2)
-                        st.rerun()
+                    if st.button("Submit changed Loot"):
+                        if not reason:
+                            st.error("Please provide a reason for the fix.")
+                        else:
+                            app.apply_fix_to_loot_log(transform(diff), raid_day, reason)
+                            st.success("Fix applied." )
+                            time.sleep(2)
+                            st.rerun()
 
 
-    # Player editor
+def build_player_editor():
     with st.container():
         with st.expander('🟠 Player editor'):
             left, right = st.columns(2)
@@ -119,7 +134,7 @@ def main():
                     st.rerun()
 
 
-    # Raid editor
+def build_raid_editor():
     with st.container():
         with st.expander('🔵 Raid editor'):
             report_id = st.text_input("Enter warcraftlogs report id:", placeholder="e.g. JrYPGF9D1yLqtZhd")
@@ -135,7 +150,7 @@ def main():
                 st.markdown("Copy and paste this entry into the raid section of the config.yml file.")
 
 
-    # Season editor
+def build_season_editor():
     with st.container():
         with st.expander('🟣 Season editor'):
             left, right = st.columns(2)
@@ -157,16 +172,18 @@ def main():
                         st.rerun()
 
             with right:
-                season_list = app.get_empty_season_list()
-                selected_season = st.selectbox("Select empty season:", [season.descr for season in season_list])
+                selected_season = st.selectbox("Select empty season:", [season.descr for season in app.get_empty_season_list()], index=None)
                 if selected_season:
-                    season = next((season for season in season_list if season.descr == selected_season))
+                    season = next((season for season in app.get_season_list() if season.descr == selected_season))
 
                 if st.button('Delete season'):
                     app.delete_season(season)
                     st.success(f"Season deleted: {season.descr}")
                     time.sleep(2)
                     st.rerun()
+
+
+
 
 
 def transform(diff: pd.DataFrame) -> list[Fix]:
