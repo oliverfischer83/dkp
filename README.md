@@ -74,12 +74,6 @@ ADMIN_PASSWORD="..."
 
 # TODO
 
-## page reload
-- auto refresh page
-- on loot data upload, clients get signal to refresh or waning banner that data outdated
-- make optional
-- try: https://github.com/kmcgrady/streamlit-autorefresh
-
 ## Scenarios:
 - Normal use case:
   - click Raid button: raid entry, status "started"
@@ -99,16 +93,10 @@ ADMIN_PASSWORD="..."
 - fix: m+ chars in raid report, test with report vF2C8crAdja1QKhD
   - or show warning and abort if m+ logs in report
 - find other cloud hosting as backup
-- after uploading a loot log, show entries in raid day below (select date automatically)
 - code quality
   - unit tests for balance functions
   - constants for string field names where possible
-- add status flag to Player
-  - paused: dont show on balance view
-  - or only add player to dkp list, which has atleast one raid
-- unify data validation on export upload and loot editor changes
 - loot statistics (which loot dropt how often, raid progress, raid attendence, ...)
-- season entry has field "players_ignored" to hide them from overview
 
 # Release info
 - tagging releases
@@ -147,6 +135,16 @@ ADMIN_PASSWORD="..."
 - balance and loot-history should have an own data class
 - unify methods
   - create_loot_log, update_loot_log, fix_loot_log
+- unify data validation on export upload and loot editor changes
+
+## page reload
+- auto refresh page
+- on loot data upload, clients get signal to refresh or waning banner that data outdated
+- make optional
+- try: https://github.com/kmcgrady/streamlit-autorefresh
+
+# ignore player per season
+- season entry has field "players_ignored" to hide them from overview
 
 ## Raid Editor
 - status
@@ -154,5 +152,3 @@ ADMIN_PASSWORD="..."
   - finished (log added from past or raid stopped manually or is next day)
 - report id
   - show warning if raid finished and attendees/report id missing
-
-
