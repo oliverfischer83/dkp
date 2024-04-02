@@ -108,6 +108,7 @@ ADMIN_PASSWORD="..."
   - or only add player to dkp list, which has atleast one raid
 - unify data validation on export upload and loot editor changes
 - loot statistics (which loot dropt how often, raid progress, raid attendence, ...)
+- season entry has field "players_ignored" to hide them from overview
 
 # Release info
 - tagging releases
@@ -128,6 +129,7 @@ ADMIN_PASSWORD="..."
   - live log started
   - all attendees have RCLootCouncil started
   - add new attendees
+- checklist on sidepane?
 
 # Fallback Excel list
 - after each raid, generate table entries which can be used within excel as a fallback solution
@@ -142,9 +144,6 @@ ADMIN_PASSWORD="..."
 - how to install and configure Addon RCLootCouncil using screenshots
 
 # Refactor
-- load loot logs into DATABASE object at start up and work with objects (fixes development issues with local and remote repo)
-  - reload button? -> no restart debug session
-  - reload data objects on persist (update to github)
 - balance and loot-history should have an own data class
 - unify methods
   - create_loot_log, update_loot_log, fix_loot_log
@@ -152,10 +151,8 @@ ADMIN_PASSWORD="..."
 ## Raid Editor
 - status
   - started (log added same day or raid started manually)
-  - finished (log added from past or raid stopped manually)
+  - finished (log added from past or raid stopped manually or is next day)
 - report id
   - show warning if raid finished and attendees/report id missing
-  - (maybe) if unknown character
 
-- player can be deleted only, if none of their chars raided yet
-- player ignore list per season (add to season.json)
+

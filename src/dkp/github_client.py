@@ -272,6 +272,15 @@ class GithubClient:
         return result
 
 
+    def get_absent_player_list(self) -> list[Player]:
+        result = []
+        for player in self.player_list:
+            # player didn't attend any raid
+            if not any([player.name in raid.player for raid in self.raid_list]):
+                result.append(player)
+        return result
+
+
     def find_season_by_raid(self, raid: Raid) -> Season:
         for season in self.season_list:
             if raid in self.raw_loot_list[season]:

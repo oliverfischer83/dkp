@@ -107,7 +107,7 @@ def build_player_editor():
                         st.rerun()
 
             with right:
-                player_name = st.selectbox("Select player:", sorted([player.name for player in app.get_player_list()]))
+                player_name = st.selectbox("Select absent player:", sorted([player.name for player in app.get_absent_player_list()]))
                 if st.button("Delete player"):
                     if not player_name:
                         st.error("Please select player to remove.")
