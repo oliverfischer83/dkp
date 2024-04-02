@@ -103,7 +103,6 @@ ADMIN_PASSWORD="..."
 - code quality
   - unit tests for balance functions
   - constants for string field names where possible
-  - remove "# type: ignore"
 - add status flag to Player
   - paused: dont show on balance view
   - or only add player to dkp list, which has atleast one raid
@@ -159,5 +158,4 @@ ADMIN_PASSWORD="..."
   - (maybe) if unknown character
 
 - player can be deleted only, if none of their chars raided yet
-- loot editor: add season button, pre-select current season, pre-select current/last raid
 - player ignore list per season (add to season.json)
