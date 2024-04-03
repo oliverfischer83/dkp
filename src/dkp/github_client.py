@@ -143,13 +143,6 @@ class GithubClient:
         self._update_raid_list()
 
 
-    def change_raid(self, report: str ,attendees: list[str]):
-        raid = self.find_raid_by_date("2021-01-01")
-        raid.player = attendees
-        raid.report = report
-        self._update_raid_list()
-
-
     def add_season(self, name: str, descr: str, start: str):
         id = max([season.id for season in self.season_list]) + 1
         self.season_list.append(Season(id=id, name=name, descr=descr, start=start))
@@ -164,19 +157,19 @@ class GithubClient:
     def _update_player_list(self):
         file_path = _get_player_file()
         file_hash = self._get_data_file_hash(file_path)
-        self.repo_api.update_file(file_path, "Update", to_player_json(self.player_list), file_hash, BRANCH)
+        self.repo_api.update_file(file_path, "Update", data_to_json(self.player_list, 'name'), file_hash, BRANCH)
 
 
     def _update_raid_list(self):
         file_path = _get_raid_file()
         file_hash = self._get_data_file_hash(file_path)
-        self.repo_api.update_file(file_path, "Update", to_raid_json(self.raid_list), file_hash, BRANCH)
+        self.repo_api.update_file(file_path, "Update", data_to_json(self.raid_list, 'date'), file_hash, BRANCH)
 
 
     def _update_season_list(self):
         file_path = _get_season_file()
         file_hash = self._get_data_file_hash(file_path)
-        self.repo_api.update_file(file_path, "Update", to_season_json(self.season_list), file_hash, BRANCH)
+        self.repo_api.update_file(file_path, "Update", data_to_json(self.season_list, 'id'), file_hash, BRANCH)
 
 
     def get_season_loot_raw(self, season: Season) -> list[RawLoot]:
@@ -346,28 +339,16 @@ def to_raw_loot_json(loot_list: list[RawLoot]) -> str:
     """Converts raw loot lists into json str for database storage."""
     content = [loot.model_dump(by_alias=True) for loot in loot_list]
     sorted_content = sorted(content, key=lambda entry: entry['player'])  # sort by character name
-    return to_json(sorted_content)
+    return _to_json(sorted_content)
 
 
-def to_player_json(player_list: list[Player]) -> str:
-    content = [player.model_dump() for player in player_list]
-    sorted_content = sorted(content, key=lambda entry: entry['name'])  # sort by player name
-    return to_json(sorted_content)
+def data_to_json[T: (Player, Raid, Season)](model_list: list[T], sort_by: str) -> str:
+    content = [model.model_dump() for model in model_list]
+    sorted_content = sorted(content, key=lambda entry: entry[sort_by])
+    return _to_json(sorted_content)
 
 
-def to_raid_json(raid_list: list[Raid]) -> str:
-    content = [raid.model_dump() for raid in raid_list]
-    sorted_content = sorted(content, key=lambda entry: entry['date'])  # sort by raid date
-    return to_json(sorted_content)
-
-
-def to_season_json(season_list: list[Season]) -> str:
-    content = [season.model_dump() for season in season_list]
-    sorted_content = sorted(content, key=lambda entry: entry['id'])  # sort by raid id
-    return to_json(sorted_content)
-
-
-def to_json(content: list) -> str:
+def _to_json(content: list) -> str:
     return json.dumps(content,
                       indent=2,             # beautify
                       ensure_ascii=False)   # allow non-ascii characters

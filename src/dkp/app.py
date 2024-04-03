@@ -281,8 +281,8 @@ def delete_player(player_name: str):
 def update_player(fixes: list[Fix]):
     DATABASE.update_player(fixes)
 
-# def add_raid(date: str):
-    # DATABASE.add_raid(date)
+def add_raid(date: str):
+    DATABASE.add_raid(date)
 
 # def update_raid(fixes: list[Fix]):
     # DATABASE.update_raid(fixes)
