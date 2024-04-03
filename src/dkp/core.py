@@ -5,15 +5,15 @@ Data classes concentrated into a single file to omit cyclic imports.
 import datetime
 import json
 import os
-from pydantic import BaseModel, Field, ValidationInfo, field_validator
 
+from pydantic import BaseModel, Field, ValidationInfo, field_validator
 
 ORIGINAL = "original"
 CHANGE = "change"
 
 
 def is_local_development() -> bool:
-     # used to speed up testing
+    # used to speed up testing
     return os.environ.get("LOCAL_DEVELOPMENT", "false").lower() == "true"
 
 
@@ -61,6 +61,7 @@ class Loot(BaseModel):
         if not response:
             raise ValueError(f'Response must not be empty. {details(info)}')
         return response
+
 
 def details(values: ValidationInfo):
     return f'(id="{values.data["id"]}", timestamp="{values.data["timestamp"]}")'
@@ -150,4 +151,3 @@ def to_raw_date(date: str) -> str:
 def to_date(raw_date: str) -> str:
     """Converts date from %d/%m/%y to %Y-%m-%d."""
     return datetime.datetime.strptime(raw_date, "%d/%m/%y").strftime("%Y-%m-%d")  # like 2024-01-01
-

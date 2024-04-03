@@ -1,10 +1,10 @@
 # pylint: disable=missing-module-docstring
 from datetime import date
+
+import app
 import pandas as pd
 import streamlit as st
-import app
 from core import Season
-
 
 
 def main():

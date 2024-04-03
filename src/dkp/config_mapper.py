@@ -16,6 +16,7 @@ log = logging.getLogger(__name__)
 class GithubClient(BaseModel):
     token: str
 
+
 class WclClient(BaseModel):
     client_id: str
     client_secret: str

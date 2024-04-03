@@ -26,6 +26,19 @@
   - dataframes and list of dics for transformation/data-manipulation
   - json as storage format of data files (should be converted right before pushing to github.com)
 
+```mermaid
+graph TD;
+    Overview-->App;
+    Overview-->Core;
+    Admin-->App;
+    Admin-->Core;
+    App-->GitHubClient;
+    App-->WarcraftLogsClient;
+    App-->Core;
+    GitHubClient-->Core;
+    WarcraftLogsClient-->Core;
+```
+
 ## Setup local environment
 
 ### Python

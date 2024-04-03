@@ -33,7 +33,6 @@ WCL_CLIENT = WclClient(CONFIG.auth.wcl_client, WCL_CLIENT_ID, WCL_CLIENT_SECRET)
 DATABASE = GithubClient(GITHUB_TOKEN)
 
 
-
 def get_admin_password():
     return ADMIN_PASSWORD if not is_local_development() else ""
 
@@ -285,7 +284,7 @@ def add_raid(date: str):
     DATABASE.add_raid(date)
 
 # def update_raid(fixes: list[Fix]):
-    # DATABASE.update_raid(fixes)
+# DATABASE.update_raid(fixes)
 
 def add_season(season_name: str, season_desc: str, season_start: str):
     DATABASE.add_season(season_name, season_desc, season_start)

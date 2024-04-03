@@ -183,9 +183,6 @@ def build_season_editor():
                     st.rerun()
 
 
-
-
-
 def transform(diff: pd.DataFrame) -> list[Fix]:
     # drop original values
     for col in diff.columns:
