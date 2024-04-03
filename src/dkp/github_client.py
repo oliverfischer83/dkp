@@ -8,6 +8,7 @@ import datetime
 import json
 import logging
 from threading import Lock
+from typing import Type
 
 from core import Fix, Loot, Player, Raid, RawLoot, Season, is_local_development, to_raw_loot_list
 from github import Auth, Github, UnknownObjectException
@@ -43,19 +44,19 @@ class GithubClient:
     @property
     def player_list(self):
         if self._player_list is None:
-            self._player_list = self._load_players()
+            self._player_list = self._load_data(Player, _get_player_file(), self._lock_player)
         return self._player_list
 
     @property
     def season_list(self):
         if self._season_list is None:
-            self._season_list = self._load_seasons()
+            self._season_list = self._load_data(Season, _get_season_file(), self._lock_season)
         return self._season_list
 
     @property
     def raid_list(self):
         if self._raid_list is None:
-            self._raid_list = self._load_raids()
+            self._raid_list = self._load_data(Raid, _get_raid_file(), self._lock_raid)
         return self._raid_list
 
     @property
@@ -89,22 +90,10 @@ class GithubClient:
             return result
 
 
-    def _load_raids(self) -> list[Raid]:
-        with self._lock_raid:
-            content = self._get_data_file_content(_get_raid_file())
-            return [Raid(**entry) for entry in json.loads(content)]
-
-
-    def _load_players(self) -> list[Player]:
-        with self._lock_player:
-            content = self._get_data_file_content(_get_player_file())
-            return [Player(**entry) for entry in json.loads(content)]
-
-
-    def _load_seasons(self) -> list[Season]:
-        with self._lock_season:
-            content = self._get_data_file_content(_get_season_file())
-            return [Season(**entry) for entry in json.loads(content)]
+    def _load_data[T](self, clazz: Type[T], file_path: str, lock: Lock) -> list[T]:
+        with lock:
+            content = self._get_data_file_content(file_path)
+            return [clazz(**entry) for entry in json.loads(content)]
 
 
     def _get_data_file_hash(self, file_path: str) -> str:
