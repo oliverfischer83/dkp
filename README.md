@@ -183,7 +183,5 @@ ADMIN_PASSWORD="..."
   - started (log added same day or raid started manually)
   - finished (log added from past or raid stopped manually or is next day)
 - report id
+- show warning if raid finished and attendees/report id missing
 
-  - show warning if raid finished and attendees/report id missing
-
-- prevent adding users or chars, which already exist

@@ -12,7 +12,7 @@ from typing import Any
 from config_mapper import Config
 from core import Fix, Season, is_local_development
 from dotenv import load_dotenv
-from github_client import GithubClient, Loot, Player, Raid, RawLoot
+from github_client import GithubClient, Loot, Player, Raid, RawLoot, csv_to_list
 from warcraftlogs_client import WclClient
 
 load_dotenv()
@@ -280,7 +280,10 @@ def get_empty_season_list() -> list[Season]:
 
 
 def add_player(player_name: str):
-    DATABASE.add_player(player_name)
+    if any(player.name == player_name for player in DATABASE.player_list):
+        raise ValueError("Player with name already exists: " + player_name)
+    else:
+        DATABASE.add_player(player_name)
 
 
 def delete_player(player_name: str):
@@ -288,6 +291,20 @@ def delete_player(player_name: str):
 
 
 def update_player(fixes: list[Fix]):
+    for fix in fixes:
+        for e in fix.entries:
+            if e.name == "name":
+                if any(player.name == e.value for player in DATABASE.player_list):
+                    raise ValueError("Player with name already exists: " + fix.entries[0].value)
+            elif e.name == "chars":
+                for char in csv_to_list(e.value):
+                    try:
+                        DATABASE.find_player_by_character(char)
+                        raise AttributeError(f"Player with character name '{char}' already exists.")
+                    except ValueError:
+                        pass # character name not alredy taken
+            else:
+                raise KeyError(f"Invalid key: {e.name}")  # sanity check
     DATABASE.update_player(fixes)
 
 

@@ -123,9 +123,7 @@ class GithubClient:
                         if e.name == "name":
                             player.name = e.value
                         elif e.name == "chars":
-                            player.chars = [
-                                char.strip() for char in e.value.split(",") if e.value
-                            ]  # "a, b, c" -> ["a", "b", "c"] and "" -> []
+                            player.chars = csv_to_list(e.value)
                         else:
                             raise KeyError(f"Invalid key: {e.name}")  # sanity check
                     break
@@ -335,3 +333,7 @@ def data_to_json[T: (Player, Raid, Season)](model_list: list[T], sort_by: str) -
 
 def _to_json(content: list) -> str:
     return json.dumps(content, indent=2, ensure_ascii=False)  # allow non-ascii characters
+
+
+def csv_to_list(csv: str) -> list[str]:
+    return [item.strip() for item in csv.split(",") if csv]  # "a, b, c" -> ["a", "b", "c"] and "" -> []
