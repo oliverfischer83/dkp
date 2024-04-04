@@ -39,7 +39,7 @@ def get_admin_password():
 
 def get_player_to_cost_pair(player_list: list[Player], loot_table: list[Loot]) -> dict[str, int]:
     log.debug("get_player_to_cost_pair")
-    result = dict()
+    result = {}
     for player in player_list:
         result[player.name] = 0
         for loot in loot_table:
@@ -50,12 +50,12 @@ def get_player_to_cost_pair(player_list: list[Player], loot_table: list[Loot]) -
 
 def init_balance_table(player_list: list[Player]) -> dict[str, dict[int, Any]]:  # TODO refactor: dict[int, Any] is not very descriptive
     log.debug("init_balance_table")
-    balance_list = dict()
-    balance_list["name"] = dict()
-    balance_list["value"] = dict()
-    balance_list["income"] = dict()
-    balance_list["cost"] = dict()
-    balance_list["characters"] = dict()
+    balance_list = {}
+    balance_list["name"] = {}
+    balance_list["value"] = {}
+    balance_list["income"] = {}
+    balance_list["cost"] = {}
+    balance_list["characters"] = {}
     for i, player in enumerate(player_list):
         balance_list["name"][i] = player.name
         balance_list["value"][i] = INITIAL_BALANCE
@@ -65,7 +65,7 @@ def init_balance_table(player_list: list[Player]) -> dict[str, dict[int, Any]]: 
     return balance_list
 
 
-def add_income_to_balance_table(season: Season, balance_table: dict[str, dict[int, Any]], raid_list: list[Raid]) -> dict[str, dict[int, Any]]:
+def add_income_to_balance_table(balance_table: dict[str, dict[int, Any]], raid_list: list[Raid]) -> dict[str, dict[int, Any]]:
     log.debug("add_income_to_balance_table")
     for i, name in balance_table["name"].items():
         for raid in raid_list:
@@ -93,13 +93,13 @@ def get_balance(season: Season):
     loot = get_loot_history(season)
     player_to_cost_pair = get_player_to_cost_pair(DATABASE.player_list, loot)
     balance_table = init_balance_table(DATABASE.player_list)
-    balance_table = add_income_to_balance_table(season, balance_table, DATABASE.get_raid_list(season))
+    balance_table = add_income_to_balance_table(balance_table, DATABASE.get_raid_list(season))
     balance_table = add_cost_to_balance_table(balance_table, player_to_cost_pair)
     return balance_table
 
 
 def validate_characters_known(known_player: list[Player], looting_characters: list[str]):
-    known_characters = list()
+    known_characters = []
     for player in known_player:
         known_characters.extend(player.chars)
 
@@ -114,8 +114,8 @@ def validate_note_values(cost_list: list[str]):
             continue
         try:
             int(note)
-        except ValueError:
-            raise ValueError("Note must be a parsable integer, but was: " + note)
+        except ValueError as e:
+            raise ValueError("Note must be a parsable integer, but was: " + note) from e
         if int(note) < 10:
             raise ValueError("Note minimum is 10, but was: " + note)
         if int(note) % 10 != 0:
@@ -205,7 +205,7 @@ def merging_logs(existing_log: list[RawLoot], new_log: list[RawLoot]) -> list[Ra
 def apply_fix_to_loot_log(fixes: list[Fix], raid_day: str, reason: str):
     existing_log = DATABASE.get_raid_loot_raw(raid_day)
     if not existing_log:
-        raise Exception(f"No loot log found! raid day: {raid_day}")
+        raise ValueError(f"No loot log found! raid day: {raid_day}")
     result = apply_fixes(existing_log, fixes)
     DATABASE.fix_loot_log(result, raid_day, reason)
 
@@ -228,7 +228,7 @@ def apply_fixes(existing_log: list[RawLoot], fixes: list[Fix]) -> list[RawLoot]:
                         loot.response = e.value
                     else:
                         # sanity check
-                        raise Exception(f"Invalid key: {e.name}")
+                        raise KeyError(f"Invalid key: {e.name}")
     return result
 
 
@@ -238,7 +238,7 @@ def get_current_season() -> Season:
     if past_start_season_list:
         return max(past_start_season_list, key=lambda season: season.start)
     else:
-        raise Exception("No season found for current date: " + current_date)
+        raise ValueError("No season found for current date: " + current_date)
 
 
 def get_season_list_starting_with_current() -> list[Season]:
@@ -250,44 +250,58 @@ def get_season_list_starting_with_current() -> list[Season]:
 
 # delegators
 
+
 def get_raid_loot(raid_day: str) -> list[Loot]:
     return DATABASE.get_raid_loot(raid_day)
+
 
 def get_raid_loot_raw(raid_day: str) -> list[RawLoot]:
     return DATABASE.get_raid_loot_raw(raid_day)
 
+
 def get_player_list() -> list[Player]:
     return DATABASE.player_list
+
 
 def get_absent_player_list() -> list[Player]:
     return DATABASE.get_absent_player_list()
 
+
 def get_raid_list(season: Season) -> list[Raid]:
     return DATABASE.get_raid_list(season)
+
 
 def get_season_list() -> list[Season]:
     return DATABASE.season_list
 
+
 def get_empty_season_list() -> list[Season]:
     return DATABASE.get_empty_season_list()
+
 
 def add_player(player_name: str):
     DATABASE.add_player(player_name)
 
+
 def delete_player(player_name: str):
     DATABASE.delete_player(player_name)
+
 
 def update_player(fixes: list[Fix]):
     DATABASE.update_player(fixes)
 
+
 def add_raid(date: str):
     DATABASE.add_raid(date)
+
 
 # def update_raid(fixes: list[Fix]):
 # DATABASE.update_raid(fixes)
 
+
 def add_season(season_name: str, season_desc: str, season_start: str):
     DATABASE.add_season(season_name, season_desc, season_start)
+
 
 def delete_season(season: Season):
     DATABASE.delete_season(season)

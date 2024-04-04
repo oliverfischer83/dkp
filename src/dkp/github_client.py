@@ -96,18 +96,18 @@ class GithubClient:
     def _get_data_file_hash(self, file_path: str) -> str:
         result = self.repo_api.get_contents(file_path, ref=BRANCH)
         if isinstance(result, list):
-            raise Exception(f"Multiple files found for {file_path}")
+            raise TypeError(f"Multiple files found for {file_path}")
         return result.sha
 
     def _get_data_file_content(self, file_path: str) -> str:
         result = self.repo_api.get_contents(file_path, ref=BRANCH)
         if isinstance(result, list):
-            raise Exception(f"Multiple files found for {file_path}")
+            raise TypeError(f"Multiple files found for {file_path}")
         return result.decoded_content.decode("utf-8")
 
     def add_player(self, player_name: str):
-        id = max([player.id for player in self.player_list]) + 1
-        self.player_list.append(Player(id=id, name=player_name, chars=[]))
+        player_id = max([player.id for player in self.player_list]) + 1
+        self.player_list.append(Player(id=player_id, name=player_name, chars=[]))
         self._update_player_list()
 
     def delete_player(self, player_name: str):
@@ -127,18 +127,18 @@ class GithubClient:
                                 char.strip() for char in e.value.split(",") if e.value
                             ]  # "a, b, c" -> ["a", "b", "c"] and "" -> []
                         else:
-                            raise Exception(f"Invalid key: {e.name}")  # sanity check
+                            raise KeyError(f"Invalid key: {e.name}")  # sanity check
                     break
         self._update_player_list()
 
     def add_raid(self, date: str):
-        id = max([raid.id for raid in self.raid_list]) + 1
-        self.raid_list.append(Raid(id=id, date=date, report="", player=[]))
+        raid_id = max([raid.id for raid in self.raid_list]) + 1
+        self.raid_list.append(Raid(id=raid_id, date=date, report="", player=[]))
         self._update_raid_list()
 
     def add_season(self, name: str, descr: str, start: str):
-        id = max([season.id for season in self.season_list]) + 1
-        self.season_list.append(Season(id=id, name=name, descr=descr, start=start))
+        season_id = max([season.id for season in self.season_list]) + 1
+        self.season_list.append(Season(id=season_id, name=name, descr=descr, start=start))
         self._update_season_list()
 
     def delete_season(self, season: Season):
@@ -250,13 +250,13 @@ class GithubClient:
         for season in self.season_list:
             if raid in self.raw_loot_list[season]:
                 return season
-        raise Exception(f"No season found for raid {raid.date}")
+        raise ValueError(f"No season found for raid {raid.date}")
 
     def find_raid_by_date(self, raid_day: str) -> Raid:
         for raid in self.raid_list:
             if raid.date == raid_day:
                 return raid
-        raise Exception(f"No raid found for {raid_day}")
+        raise ValueError(f"No raid found for {raid_day}")
 
     def find_player_by_name(self, player_name: str) -> Player:
         for player in self.player_list:

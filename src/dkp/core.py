@@ -31,11 +31,11 @@ class Loot(BaseModel):
     character: str
     response: str
 
-    @field_validator('note')
+    @field_validator("note")
     def validate_note(cls, note, info):
         if note == "":  # empty note is valid
             return note
-        message = f'Invalid note for entry {details(info)}: '
+        message = f"Invalid note for entry {details(info)}: "
         if not note.isdigit():
             raise ValueError(message + f'Note must be a parsable integer, but was: "{note}"')
         if int(note) <= 0:
@@ -44,22 +44,22 @@ class Loot(BaseModel):
             raise ValueError(message + f'Note must be a multiple of 10 (e.g. 10, 20, ...), but was: "{note}"')
         return note
 
-    @field_validator('player')
+    @field_validator("player")
     def validate_player(cls, player, info):
         if not player:
-            raise ValueError(f'Player must not be empty. {details(info)}')
+            raise ValueError(f"Player must not be empty. {details(info)}")
         return player
 
-    @field_validator('character')
+    @field_validator("character")
     def validate_character(cls, character, info):
         if not character:
-            raise ValueError(f'Character must not be empty. {details(info)}')
+            raise ValueError(f"Character must not be empty. {details(info)}")
         return character
 
-    @field_validator('response')
+    @field_validator("response")
     def validate_response(cls, response, info):
         if not response:
-            raise ValueError(f'Response must not be empty. {details(info)}')
+            raise ValueError(f"Response must not be empty. {details(info)}")
         return response
 
 
@@ -112,6 +112,7 @@ class Player(BaseModel):
     def __hash__(self):
         return hash((self.id))
 
+
 class Raid(BaseModel):
     id: int = 0
     date: str
@@ -123,6 +124,7 @@ class Raid(BaseModel):
 
     def __hash__(self):
         return hash((self.id))
+
 
 class Season(BaseModel):
     id: int = 0

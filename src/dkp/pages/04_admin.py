@@ -11,11 +11,10 @@ from core import CHANGE, ORIGINAL, Fix, FixEntry, to_date, to_raw_loot_list
 def main():
 
     st.set_page_config(
-        page_title='DKP - admin',
-        page_icon='🟠',  # see https://twemoji-cheatsheet.vercel.app/
-        initial_sidebar_state="expanded")
+        page_title="DKP - admin", page_icon="🟠", initial_sidebar_state="expanded"  # see https://twemoji-cheatsheet.vercel.app/
+    )
 
-    st.sidebar.write('###### Version: 0.1.0')
+    st.sidebar.write("###### Version: 0.1.0")
 
     build_password_protection()
     build_loot_upload()
@@ -35,8 +34,10 @@ def build_password_protection():
 
 def build_loot_upload():
     with st.container():
-        with st.expander('🟢 Loot upload'):
-            json_string = st.text_area("Add Loot Log (RCLootCouncil export as JSON):", placeholder='e.g. [{"player":"Moppi-Anub\'Arak", "date":"31/1/24", ...')
+        with st.expander("🟢 Loot upload"):
+            json_string = st.text_area(
+                "Add Loot Log (RCLootCouncil export as JSON):", placeholder='e.g. [{"player":"Moppi-Anub\'Arak", "date":"31/1/24", ...'
+            )
             if st.button("Try submit ..."):
                 uploaded_log = to_raw_loot_list(json_string)
                 raid_day = to_date(uploaded_log[0].date)
@@ -57,7 +58,7 @@ def build_loot_upload():
 
 def build_loot_editor():
     with st.container():
-        with st.expander('🟡 Loot editor'):
+        with st.expander("🟡 Loot editor"):
             col1, col2, _, _ = st.columns(4)
             with col1:
                 season_list = app.get_season_list_starting_with_current()
@@ -70,8 +71,8 @@ def build_loot_editor():
             if season and raid_day:
                 loot_log_original = app.get_raid_loot(raid_day)
 
-                data=[loot.model_dump() for loot in loot_log_original]
-                columns=[ "id", "character", "note", "response", "item_name", "boss", "difficulty", "instance", "timestamp"]
+                data = [loot.model_dump() for loot in loot_log_original]
+                columns = ["id", "character", "note", "response", "item_name", "boss", "difficulty", "instance", "timestamp"]
                 dataframe = pd.DataFrame(data, columns=columns).sort_values(by=["id"], ascending=True).set_index("id")
 
                 editor = st.data_editor(dataframe, disabled=["id", "item_name", "boss", "difficulty", "instance", "timestamp"])
@@ -79,21 +80,23 @@ def build_loot_editor():
                 if not diff.empty:
                     st.write("Changed loot:")
                     st.write(diff)
-                    reason = st.text_input("Reason for fix:", key="reason", placeholder="e.g. clean up, player traded item, fixed response, ...")
+                    reason = st.text_input(
+                        "Reason for fix:", key="reason", placeholder="e.g. clean up, player traded item, fixed response, ..."
+                    )
 
                     if st.button("Submit changed Loot"):
                         if not reason:
                             st.error("Please provide a reason for the fix.")
                         else:
                             app.apply_fix_to_loot_log(transform(diff), raid_day, reason)
-                            st.success("Fix applied." )
+                            st.success("Fix applied.")
                             time.sleep(2)
                             st.rerun()
 
 
 def build_player_editor():
     with st.container():
-        with st.expander('🟠 Player editor'):
+        with st.expander("🟠 Player editor"):
             left, right = st.columns(2)
             with left:
                 new_player = st.text_input("Enter new player name:", placeholder="e.g. Alfons")
@@ -117,8 +120,8 @@ def build_player_editor():
                         time.sleep(2)
                         st.rerun()
 
-            data=[{"id": player.id, "name": player.name, "chars": ", ".join(player.chars)} for player in app.get_player_list()]
-            columns=[ "id", "name", "chars"]
+            data = [{"id": player.id, "name": player.name, "chars": ", ".join(player.chars)} for player in app.get_player_list()]
+            columns = ["id", "name", "chars"]
             dataframe = pd.DataFrame(data, columns=columns).sort_values(by=["name"], ascending=True).set_index("id")
 
             editor = st.data_editor(dataframe, disabled=["id"])
@@ -129,14 +132,14 @@ def build_player_editor():
 
                 if st.button("Submit changed player"):
                     app.update_player(transform(diff))
-                    st.success("Player updated." )
+                    st.success("Player updated.")
                     time.sleep(2)
                     st.rerun()
 
 
 def build_raid_editor():
     with st.container():
-        with st.expander('🔵 Raid editor'):
+        with st.expander("🔵 Raid editor"):
             report_id = st.text_input("Enter warcraftlogs report id:", placeholder="e.g. JrYPGF9D1yLqtZhd")
             if st.button("Submit WCL report id"):
                 date, report_url, player_list = app.get_raid_entry_for_manual_storage(report_id)
@@ -152,15 +155,15 @@ def build_raid_editor():
 
 def build_season_editor():
     with st.container():
-        with st.expander('🟣 Season editor'):
+        with st.expander("🟣 Season editor"):
             left, right = st.columns(2)
             with left:
-                with st.form('season_form'):
-                    st.subheader('New season')
+                with st.form("season_form"):
+                    st.subheader("New season")
                     season_name = st.text_input("Name:", placeholder="e.g. dfs3")
                     season_desc = st.text_input("Description:", placeholder="e.g. Dragonflight - Season 3")
                     season_start = str(st.date_input("Start date:", format="YYYY-MM-DD"))
-                    season_add_submitted = st.form_submit_button('Add season')
+                    season_add_submitted = st.form_submit_button("Add season")
 
                 if season_add_submitted:
                     if not season_name or not season_desc or not season_start:
@@ -176,7 +179,7 @@ def build_season_editor():
                 if selected_season:
                     season = next((season for season in app.get_season_list() if season.descr == selected_season))
 
-                if st.button('Delete season'):
+                if st.button("Delete season"):
                     app.delete_season(season)
                     st.success(f"Season deleted: {season.descr}")
                     time.sleep(2)
@@ -197,12 +200,12 @@ def transform(diff: pd.DataFrame) -> list[Fix]:
     clean_diff = {id: {name: value for name, value in entry.items() if pd.notna(value)} for id, entry in diff.to_dict().items()}
     # into data objects
     result = []
-    for id, fix_entry in clean_diff.items():
+    for fix_id, fix_entry in clean_diff.items():
         entries = []
         for name, value in fix_entry.items():
             entry = FixEntry(name=name, value=value)
             entries.append(entry)
-        result.append(Fix(id=str(id), entries=entries))
+        result.append(Fix(id=str(fix_id), entries=entries))
     return result
 
 

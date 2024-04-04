@@ -1,90 +1,86 @@
 from core import Fix, FixEntry, Loot, Player, Raid, RawLoot, Season
 
 
-def create_test_object_raw_loot(dict: dict) -> RawLoot:
+def create_test_object_raw_loot(raw_loot: dict) -> RawLoot:
     fields = {
-        "player": dict.get("player", ""),
-        "note": dict.get("note", ""),
-        "response": dict.get("response", ""),
-        "id": dict.get("id", ""),
-        "date": dict.get("date", "2024-01-01"),
-        "time": dict.get("time", ""),
-        "itemID": dict.get("itemID", "0"),
-        "itemString": dict.get("itemString", ""),
-        "votes": dict.get("votes", "0"),
-        "class_": dict.get("class_", ""),
-        "instance": dict.get("instance", ""),
-        "boss": dict.get("boss", ""),
-        "gear1": dict.get("gear1", ""),
-        "gear2": dict.get("gear2", ""),
-        "responseID": dict.get("responseID", ""),
-        "isAwardReason": dict.get("isAwardReason", ""),
-        "class": dict.get("class", ""),
-        "rollType": dict.get("rollType", ""),
-        "subType": dict.get("subType", ""),
-        "equipLoc": dict.get("equipLoc", ""),
-        "owner": dict.get("owner", ""),
-        "itemName": dict.get("itemName", ""),
+        "player": raw_loot.get("player", ""),
+        "note": raw_loot.get("note", ""),
+        "response": raw_loot.get("response", ""),
+        "id": raw_loot.get("id", ""),
+        "date": raw_loot.get("date", "2024-01-01"),
+        "time": raw_loot.get("time", ""),
+        "itemID": raw_loot.get("itemID", "0"),
+        "itemString": raw_loot.get("itemString", ""),
+        "votes": raw_loot.get("votes", "0"),
+        "class_": raw_loot.get("class_", ""),
+        "instance": raw_loot.get("instance", ""),
+        "boss": raw_loot.get("boss", ""),
+        "gear1": raw_loot.get("gear1", ""),
+        "gear2": raw_loot.get("gear2", ""),
+        "responseID": raw_loot.get("responseID", ""),
+        "isAwardReason": raw_loot.get("isAwardReason", ""),
+        "class": raw_loot.get("class", ""),
+        "rollType": raw_loot.get("rollType", ""),
+        "subType": raw_loot.get("subType", ""),
+        "equipLoc": raw_loot.get("equipLoc", ""),
+        "owner": raw_loot.get("owner", ""),
+        "itemName": raw_loot.get("itemName", ""),
     }
     # sanity check
-    for key in dict:
+    for key in raw_loot:
         if key not in fields:
             raise ValueError(f"Invalid field: {key}")
     return RawLoot(**fields)
 
 
-def create_test_object_loot(dict: dict) -> Loot:
+def create_test_object_loot(loot: dict) -> Loot:
     fields = {
-        "id": dict.get("id", ""),
-        "timestamp": dict.get("timestamp", ""),
-        "player": dict.get("player", "somePlayer"),
-        "note": dict.get("note", "10"),
-        "item_name": dict.get("item_name", ""),
-        "item_link": dict.get("item_link", ""),
-        "item_id": dict.get("item_id", ""),
-        "boss": dict.get("boss", ""),
-        "difficulty": dict.get("difficulty", ""),
-        "instance": dict.get("instance", ""),
-        "character": dict.get("character", "someCharacter"),
-        "response": dict.get("response", "someResponse"),
+        "id": loot.get("id", ""),
+        "timestamp": loot.get("timestamp", ""),
+        "player": loot.get("player", "somePlayer"),
+        "note": loot.get("note", "10"),
+        "item_name": loot.get("item_name", ""),
+        "item_link": loot.get("item_link", ""),
+        "item_id": loot.get("item_id", ""),
+        "boss": loot.get("boss", ""),
+        "difficulty": loot.get("difficulty", ""),
+        "instance": loot.get("instance", ""),
+        "character": loot.get("character", "someCharacter"),
+        "response": loot.get("response", "someResponse"),
     }
     # sanity check
-    for key in dict:
+    for key in loot:
         if key not in fields:
             raise ValueError(f"Invalid field: {key}")
     return Loot(**fields)
 
 
-def create_test_object_raid(dict: dict) -> Raid:
+def create_test_object_raid(raid: dict) -> Raid:
     fields = {
-        "date": dict.get("date", ""),
-        "report": dict.get("report", ""),
-        "player": dict.get("player", []),
+        "date": raid.get("date", ""),
+        "report": raid.get("report", ""),
+        "player": raid.get("player", []),
     }
     # sanity check
-    for key in dict:
+    for key in raid:
         if key not in fields:
             raise ValueError(f"Invalid field: {key}")
     return Raid(**fields)
 
 
-def create_test_object_season(dict: dict) -> Season:
+def create_test_object_season(season: dict) -> Season:
     fields = {
-        "id": dict.get("id", ""),
-        "name": dict.get("name", ""),
-        "descr": dict.get("descr", ""),
-        "start": dict.get("start", ""),
+        "id": season.get("id", ""),
+        "name": season.get("name", ""),
+        "descr": season.get("descr", ""),
+        "start": season.get("start", ""),
     }
     # sanity check
-    for key in dict:
+    for key in season:
         if key not in fields:
             raise ValueError(f"Invalid field: {key}")
     return Season(**fields)
 
 
-def create_test_object_fixes(id: str, entries: dict[str, str]) -> Fix:
-    return Fix(id=id, entries=[FixEntry(name=name, value=value) for name, value in entries.items()])
-
-
-def create_test_object_player_list(player_list: list[Player]) -> list[Player]:
-    return []
+def create_test_object_fixes(fix_id: str, entries: dict[str, str]) -> Fix:
+    return Fix(id=fix_id, entries=[FixEntry(name=name, value=value) for name, value in entries.items()])
