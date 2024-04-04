@@ -4,7 +4,10 @@
     "name": "dfs3",
     "desc": "Dragonflight - Season 3",
     "start_date": "2023-11-15",
-    "players_ignored": []
+    "players_ignored": [
+      "Carmen",
+      "Olli"
+    ]
   },
   {
     "id": 2,
