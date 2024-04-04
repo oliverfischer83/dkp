@@ -88,13 +88,37 @@ def add_cost_to_balance_table(balance_table: dict[str, dict[int, Any]], player_t
     return balance_table
 
 
-def get_balance(season: Season):
+def filter_active_player(balance_table: dict[str, dict[int, Any]], raid_list: list[Raid]) -> dict[str, dict[int, Any]]:
+    active_player = set()
+    for raid in raid_list:
+        for player in raid.player:
+            active_player.add(player)
+
+    result = {}
+    result["name"] = {}
+    result["value"] = {}
+    result["income"] = {}
+    result["cost"] = {}
+    result["characters"] = {}
+    for i, name in balance_table["name"].items():
+        if name in active_player:
+            result["name"][i] = balance_table["name"][i]
+            result["value"][i] = balance_table["value"][i]
+            result["income"][i] = balance_table["income"][i]
+            result["cost"][i] = balance_table["cost"][i]
+            result["characters"][i] = balance_table["characters"][i]
+    return result
+
+
+def get_balance(season: Season, show_all: bool = False) -> dict[str, dict[int, Any]]:
     log.debug("get_balance")
     loot = get_loot_history(season)
     player_to_cost_pair = get_player_to_cost_pair(DATABASE.player_list, loot)
     balance_table = init_balance_table(DATABASE.player_list)
     balance_table = add_income_to_balance_table(balance_table, DATABASE.get_raid_list(season))
     balance_table = add_cost_to_balance_table(balance_table, player_to_cost_pair)
+    if not show_all:
+        balance_table = filter_active_player(balance_table, DATABASE.get_raid_list(season))
     return balance_table
 
 
@@ -234,9 +258,9 @@ def apply_fixes(existing_log: list[RawLoot], fixes: list[Fix]) -> list[RawLoot]:
 
 def get_current_season() -> Season:
     current_date = datetime.date.today().isoformat()
-    past_start_season_list = [season for season in DATABASE.season_list if season.start < current_date]
+    past_start_season_list = [season for season in DATABASE.season_list if season.start_date < current_date]
     if past_start_season_list:
-        return max(past_start_season_list, key=lambda season: season.start)
+        return max(past_start_season_list, key=lambda season: season.start_date)
     else:
         raise ValueError("No season found for current date: " + current_date)
 
@@ -302,7 +326,7 @@ def update_player(fixes: list[Fix]):
                         DATABASE.find_player_by_character(char)
                         raise AttributeError(f"Player with character name '{char}' already exists.")
                     except ValueError:
-                        pass # character name not alredy taken
+                        pass  # character name not alredy taken
             else:
                 raise KeyError(f"Invalid key: {e.name}")  # sanity check
     DATABASE.update_player(fixes)
@@ -316,9 +340,13 @@ def add_raid(date: str):
 # DATABASE.update_raid(fixes)
 
 
-def add_season(season_name: str, season_desc: str, season_start: str):
-    DATABASE.add_season(season_name, season_desc, season_start)
+def add_season(season_name: str):
+    DATABASE.add_season(season_name)
 
 
 def delete_season(season: Season):
     DATABASE.delete_season(season)
+
+
+def update_season(fixes: list[Fix]):
+    DATABASE.update_season(fixes)

@@ -173,10 +173,6 @@ ADMIN_PASSWORD="..."
 - make optional
 - try: https://github.com/kmcgrady/streamlit-autorefresh
 
-# ignore player per season
-
-- season entry has field "players_ignored" to hide them from overview
-
 ## Raid Editor
 
 - status
@@ -185,3 +181,8 @@ ADMIN_PASSWORD="..."
 - report id
 - show warning if raid finished and attendees/report id missing
 
+
+# ignore player per season
+
+- season entry has field "players_ignored" to hide them from overview
+- date picker in season editor

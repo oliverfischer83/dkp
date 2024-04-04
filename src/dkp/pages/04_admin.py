@@ -158,30 +158,48 @@ def build_season_editor():
         with st.expander("🟣 Season editor"):
             left, right = st.columns(2)
             with left:
-                with st.form("season_form"):
-                    st.subheader("New season")
-                    season_name = st.text_input("Name:", placeholder="e.g. dfs3")
-                    season_desc = st.text_input("Description:", placeholder="e.g. Dragonflight - Season 3")
-                    season_start = str(st.date_input("Start date:", format="YYYY-MM-DD"))
-                    season_add_submitted = st.form_submit_button("Add season")
-
-                if season_add_submitted:
-                    if not season_name or not season_desc or not season_start:
-                        st.error("Please fill out all fields.")
+                season_name = st.text_input("Name:", placeholder="e.g. dfs3")
+                if st.button("Add season"):
+                    if not season_name:
+                        st.error("Please enter new season name.")
                     else:
-                        app.add_season(season_name, season_desc, season_start)
-                        st.success(f"Season added: {season_name} - {season_desc}")
+                        app.add_season(season_name)
+                        st.success(f"Season added: {season_name}")
                         time.sleep(2)
                         st.rerun()
 
             with right:
-                selected_season = st.selectbox("Select empty season:", [season.descr for season in app.get_empty_season_list()], index=None)
+                selected_season = st.selectbox("Select empty season:", [season.desc for season in app.get_empty_season_list()], index=None)
                 if selected_season:
-                    season = next((season for season in app.get_season_list() if season.descr == selected_season))
+                    season = next((season for season in app.get_season_list() if season.desc == selected_season))
 
                 if st.button("Delete season"):
                     app.delete_season(season)
-                    st.success(f"Season deleted: {season.descr}")
+                    st.success(f"Season deleted: {season.desc}")
+                    time.sleep(2)
+                    st.rerun()
+
+            data = [
+                {
+                    "id": season.id,
+                    "name": season.name,
+                    "desc": season.desc,
+                    "start_date": season.start_date
+                }
+                for season in app.get_season_list()
+            ]
+            columns = ["id", "name", "desc", "start_date"]
+            dataframe = pd.DataFrame(data, columns=columns).sort_values(by=["start_date"], ascending=True).set_index("id")
+
+            editor = st.data_editor(dataframe, disabled=["id"])
+            diff = editor.compare(dataframe, keep_shape=False, keep_equal=False, result_names=(CHANGE, ORIGINAL))
+            if not diff.empty:
+                st.write("Changed season:")
+                st.write(diff)
+
+                if st.button("Submit changed season"):
+                    app.update_season(transform(diff))
+                    st.success("Player updated.")
                     time.sleep(2)
                     st.rerun()
 

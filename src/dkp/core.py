@@ -129,8 +129,8 @@ class Raid(BaseModel):
 class Season(BaseModel):
     id: int = 0
     name: str
-    descr: str
-    start: str
+    desc: str
+    start_date: str
 
     def __eq__(self, other):
         return isinstance(other, Season) and self.id == other.id

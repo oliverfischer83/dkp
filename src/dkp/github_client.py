@@ -134,13 +134,29 @@ class GithubClient:
         self.raid_list.append(Raid(id=raid_id, date=date, report="", player=[]))
         self._update_raid_list()
 
-    def add_season(self, name: str, descr: str, start: str):
+    def add_season(self, name: str):
         season_id = max([season.id for season in self.season_list]) + 1
-        self.season_list.append(Season(id=season_id, name=name, descr=descr, start=start))
+        self.season_list.append(Season(id=season_id, name=name, desc="", start_date=""))
         self._update_season_list()
 
     def delete_season(self, season: Season):
         self.season_list.remove(season)
+        self._update_season_list()
+
+    def update_season(self, fixes: list[Fix]):
+        for fix in fixes:
+            for season in self.season_list:
+                if season.id == int(fix.id):
+                    for e in fix.entries:
+                        if e.name == "name":
+                            season.name = e.value
+                        elif e.name == "desc":
+                            season.desc = e.value
+                        elif e.name == "start_date":
+                            season.start_date = e.value
+                        else:
+                            raise KeyError(f"Invalid key: {e.name}")  # sanity check
+                    break
         self._update_season_list()
 
     def _update_player_list(self):
@@ -210,12 +226,12 @@ class GithubClient:
     def _get_season_end(self, season: Season) -> str | None:
         next_season = self._get_next_season(season)
         if next_season:
-            return next_season.start
+            return next_season.start_date
         else:
             return None
 
     def _get_next_season(self, season: Season) -> Season | None:
-        sorted_list = sorted(self.season_list, key=lambda season: season.start)
+        sorted_list = sorted(self.season_list, key=lambda season: season.start_date)
         for i, s in enumerate(sorted_list):
             if s == season:
                 if i + 1 < len(sorted_list):
@@ -225,9 +241,9 @@ class GithubClient:
     def get_raid_list(self, season: Season) -> list[Raid]:
         season_end = self._get_season_end(season)
         if season_end:
-            return [raid for raid in self.raid_list if season.start <= raid.date < season_end]
+            return [raid for raid in self.raid_list if season.start_date <= raid.date < season_end]
         else:
-            return [raid for raid in self.raid_list if season.start <= raid.date]
+            return [raid for raid in self.raid_list if season.start_date <= raid.date]
 
     def get_empty_season_list(self) -> list[Season]:
         result = []

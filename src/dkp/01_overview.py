@@ -21,13 +21,12 @@ def main():
     build_loot_history(season)
 
 
-
 def build_season_selector() -> Season:
     col_1, _, _ = st.columns(3)
     with col_1:
         season_list = app.get_season_list_starting_with_current()
-        selected_season = st.selectbox("WoW season:", [season.descr for season in season_list], label_visibility="collapsed")
-        season = next((season for season in season_list if season.descr == selected_season))
+        selected_season = st.selectbox("WoW season:", [season.desc for season in season_list], label_visibility="collapsed")
+        season = next((season for season in season_list if season.desc == selected_season))
     return season
 
 
@@ -43,8 +42,9 @@ def build_sidebar(season: Season):
 
 def build_balance(season: Season):
     st.markdown("### DKP Liste")
+    show_all = st.checkbox("alle anzeigen", value=False)
     st.dataframe(
-        pd.DataFrame(app.get_balance(season), columns=["name", "value", "income", "cost", "characters"]).sort_values(
+        pd.DataFrame(app.get_balance(season, show_all), columns=["name", "value", "income", "cost", "characters"]).sort_values(
             by=["name"], ascending=True, ignore_index=False
         ),
         column_config={
@@ -56,6 +56,7 @@ def build_balance(season: Season):
         },
         hide_index=True,
     )
+
 
 def build_loot_history(season: Season):
     st.markdown("### Loot Liste")

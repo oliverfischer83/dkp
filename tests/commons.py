@@ -72,7 +72,7 @@ def create_test_object_season(season: dict) -> Season:
     fields = {
         "id": season.get("id", ""),
         "name": season.get("name", ""),
-        "descr": season.get("descr", ""),
+        "desc": season.get("desc", ""),
         "start": season.get("start", ""),
     }
     # sanity check
