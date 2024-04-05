@@ -10,7 +10,7 @@ import os
 from typing import Any
 
 from config_mapper import Config
-from core import Fix, Season, is_local_development
+from core import Fix, RaidChecklist, Season, is_local_development
 from dotenv import load_dotenv
 from github_client import GithubClient, Loot, Player, Raid, RawLoot, csv_to_list
 from warcraftlogs_client import WclClient
@@ -350,3 +350,11 @@ def delete_season(season: Season):
 
 def update_season(fixes: list[Fix]):
     DATABASE.update_season(fixes)
+
+
+def get_raid_checklist():
+    return DATABASE.raid_checklist
+
+
+def update_raid_checklist(checklist: RaidChecklist):
+    DATABASE.update_raid_checklist(checklist)

@@ -139,6 +139,16 @@ class Season(BaseModel):
         return hash((self.id))
 
 
+class RaidChecklist(BaseModel):
+    video_recording: bool = False
+    logs_recording: bool = False
+    rclc_installed: bool = False
+    consumables: bool = False
+
+    def is_fullfilled(self) -> bool:
+        return self.video_recording and self.logs_recording and self.rclc_installed and self.consumables
+
+
 def to_raw_loot_list(content: str) -> list[RawLoot]:
     """Converts json str into raw loot lists."""
     loot_list = json.loads(content)

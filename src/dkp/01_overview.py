@@ -11,7 +11,7 @@ def main():
 
     st.set_page_config(
         page_title='DKP - Punkte',
-        page_icon='🟢',  # see https://twemoji-cheatsheet.vercel.app/
+        page_icon='💰️',  # see https://twemoji-cheatsheet.vercel.app/
         layout="wide",
         initial_sidebar_state="expanded")
 
@@ -31,13 +31,29 @@ def build_season_selector() -> Season:
 
 
 def build_sidebar(season: Season):
-    timestamp, boss, difficulty = app.get_info_last_update(season)
-    timestamp = pd.to_datetime(timestamp)
-    if timestamp.date() == date.today():
-        timestamp = f"Heute, {timestamp.strftime("%H:%M")} Uhr"
-    else:
-        timestamp = f"{timestamp.strftime("%d.%m.%Y, %H:%M")} Uhr"
-    st.sidebar.markdown(f'#### Letzte Änderung:\n- {timestamp}\n- {boss} ({difficulty})')
+
+    with st.sidebar:
+        # checklist
+        if True: # TODO app.is_raid_started():
+            checklist = app.get_raid_checklist()
+            symbol = "🟢" if checklist.is_fullfilled() else "🔴"
+            st.markdown(f"#### Status: {symbol}")
+            st.checkbox("Aufnahme läuft", value=checklist.video_recording, disabled=True)
+            st.checkbox("Warcraft Logs aktiviert", value=checklist.logs_recording, disabled=True)
+            st.checkbox("RCLootCouncil installiert", value=checklist.rclc_installed, disabled=True)
+            st.checkbox("Kessel, Pots, Vantus Runen", value=checklist.consumables, disabled=True)
+
+        # last update
+        timestamp, boss, difficulty = app.get_info_last_update(season)
+        timestamp = pd.to_datetime(timestamp)
+        if timestamp.date() == date.today():
+            timestamp = f"Heute, {timestamp.strftime("%H:%M")} Uhr"
+        else:
+            timestamp = f"{timestamp.strftime("%d.%m.%Y, %H:%M")} Uhr"
+        st.sidebar.markdown('')
+        st.sidebar.markdown(f'#### Datenstand:')
+        st.sidebar.markdown(f'🕗️ _ {timestamp}')
+        st.sidebar.markdown(f'🐲 _ {boss} ({difficulty})')
 
 
 def build_balance(season: Season):

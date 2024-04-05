@@ -10,7 +10,7 @@ import logging
 from threading import Lock
 from typing import Type
 
-from core import Fix, Loot, Player, Raid, RawLoot, Season, is_local_development, to_raw_loot_list
+from core import Fix, Loot, Player, Raid, RaidChecklist, RawLoot, Season, is_local_development, to_raw_loot_list
 from github import Auth, Github, UnknownObjectException
 from github.ContentFile import ContentFile
 
@@ -26,6 +26,7 @@ class GithubClient:
     def __init__(self, token):
         self._github_api = Github(auth=Auth.Token(token))
         self._repo_api = None
+        self._raid_checklist = None
         self._player_list = None
         self._season_list = None
         self._raid_list = None
@@ -34,6 +35,12 @@ class GithubClient:
         self._lock_raid = Lock()
         self._lock_season = Lock()
         self._lock_loot = Lock()
+
+    @property
+    def raid_checklist(self):
+        if self._raid_checklist is None:
+            self._raid_checklist = RaidChecklist()
+        return self._raid_checklist
 
     @property
     def repo_api(self):
@@ -283,6 +290,9 @@ class GithubClient:
             if char_name in player.chars:
                 return player
         raise ValueError(f"No player found having character {char_name}")
+
+    def update_raid_checklist(self, checklist: RaidChecklist):
+        self._raid_checklist = checklist
 
     def create_loot_log(self, content: list[RawLoot], raid_day: str):
         season = self.find_season_by_raid(self.find_raid_by_date(raid_day))

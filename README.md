@@ -127,23 +127,6 @@ ADMIN_PASSWORD="..."
 - tagging releases
 - show release info bottom of side pane
 
-## Checklist
-
-- Raid button
-  - start Raid:
-    - create raid entry, set status started
-    - show checklist, show warning for each open checklist item
-  - finish Raid:
-    - set status finished
-    - get attendees from report one last time
-    - add 50 pt. to balance
-    - ends automatically on next day (german timezone)
-- checklist items
-  - video started
-  - live log started
-  - all attendees have RCLootCouncil started
-  - add new attendees
-- checklist on sidepane?
 
 # Fallback Excel list
 
@@ -181,3 +164,18 @@ ADMIN_PASSWORD="..."
 - report id
 - show warning if raid finished and attendees/report id missing
 
+## Checklist
+
+- Raid button
+  - start Raid:
+    - create raid entry, set status started
+    - show checklist, show warning for each open checklist item
+  - finish Raid:
+    - set status finished
+    - get attendees from report one last time
+    - add 50 pt. to balance
+    - ends automatically on next day (german timezone)
+
+
+
+- translation of bosses and raids into german

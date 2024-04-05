@@ -11,12 +11,12 @@ from core import CHANGE, ORIGINAL, Fix, FixEntry, to_date, to_raw_loot_list
 def main():
 
     st.set_page_config(
-        page_title="DKP - admin", page_icon="🟠", initial_sidebar_state="expanded"  # see https://twemoji-cheatsheet.vercel.app/
+        page_title="DKP - admin", page_icon="🧑‍💻", initial_sidebar_state="expanded"  # see https://twemoji-cheatsheet.vercel.app/
     )
 
-    st.sidebar.write("###### Version: 0.1.0")
 
     build_password_protection()
+    build_sidebar()
     build_loot_upload()
     build_loot_editor()
     build_player_editor()
@@ -32,9 +32,37 @@ def build_password_protection():
             st.stop()
 
 
+def build_sidebar():
+
+    with st.sidebar:
+
+        # raid start/stop
+        col1, col2 = st.columns(2)
+        with col1:
+            st.button("Start Raid")
+        with col2:
+            st.button("Stop Raid")
+
+        # checklist
+        if True: # TODO app.is_raid_started():
+            checklist = app.get_raid_checklist()
+            symbol = "🟢" if checklist.is_fullfilled() else "🔴"
+            st.markdown(f"#### Status: {symbol}")
+            st.checkbox("Aufnahme läuft", on_change=update_raid_checklist, key='video', args=('video',), value=checklist.video_recording)
+            st.checkbox("Warcraft Logs aktiviert", on_change=update_raid_checklist, key='logs', args=('logs',), value=checklist.logs_recording)
+            st.checkbox("RCLootCouncil installiert", on_change=update_raid_checklist, key='addon', args=('addon',), value=checklist.rclc_installed)
+            st.checkbox("Kessel, Pots, Vantus Runen", on_change=update_raid_checklist, key='consum', args=('consum',), value=checklist.consumables)
+
+        # version
+        st.write("")
+        st.write("")
+        st.write("")
+        st.write("###### Version: 0.1.0")
+
+
 def build_loot_upload():
     with st.container():
-        with st.expander("🟢 Loot upload"):
+        with st.expander("🇺pload"):
             json_string = st.text_area(
                 "Add Loot Log (RCLootCouncil export as JSON):", placeholder='e.g. [{"player":"Moppi-Anub\'Arak", "date":"31/1/24", ...'
             )
@@ -58,7 +86,7 @@ def build_loot_upload():
 
 def build_loot_editor():
     with st.container():
-        with st.expander("🟡 Loot editor"):
+        with st.expander("🇱oot editor"):
             col1, col2, _, _ = st.columns(4)
             with col1:
                 season_list = app.get_season_list_starting_with_current()
@@ -96,7 +124,7 @@ def build_loot_editor():
 
 def build_player_editor():
     with st.container():
-        with st.expander("🟠 Player editor"):
+        with st.expander("🇵layer editor"):
             left, right = st.columns(2)
             with left:
                 new_player = st.text_input("Enter new player name:", placeholder="e.g. Alfons")
@@ -139,7 +167,7 @@ def build_player_editor():
 
 def build_raid_editor():
     with st.container():
-        with st.expander("🔵 Raid editor"):
+        with st.expander("🇷aid editor"):
             report_id = st.text_input("Enter warcraftlogs report id:", placeholder="e.g. JrYPGF9D1yLqtZhd")
             if st.button("Submit WCL report id"):
                 date, report_url, player_list = app.get_raid_entry_for_manual_storage(report_id)
@@ -155,7 +183,7 @@ def build_raid_editor():
 
 def build_season_editor():
     with st.container():
-        with st.expander("🟣 Season editor"):
+        with st.expander("🇸eason editor"):
             left, right = st.columns(2)
             with left:
                 season_name = st.text_input("Name:", placeholder="e.g. dfs3")
@@ -225,6 +253,20 @@ def transform(diff: pd.DataFrame) -> list[Fix]:
             entries.append(entry)
         result.append(Fix(id=str(fix_id), entries=entries))
     return result
+
+
+def update_raid_checklist(key_name: str):
+    value = st.session_state.get(key_name, False)
+    checklist = app.get_raid_checklist()
+    if key_name == 'video':
+        checklist.video_recording = value
+    elif key_name == 'logs':
+        checklist.logs_recording = value
+    elif key_name == 'addon':
+        checklist.rclc_installed = value
+    elif key_name == 'consum':
+        checklist.consumables = value
+    app.update_raid_checklist(checklist)
 
 
 # entry point
