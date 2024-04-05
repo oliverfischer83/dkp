@@ -8,7 +8,7 @@ def test_get_raid_by_date(mocker):
     raid_list = [another_raid, expected_raid]
 
     cls = GithubClient("no-token")
-    mocker.patch.object(cls, '_load_raids', return_value=raid_list)
+    mocker.patch.object(cls, '_load_data', return_value=raid_list)
 
     # Test case for existing raid
     assert cls.find_raid_by_date("2024-01-01").date == "2024-01-01"
