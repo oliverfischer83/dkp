@@ -392,7 +392,7 @@ def update_season(fixes: list[Fix]):
     DATABASE.update_season(fixes)
 
 
-def get_raid_checklist():
+def get_raid_checklist() -> RaidChecklist:
     return DATABASE.raid_checklist
 
 
@@ -400,18 +400,18 @@ def update_raid_checklist(checklist: RaidChecklist):
     DATABASE.update_raid_checklist(checklist)
 
 
-def is_raid_started():
+def is_raid_started() -> bool:
     # if a raid is found
     return bool(get_current_raid())
 
 
-def is_raid_stopped():
+def is_raid_stopped() -> bool:
     # if no raid is found or raid is found but no player is assigned
     raid = get_current_raid()
     return not bool(raid) or bool(raid.player)
 
 
-def find_past_raids_without_attendees():
+def find_past_raids_without_attendees() -> list[str]:
     result = []
     for raid in DATABASE.raid_list:
         if raid == get_current_raid():

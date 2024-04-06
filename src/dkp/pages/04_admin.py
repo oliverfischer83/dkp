@@ -176,7 +176,7 @@ def build_player_editor():
             columns = ["id", "name", "chars"]
             dataframe = pd.DataFrame(data, columns=columns).sort_values(by=["name"], ascending=True).set_index("id")
 
-            editor = st.data_editor(dataframe, disabled=["id"])
+            editor = st.data_editor(dataframe, disabled=["id", "name"])
             diff = editor.compare(dataframe, keep_shape=False, keep_equal=False, result_names=(CHANGE, ORIGINAL))
             if not diff.empty:
                 st.write("Changed player:")
@@ -222,7 +222,7 @@ def build_raid_editor():
             columns = ["id", "date", "report_id", "player"]
             dataframe = pd.DataFrame(data, columns=columns).sort_values(by=["date"], ascending=False).set_index("id")
 
-            editor = st.data_editor(dataframe, disabled=["id"])
+            editor = st.data_editor(dataframe, disabled=["id", "date"])
             diff = editor.compare(dataframe, keep_shape=False, keep_equal=False, result_names=(CHANGE, ORIGINAL))
             if not diff.empty:
                 st.write("Changed raid:")
@@ -277,7 +277,7 @@ def build_season_editor():
             columns = ["id", "name", "desc", "start_date"]
             dataframe = pd.DataFrame(data, columns=columns).sort_values(by=["start_date"], ascending=True).set_index("id")
 
-            editor = st.data_editor(dataframe, disabled=["id"])
+            editor = st.data_editor(dataframe, disabled=["id", "name"])
             diff = editor.compare(dataframe, keep_shape=False, keep_equal=False, result_names=(CHANGE, ORIGINAL))
             if not diff.empty:
                 st.write("Changed season:")

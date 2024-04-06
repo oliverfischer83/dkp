@@ -157,6 +157,3 @@ ADMIN_PASSWORD="..."
 - on loot data upload, clients get signal to refresh or waning banner that data outdated
 - make optional
 - try: https://github.com/kmcgrady/streamlit-autorefresh
-
-
-- notification area: there is loot, but no raid entry
