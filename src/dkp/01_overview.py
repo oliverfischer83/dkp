@@ -33,16 +33,6 @@ def build_season_selector() -> Season:
 def build_sidebar(season: Season):
 
     with st.sidebar:
-        # checklist
-        if app.get_current_raid():
-            checklist = app.get_raid_checklist()
-            symbol = "🟢" if checklist.is_fullfilled() else "🔴"
-            st.markdown(f"#### Status: {symbol}")
-            st.checkbox("Aufnahme läuft", value=checklist.video_recording, disabled=True)
-            st.checkbox("Warcraft Logs aktiviert", value=checklist.logs_recording, disabled=True)
-            st.checkbox("RCLootCouncil installiert", value=checklist.rclc_installed, disabled=True)
-            st.checkbox("Kessel, Pots, Vantus Runen", value=checklist.consumables, disabled=True)
-
         # last update
         timestamp, boss, difficulty = app.get_info_last_update(season)
         timestamp = pd.to_datetime(timestamp)
@@ -54,6 +44,16 @@ def build_sidebar(season: Season):
         st.sidebar.markdown(f'#### Datenstand:')
         st.sidebar.markdown(f'🕗️ _ {timestamp}')
         st.sidebar.markdown(f'🐲 _ {boss} ({difficulty})')
+
+        # checklist
+        if app.get_current_raid():
+            checklist = app.get_raid_checklist()
+            status = "🟢" if checklist.is_fullfilled() else "🔴"
+            st.markdown(f"#### Checkliste: {status}")
+            st.checkbox("Aufnahme läuft", value=checklist.video_recording, disabled=True)
+            st.checkbox("Logs aktiviert", value=checklist.logs_recording, disabled=True)
+            st.checkbox("Addon installiert", value=checklist.rclc_installed, disabled=True)
+            st.checkbox("Kessel, Food, Vantus Runen", value=checklist.consumables, disabled=True)
 
 
 def build_balance(season: Season):

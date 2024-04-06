@@ -13,8 +13,8 @@ def main():
     st.set_page_config(
         page_title="DKP - admin",
         page_icon="🧑‍💻",
-        layout="wide",
-        initial_sidebar_state="expanded"  # see https://twemoji-cheatsheet.vercel.app/
+        # layout="wide",
+        initial_sidebar_state="expanded",  # see https://twemoji-cheatsheet.vercel.app/
     )
 
     build_password_protection()
@@ -42,34 +42,31 @@ def build_sidebar():
         raid = app.get_current_raid()
         col1, col2 = st.columns(2)
         with col1:
-            start_disabled = True if raid else False
-            if st.button("Start Raid", disabled=start_disabled):
+            if st.button("Start Raid", disabled=app.is_raid_started()):
                 app.start_raid()
                 st.success("Raid started.")
                 time.sleep(2)
                 st.rerun()
         with col2:
-            stop_disabled = True if not raid else False
-            if st.button("Stop Raid", disabled=stop_disabled):
-                app.stop_raid()
-                st.success("Raid stopped.")
-                time.sleep(2)
-                st.rerun()
+            if st.button("Stop Raid", disabled=app.is_raid_stopped()):
+                try:
+                    app.stop_raid()
+                    st.success("Raid stopped.")
+                    time.sleep(2)
+                    st.rerun()
+                except ValueError as e:
+                    st.error(str(e))
 
         # checklist
         if raid:
             checklist = app.get_raid_checklist()
-            symbol = "🟢" if checklist.is_fullfilled() else "🔴"
-            st.markdown(f"#### Status: {symbol}")
+            status = "🟢" if checklist.is_fullfilled() else "🔴"
+            st.markdown(f"#### Checkliste: {status}")
             st.checkbox("Aufnahme läuft", on_change=update_raid_checklist, key="video", args=("video",), value=checklist.video_recording)
+            st.checkbox("Logs aktiviert", on_change=update_raid_checklist, key="logs", args=("logs",), value=checklist.logs_recording)
+            st.checkbox("Addon installiert", on_change=update_raid_checklist, key="addon", args=("addon",), value=checklist.rclc_installed)
             st.checkbox(
-                "Warcraft Logs aktiviert", on_change=update_raid_checklist, key="logs", args=("logs",), value=checklist.logs_recording
-            )
-            st.checkbox(
-                "RCLootCouncil installiert", on_change=update_raid_checklist, key="addon", args=("addon",), value=checklist.rclc_installed
-            )
-            st.checkbox(
-                "Kessel, Pots, Vantus Runen", on_change=update_raid_checklist, key="consum", args=("consum",), value=checklist.consumables
+                "Kessel, Food, Vantus Runen", on_change=update_raid_checklist, key="consum", args=("consum",), value=checklist.consumables
             )
 
         # version

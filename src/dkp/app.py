@@ -363,7 +363,7 @@ def stop_raid():
     if not raid:
         raise ValueError("No raid found for today.")
     if not raid.report_id:
-        raise ValueError("No report url found for today's raid.")
+        raise ValueError("No report id found for today's raid.")
 
     _, _, player_list = get_raid_entry_for_manual_storage(raid.report_id)
     raid.player = player_list
@@ -398,3 +398,13 @@ def get_raid_checklist():
 
 def update_raid_checklist(checklist: RaidChecklist):
     DATABASE.update_raid_checklist(checklist)
+
+
+def is_raid_started():
+    # if a raid is found
+    return bool(get_current_raid())
+
+def is_raid_stopped():
+    # if no raid is found or raid is found but no player is assigned
+    raid = get_current_raid()
+    return not bool(raid) or bool(raid.player)

@@ -172,3 +172,5 @@ ADMIN_PASSWORD="..."
     - ends automatically on next day (german timezone)
 
 
+- raid liste on overview?
+- protection for delete object
