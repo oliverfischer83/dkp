@@ -1,5 +1,10 @@
 [
   {
+    "id": 28,
+    "name": "AI",
+    "chars": []
+  },
+  {
     "id": 1,
     "name": "Carmen",
     "chars": [
