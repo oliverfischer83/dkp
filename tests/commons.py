@@ -58,7 +58,7 @@ def create_test_object_loot(loot: dict) -> Loot:
 def create_test_object_raid(raid: dict) -> Raid:
     fields = {
         "date": raid.get("date", ""),
-        "report": raid.get("report", ""),
+        "report_id": raid.get("report_id", ""),
         "player": raid.get("player", []),
     }
     # sanity check

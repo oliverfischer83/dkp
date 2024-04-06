@@ -121,6 +121,7 @@ ADMIN_PASSWORD="..."
   - unit tests for balance functions
   - constants for string field names where possible
 - loot statistics (which loot dropt how often, raid progress, raid attendence, ...)
+- translation of bosses and raids into german
 
 # Release info
 
@@ -156,26 +157,18 @@ ADMIN_PASSWORD="..."
 - make optional
 - try: https://github.com/kmcgrady/streamlit-autorefresh
 
-## Raid Editor
-
-- status
-  - started (log added same day or raid started manually)
-  - finished (log added from past or raid stopped manually or is next day)
-- report id
-- show warning if raid finished and attendees/report id missing
 
 ## Checklist
 
 - Raid button
   - start Raid:
-    - create raid entry, set status started
-    - show checklist, show warning for each open checklist item
+    - create raid entry, set status started (or log added same day)
+    - show checklist
   - finish Raid:
-    - set status finished
-    - get attendees from report one last time
-    - add 50 pt. to balance
+    - set status finished (log added from past or raid stopped manually or is next day)
+    - show warning if attendees not present (or no report url)
+    - get attendees from report or manually
+    - add 50 pt. to balance (happens automatically when added to raid entry)
     - ends automatically on next day (german timezone)
 
 
-
-- translation of bosses and raids into german

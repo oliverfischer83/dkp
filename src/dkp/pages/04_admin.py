@@ -11,9 +11,11 @@ from core import CHANGE, ORIGINAL, Fix, FixEntry, to_date, to_raw_loot_list
 def main():
 
     st.set_page_config(
-        page_title="DKP - admin", page_icon="🧑‍💻", initial_sidebar_state="expanded"  # see https://twemoji-cheatsheet.vercel.app/
+        page_title="DKP - admin",
+        page_icon="🧑‍💻",
+        layout="wide",
+        initial_sidebar_state="expanded"  # see https://twemoji-cheatsheet.vercel.app/
     )
-
 
     build_password_protection()
     build_sidebar()
@@ -37,21 +39,38 @@ def build_sidebar():
     with st.sidebar:
 
         # raid start/stop
+        raid = app.get_current_raid()
         col1, col2 = st.columns(2)
         with col1:
-            st.button("Start Raid")
+            start_disabled = True if raid else False
+            if st.button("Start Raid", disabled=start_disabled):
+                app.start_raid()
+                st.success("Raid started.")
+                time.sleep(2)
+                st.rerun()
         with col2:
-            st.button("Stop Raid")
+            stop_disabled = True if not raid else False
+            if st.button("Stop Raid", disabled=stop_disabled):
+                app.stop_raid()
+                st.success("Raid stopped.")
+                time.sleep(2)
+                st.rerun()
 
         # checklist
-        if True: # TODO app.is_raid_started():
+        if raid:
             checklist = app.get_raid_checklist()
             symbol = "🟢" if checklist.is_fullfilled() else "🔴"
             st.markdown(f"#### Status: {symbol}")
-            st.checkbox("Aufnahme läuft", on_change=update_raid_checklist, key='video', args=('video',), value=checklist.video_recording)
-            st.checkbox("Warcraft Logs aktiviert", on_change=update_raid_checklist, key='logs', args=('logs',), value=checklist.logs_recording)
-            st.checkbox("RCLootCouncil installiert", on_change=update_raid_checklist, key='addon', args=('addon',), value=checklist.rclc_installed)
-            st.checkbox("Kessel, Pots, Vantus Runen", on_change=update_raid_checklist, key='consum', args=('consum',), value=checklist.consumables)
+            st.checkbox("Aufnahme läuft", on_change=update_raid_checklist, key="video", args=("video",), value=checklist.video_recording)
+            st.checkbox(
+                "Warcraft Logs aktiviert", on_change=update_raid_checklist, key="logs", args=("logs",), value=checklist.logs_recording
+            )
+            st.checkbox(
+                "RCLootCouncil installiert", on_change=update_raid_checklist, key="addon", args=("addon",), value=checklist.rclc_installed
+            )
+            st.checkbox(
+                "Kessel, Pots, Vantus Runen", on_change=update_raid_checklist, key="consum", args=("consum",), value=checklist.consumables
+            )
 
         # version
         st.write("")
@@ -168,17 +187,47 @@ def build_player_editor():
 def build_raid_editor():
     with st.container():
         with st.expander("🇷aid editor"):
-            report_id = st.text_input("Enter warcraftlogs report id:", placeholder="e.g. JrYPGF9D1yLqtZhd")
-            if st.button("Submit WCL report id"):
-                date, report_url, player_list = app.get_raid_entry_for_manual_storage(report_id)
-                st.code(
-                    f"""
-                - date: {date}
-                    report: {report_url}
-                    player: {player_list}""",
-                    language="yaml",
+            season = app.get_current_season()
+            left, right = st.columns(2)
+            with left:
+                raid_date = st.date_input("Date:", format="YYYY-MM-DD")
+                if st.button("Add raid"):
+                    if not raid_date:
+                        st.error("Please enter raid date.")
+                    else:
+                        app.add_raid(str(raid_date))
+                        st.success(f"Raid added: {raid_date}")
+                        time.sleep(2)
+                        st.rerun()
+
+            with right:
+                selected_raid_date = st.selectbox(
+                    "Select raid:", sorted([raid.date for raid in app.get_empty_raid_list(season)], reverse=True)
                 )
-                st.markdown("Copy and paste this entry into the raid section of the config.yml file.")
+                if st.button("Delete raid") and selected_raid_date:
+                    app.delete_raid(selected_raid_date)
+                    st.success(f"Raid deleted: {selected_raid_date}")
+                    time.sleep(2)
+                    st.rerun()
+
+            data = [
+                {"id": raid.id, "date": raid.date, "report_id": raid.report_id, "player": ", ".join(raid.player)}
+                for raid in app.get_raid_list(season)
+            ]
+            columns = ["id", "date", "report_id", "player"]
+            dataframe = pd.DataFrame(data, columns=columns).sort_values(by=["date"], ascending=False).set_index("id")
+
+            editor = st.data_editor(dataframe, disabled=["id"])
+            diff = editor.compare(dataframe, keep_shape=False, keep_equal=False, result_names=(CHANGE, ORIGINAL))
+            if not diff.empty:
+                st.write("Changed raid:")
+                st.write(diff)
+
+                if st.button("Submit changed raid"):
+                    app.update_raid(transform(diff))
+                    st.success("Raid updated.")
+                    time.sleep(2)
+                    st.rerun()
 
 
 def build_season_editor():
@@ -198,22 +247,14 @@ def build_season_editor():
 
             with right:
                 selected_season = st.selectbox("Select empty season:", [season.desc for season in app.get_empty_season_list()], index=None)
-                if selected_season:
-                    season = next((season for season in app.get_season_list() if season.desc == selected_season))
-
-                if st.button("Delete season"):
-                    app.delete_season(season)
-                    st.success(f"Season deleted: {season.desc}")
+                if st.button("Delete season") and selected_season:
+                    app.delete_season(selected_season)
+                    st.success(f"Season deleted: {selected_season}")
                     time.sleep(2)
                     st.rerun()
 
             data = [
-                {
-                    "id": season.id,
-                    "name": season.name,
-                    "desc": season.desc,
-                    "start_date": season.start_date
-                }
+                {"id": season.id, "name": season.name, "desc": season.desc, "start_date": season.start_date}
                 for season in app.get_season_list()
             ]
             columns = ["id", "name", "desc", "start_date"]
@@ -258,13 +299,13 @@ def transform(diff: pd.DataFrame) -> list[Fix]:
 def update_raid_checklist(key_name: str):
     value = st.session_state.get(key_name, False)
     checklist = app.get_raid_checklist()
-    if key_name == 'video':
+    if key_name == "video":
         checklist.video_recording = value
-    elif key_name == 'logs':
+    elif key_name == "logs":
         checklist.logs_recording = value
-    elif key_name == 'addon':
+    elif key_name == "addon":
         checklist.rclc_installed = value
-    elif key_name == 'consum':
+    elif key_name == "consum":
         checklist.consumables = value
     app.update_raid_checklist(checklist)
 

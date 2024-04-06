@@ -34,7 +34,7 @@ def build_sidebar(season: Season):
 
     with st.sidebar:
         # checklist
-        if True: # TODO app.is_raid_started():
+        if app.get_current_raid():
             checklist = app.get_raid_checklist()
             symbol = "🟢" if checklist.is_fullfilled() else "🔴"
             st.markdown(f"#### Status: {symbol}")

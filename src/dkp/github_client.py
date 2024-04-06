@@ -10,7 +10,17 @@ import logging
 from threading import Lock
 from typing import Type
 
-from core import Fix, Loot, Player, Raid, RaidChecklist, RawLoot, Season, is_local_development, to_raw_loot_list
+from core import (
+    Fix,
+    Loot,
+    Player,
+    Raid,
+    RaidChecklist,
+    RawLoot,
+    Season,
+    is_local_development,
+    to_raw_loot_list,
+)
 from github import Auth, Github, UnknownObjectException
 from github.ContentFile import ContentFile
 
@@ -138,7 +148,27 @@ class GithubClient:
 
     def add_raid(self, date: str):
         raid_id = max([raid.id for raid in self.raid_list]) + 1
-        self.raid_list.append(Raid(id=raid_id, date=date, report="", player=[]))
+        self.raid_list.append(Raid(id=raid_id, date=date, report_id="", player=[]))
+        self._update_raid_list()
+
+    def delete_raid(self, raid_date: str):
+        raid = self.find_raid_by_date(raid_date)
+        self.raid_list.remove(raid)
+        self._update_raid_list()
+
+    def update_raid(self, fixes: list[Fix]):
+        for fix in fixes:
+            for raid in self.raid_list:
+                if raid.id == int(fix.id):
+                    for e in fix.entries:
+                        if e.name == "date":
+                            raid.date = e.value
+                        elif e.name == "report_id":
+                            raid.report_id = e.value
+                        elif e.name == "player":
+                            raid.player = csv_to_list(e.value)
+                        else:
+                            raise KeyError(f"Invalid key: {e.name}")
         self._update_raid_list()
 
     def add_season(self, name: str):
@@ -146,7 +176,8 @@ class GithubClient:
         self.season_list.append(Season(id=season_id, name=name, desc="", start_date=""))
         self._update_season_list()
 
-    def delete_season(self, season: Season):
+    def delete_season(self, season_desc: str):
+        season = next((s for s in self.season_list if s.name == season_desc))
         self.season_list.remove(season)
         self._update_season_list()
 
@@ -267,9 +298,17 @@ class GithubClient:
                 result.append(player)
         return result
 
+    def get_empty_raid_list(self, season: Season) -> list[Raid]:
+        result = []
+        for raid in self.get_raid_list(season):
+            # raid has no loot log yet
+            if raid not in self.raw_loot_list[season]:
+                result.append(raid)
+        return result
+
     def find_season_by_raid(self, raid: Raid) -> Season:
-        for season in self.season_list:
-            if raid in self.raw_loot_list[season]:
+        for season in sorted(self.season_list, key=lambda season: season.start_date, reverse=True):
+            if season.start_date <= raid.date:
                 return season
         raise ValueError(f"No season found for raid {raid.date}")
 
@@ -363,3 +402,7 @@ def _to_json(content: list) -> str:
 
 def csv_to_list(csv: str) -> list[str]:
     return [item.strip() for item in csv.split(",") if csv]  # "a, b, c" -> ["a", "b", "c"] and "" -> []
+
+
+def list_to_csv(list: list[str]) -> str:
+    return ", ".join(list)  # ["a", "b", "c"] -> "a, b, c"

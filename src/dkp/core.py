@@ -116,7 +116,7 @@ class Player(BaseModel):
 class Raid(BaseModel):
     id: int = 0
     date: str
-    report: str
+    report_id: str
     player: list[str]
 
     def __eq__(self, other):

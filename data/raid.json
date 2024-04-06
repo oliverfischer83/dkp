@@ -2,7 +2,7 @@
   {
     "id": 1,
     "date": "2023-11-15",
-    "report": "https://www.warcraftlogs.com/reports/yAav4BwKJjrVm2bk",
+    "report_id": "https://www.warcraftlogs.com/reports/yAav4BwKJjrVm2bk",
     "player": [
       "Dimi",
       "Franzi",
@@ -26,7 +26,7 @@
   {
     "id": 2,
     "date": "2023-11-19",
-    "report": "https://www.warcraftlogs.com/reports/C1xDZhXH2Pr6F7nR",
+    "report_id": "https://www.warcraftlogs.com/reports/C1xDZhXH2Pr6F7nR",
     "player": [
       "Carmen",
       "Dimi",
@@ -53,7 +53,7 @@
   {
     "id": 3,
     "date": "2023-11-22",
-    "report": "https://www.warcraftlogs.com/reports/P9k8pfJrQ7ZycMgL",
+    "report_id": "https://www.warcraftlogs.com/reports/P9k8pfJrQ7ZycMgL",
     "player": [
       "Carmen",
       "Franzi",
@@ -79,7 +79,7 @@
   {
     "id": 4,
     "date": "2023-11-26",
-    "report": "https://www.warcraftlogs.com/reports/NxD74H2FGLb3mVRh",
+    "report_id": "https://www.warcraftlogs.com/reports/NxD74H2FGLb3mVRh",
     "player": [
       "Dennis",
       "Dimi",
@@ -102,7 +102,7 @@
   {
     "id": 5,
     "date": "2023-11-29",
-    "report": "https://www.warcraftlogs.com/reports/B6JXPT3Ycjqt9ND1",
+    "report_id": "https://www.warcraftlogs.com/reports/B6JXPT3Ycjqt9ND1",
     "player": [
       "Dave",
       "Dimi",
@@ -125,7 +125,7 @@
   {
     "id": 6,
     "date": "2023-12-03",
-    "report": "https://www.warcraftlogs.com/reports/awWJnDtgmVb8AxH4",
+    "report_id": "https://www.warcraftlogs.com/reports/awWJnDtgmVb8AxH4",
     "player": [
       "Dimi",
       "Franzi",
@@ -148,7 +148,7 @@
   {
     "id": 7,
     "date": "2023-12-06",
-    "report": "https://www.warcraftlogs.com/reports/QWnZwTKz8PyApxhd",
+    "report_id": "https://www.warcraftlogs.com/reports/QWnZwTKz8PyApxhd",
     "player": [
       "Carmen",
       "Christoph",
@@ -170,7 +170,7 @@
   {
     "id": 8,
     "date": "2023-12-10",
-    "report": "https://www.warcraftlogs.com/reports/mQYJGTMj2dzXPVyr",
+    "report_id": "https://www.warcraftlogs.com/reports/mQYJGTMj2dzXPVyr",
     "player": [
       "Dimi",
       "Franzi",
@@ -191,7 +191,7 @@
   {
     "id": 9,
     "date": "2023-12-13",
-    "report": "https://www.warcraftlogs.com/reports/6XfmYNygvqV84Htz",
+    "report_id": "https://www.warcraftlogs.com/reports/6XfmYNygvqV84Htz",
     "player": [
       "Christoph",
       "Dave",
@@ -212,7 +212,7 @@
   {
     "id": 10,
     "date": "2023-12-17",
-    "report": "https://www.warcraftlogs.com/reports/VXmAQFxvdk2cRDrt",
+    "report_id": "https://www.warcraftlogs.com/reports/VXmAQFxvdk2cRDrt",
     "player": [
       "Dimi",
       "Kalle",
@@ -230,7 +230,7 @@
   {
     "id": 11,
     "date": "2023-12-20",
-    "report": "https://www.warcraftlogs.com/reports/naMxQhwHjqZB3d2y",
+    "report_id": "https://www.warcraftlogs.com/reports/naMxQhwHjqZB3d2y",
     "player": [
       "Christoph",
       "Dimi",
@@ -250,7 +250,7 @@
   {
     "id": 12,
     "date": "2023-12-27",
-    "report": "https://www.warcraftlogs.com/reports/JrYPGF9D1yLqtZhd",
+    "report_id": "https://www.warcraftlogs.com/reports/JrYPGF9D1yLqtZhd",
     "player": [
       "Carmen",
       "Christoph",
@@ -273,7 +273,7 @@
   {
     "id": 13,
     "date": "2024-01-03",
-    "report": "https://www.warcraftlogs.com/reports/YAwg4zvQ7PFGtVcq",
+    "report_id": "https://www.warcraftlogs.com/reports/YAwg4zvQ7PFGtVcq",
     "player": [
       "Christoph",
       "Dave",
@@ -297,7 +297,7 @@
   {
     "id": 14,
     "date": "2024-01-07",
-    "report": "https://www.warcraftlogs.com/reports/8B2ZXfVaYTqWzk7d",
+    "report_id": "https://www.warcraftlogs.com/reports/8B2ZXfVaYTqWzk7d",
     "player": [
       "Carmen",
       "Christoph",
@@ -318,7 +318,7 @@
   {
     "id": 15,
     "date": "2024-01-10",
-    "report": "https://www.warcraftlogs.com/reports/CMDTYL4HrFzwmjXR",
+    "report_id": "https://www.warcraftlogs.com/reports/CMDTYL4HrFzwmjXR",
     "player": [
       "Carmen",
       "Christoph",
@@ -338,7 +338,7 @@
   {
     "id": 16,
     "date": "2024-01-14",
-    "report": "https://www.warcraftlogs.com/reports/W4jyzhmN6nHkZ81f",
+    "report_id": "https://www.warcraftlogs.com/reports/W4jyzhmN6nHkZ81f",
     "player": [
       "Carmen",
       "Christoph",
@@ -363,7 +363,7 @@
   {
     "id": 17,
     "date": "2024-01-17",
-    "report": "https://www.warcraftlogs.com/reports/X4zxpwFTJa386cfL",
+    "report_id": "https://www.warcraftlogs.com/reports/X4zxpwFTJa386cfL",
     "player": [
       "Carmen",
       "Christoph",
@@ -387,7 +387,7 @@
   {
     "id": 18,
     "date": "2024-01-21",
-    "report": "https://www.warcraftlogs.com/reports/WRwZnBN7JC2AGzKQ",
+    "report_id": "https://www.warcraftlogs.com/reports/WRwZnBN7JC2AGzKQ",
     "player": [
       "Carmen",
       "Christoph",
@@ -410,7 +410,7 @@
   {
     "id": 19,
     "date": "2024-01-24",
-    "report": "https://www.warcraftlogs.com/reports/2nMYkQfm1GCt6pbV",
+    "report_id": "https://www.warcraftlogs.com/reports/2nMYkQfm1GCt6pbV",
     "player": [
       "Carmen",
       "Christoph",
@@ -430,7 +430,7 @@
   {
     "id": 20,
     "date": "2024-01-28",
-    "report": "https://www.warcraftlogs.com/reports/8gWbwtCPdQqKY72j",
+    "report_id": "https://www.warcraftlogs.com/reports/8gWbwtCPdQqKY72j",
     "player": [
       "Carmen",
       "Christoph",
@@ -451,7 +451,7 @@
   {
     "id": 21,
     "date": "2024-01-31",
-    "report": "https://www.warcraftlogs.com/reports/FgtBdN9Kvmp1xknb",
+    "report_id": "https://www.warcraftlogs.com/reports/FgtBdN9Kvmp1xknb",
     "player": [
       "Carmen",
       "Christoph",
@@ -472,7 +472,7 @@
   {
     "id": 22,
     "date": "2024-02-07",
-    "report": "https://www.warcraftlogs.com/reports/2rCNvzQP9yJwWkdg",
+    "report_id": "https://www.warcraftlogs.com/reports/2rCNvzQP9yJwWkdg",
     "player": [
       "Carmen",
       "Christoph",
@@ -491,7 +491,7 @@
   {
     "id": 23,
     "date": "2024-02-18",
-    "report": "https://www.warcraftlogs.com/reports/BYPjJwazMCxNTVbp",
+    "report_id": "https://www.warcraftlogs.com/reports/BYPjJwazMCxNTVbp",
     "player": [
       "Carmen",
       "Christoph",
@@ -510,7 +510,7 @@
   {
     "id": 24,
     "date": "2024-02-21",
-    "report": "https://www.warcraftlogs.com/reports/A9wgWR6ckLtyNaC3",
+    "report_id": "https://www.warcraftlogs.com/reports/A9wgWR6ckLtyNaC3",
     "player": [
       "Carmen",
       "Christoph",
@@ -530,7 +530,7 @@
   {
     "id": 25,
     "date": "2024-02-28",
-    "report": "https://www.warcraftlogs.com/reports/1KkpanNrx4hgfLvM",
+    "report_id": "https://www.warcraftlogs.com/reports/1KkpanNrx4hgfLvM",
     "player": [
       "Carmen",
       "Christoph",
@@ -548,7 +548,7 @@
   {
     "id": 26,
     "date": "2024-03-10",
-    "report": "https://www.warcraftlogs.com/reports/1G9FmMY7xvwD2Lpq",
+    "report_id": "https://www.warcraftlogs.com/reports/1G9FmMY7xvwD2Lpq",
     "player": [
       "Christoph",
       "Jan",
@@ -567,7 +567,7 @@
   {
     "id": 27,
     "date": "2024-03-17",
-    "report": "https://www.warcraftlogs.com/reports/cxQAbgTXJ2Z8yjPt",
+    "report_id": "https://www.warcraftlogs.com/reports/cxQAbgTXJ2Z8yjPt",
     "player": [
       "Carmen",
       "Christoph",
@@ -586,7 +586,7 @@
   {
     "id": 28,
     "date": "2024-03-24",
-    "report": "https://www.warcraftlogs.com/reports/L9ZrWwPcBGht7dpN",
+    "report_id": "https://www.warcraftlogs.com/reports/L9ZrWwPcBGht7dpN",
     "player": [
       "Carmen",
       "Christoph",
@@ -604,13 +604,13 @@
   {
     "id": 100,
     "date": "2024-04-06",
-    "report": "https://www.warcraftlogs.com/reports/L9ZrWwPcBGht7dpN",
+    "report_id": "https://www.warcraftlogs.com/reports/L9ZrWwPcBGht7dpN",
     "player": []
   },
   {
     "id": 99,
     "date": "2040-01-01",
-    "report": "https://www.warcraftlogs.com/reports/...",
+    "report_id": "https://www.warcraftlogs.com/reports/...",
     "player": [
       "Carmen",
       "Christoph",

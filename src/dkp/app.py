@@ -10,9 +10,9 @@ import os
 from typing import Any
 
 from config_mapper import Config
-from core import Fix, RaidChecklist, Season, is_local_development
+from core import Fix, FixEntry, RaidChecklist, Season, is_local_development
 from dotenv import load_dotenv
-from github_client import GithubClient, Loot, Player, Raid, RawLoot, csv_to_list
+from github_client import GithubClient, Loot, Player, Raid, RawLoot, csv_to_list, list_to_csv
 from warcraftlogs_client import WclClient
 
 load_dotenv()
@@ -256,23 +256,36 @@ def apply_fixes(existing_log: list[RawLoot], fixes: list[Fix]) -> list[RawLoot]:
     return result
 
 
+def get_current_date() -> str:
+    return datetime.date.today().isoformat()
+
+
 def get_current_season() -> Season:
-    current_date = datetime.date.today().isoformat()
-    past_start_season_list = [season for season in DATABASE.season_list if season.start_date < current_date]
-    if past_start_season_list:
-        return max(past_start_season_list, key=lambda season: season.start_date)
+    today = get_current_date()
+    possible_seasons = [season for season in DATABASE.season_list if season.start_date < today]
+    if possible_seasons:
+        return max(possible_seasons, key=lambda season: season.start_date)
     else:
-        raise ValueError("No season found for current date: " + current_date)
+        raise ValueError("No season found for current date: " + today)
 
 
 def get_season_list_starting_with_current() -> list[Season]:
-    current_season = get_current_season()
-    other_seasons = DATABASE.season_list.copy()
-    other_seasons.remove(current_season)
-    return [current_season] + other_seasons
+    current = get_current_season()
+    others = DATABASE.season_list.copy()
+    others.remove(current)
+    return [current] + others
 
 
-# delegators
+def get_current_raid() -> Raid | None:
+    today = get_current_date()
+    try:
+        return DATABASE.find_raid_by_date(today)
+    except ValueError:
+        return None
+
+
+def find_raid_by_date(date: str) -> Raid:
+    return DATABASE.find_raid_by_date(date)
 
 
 def get_raid_loot(raid_day: str) -> list[Loot]:
@@ -293,6 +306,10 @@ def get_absent_player_list() -> list[Player]:
 
 def get_raid_list(season: Season) -> list[Raid]:
     return DATABASE.get_raid_list(season)
+
+
+def get_empty_raid_list(season: Season) -> list[Raid]:
+    return DATABASE.get_empty_raid_list(season)
 
 
 def get_season_list() -> list[Season]:
@@ -336,16 +353,39 @@ def add_raid(date: str):
     DATABASE.add_raid(date)
 
 
-# def update_raid(fixes: list[Fix]):
-# DATABASE.update_raid(fixes)
+def start_raid():
+    date = get_current_date()
+    DATABASE.add_raid(date)
+
+
+def stop_raid():
+    raid = get_current_raid()
+    if not raid:
+        raise ValueError("No raid found for today.")
+    if not raid.report_id:
+        raise ValueError("No report url found for today's raid.")
+
+    _, _, player_list = get_raid_entry_for_manual_storage(raid.report_id)
+    raid.player = player_list
+
+    fixes = [Fix(id=str(raid.id), entries=[FixEntry(name="player", value=list_to_csv(player_list))])]
+    DATABASE.update_raid(fixes)
+
+
+def update_raid(fixes: list[Fix]):
+    DATABASE.update_raid(fixes)
+
+
+def delete_raid(raid_date: str):
+    DATABASE.delete_raid(raid_date)
 
 
 def add_season(season_name: str):
     DATABASE.add_season(season_name)
 
 
-def delete_season(season: Season):
-    DATABASE.delete_season(season)
+def delete_season(season_desc: str):
+    DATABASE.delete_season(season_desc)
 
 
 def update_season(fixes: list[Fix]):
