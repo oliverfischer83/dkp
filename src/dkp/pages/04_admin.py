@@ -5,7 +5,7 @@ import time
 import app
 import pandas as pd
 import streamlit as st
-from core import CHANGE, ORIGINAL, Fix, FixEntry, to_date, to_raw_loot_list
+from core import CHANGE, ORIGINAL, Fix, FixEntry, list_to_csv, to_date, to_raw_loot_list
 
 
 def main():
@@ -13,12 +13,13 @@ def main():
     st.set_page_config(
         page_title="DKP - admin",
         page_icon="🧑‍💻",
-        # layout="wide",
+        layout="wide",
         initial_sidebar_state="expanded",  # see https://twemoji-cheatsheet.vercel.app/
     )
 
     build_password_protection()
     build_sidebar()
+    build_notification_area()
     build_loot_upload()
     build_loot_editor()
     build_player_editor()
@@ -39,7 +40,6 @@ def build_sidebar():
     with st.sidebar:
 
         # raid start/stop
-        raid = app.get_current_raid()
         col1, col2 = st.columns(2)
         with col1:
             if st.button("Start Raid", disabled=app.is_raid_started()):
@@ -58,7 +58,7 @@ def build_sidebar():
                     st.error(str(e))
 
         # checklist
-        if raid:
+        if app.is_raid_started():
             checklist = app.get_raid_checklist()
             status = "🟢" if checklist.is_fullfilled() else "🔴"
             st.markdown(f"#### Checkliste: {status}")
@@ -74,6 +74,14 @@ def build_sidebar():
         st.write("")
         st.write("")
         st.write("###### Version: 0.1.0")
+
+
+def build_notification_area():
+    with st.container():
+        st.write("") # strange: this element is necessary, otherwise all expander on the page collapse after any button pressed
+        unfinished_raids = app.find_past_raids_without_attendees()
+        if unfinished_raids:
+            st.error("Missing attendees for raids: " + ", ".join(unfinished_raids))
 
 
 def build_loot_upload():
@@ -141,8 +149,8 @@ def build_loot_editor():
 def build_player_editor():
     with st.container():
         with st.expander("🇵layer editor"):
-            left, right = st.columns(2)
-            with left:
+            col1, col2, _, _ = st.columns(4)
+            with col1:
                 new_player = st.text_input("Enter new player name:", placeholder="e.g. Alfons")
                 if st.button("Add player"):
                     if not new_player:
@@ -153,7 +161,7 @@ def build_player_editor():
                         time.sleep(2)
                         st.rerun()
 
-            with right:
+            with col2:
                 player_name = st.selectbox("Select absent player:", sorted([player.name for player in app.get_absent_player_list()]))
                 if st.button("Delete player"):
                     if not player_name:
@@ -185,8 +193,8 @@ def build_raid_editor():
     with st.container():
         with st.expander("🇷aid editor"):
             season = app.get_current_season()
-            left, right = st.columns(2)
-            with left:
+            col1, col2, _, _ = st.columns(4)
+            with col1:
                 raid_date = st.date_input("Date:", format="YYYY-MM-DD")
                 if st.button("Add raid"):
                     if not raid_date:
@@ -197,7 +205,7 @@ def build_raid_editor():
                         time.sleep(2)
                         st.rerun()
 
-            with right:
+            with col2:
                 selected_raid_date = st.selectbox(
                     "Select raid:", sorted([raid.date for raid in app.get_empty_raid_list(season)], reverse=True)
                 )
@@ -225,6 +233,18 @@ def build_raid_editor():
                     st.success("Raid updated.")
                     time.sleep(2)
                     st.rerun()
+
+            # player list from warcraftlogs.com
+            report_id = st.text_input("Get player list from warcraftlogs.com:", placeholder="e.g. JrYPGF9D1yLqtZhd")
+            if st.button("Get Player list"):
+                if not report_id:
+                    st.error("Please enter a valid report id.")
+                else:
+                    try:
+                        player_list = app.get_attending_player_list(report_id)
+                        st.code(list_to_csv(player_list))
+                    except ValueError as e:
+                        st.error(str(e))
 
 
 def build_season_editor():

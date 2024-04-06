@@ -122,6 +122,7 @@ ADMIN_PASSWORD="..."
   - constants for string field names where possible
 - loot statistics (which loot dropt how often, raid progress, raid attendence, ...)
 - translation of bosses and raids into german
+- protection for delete object
 
 # Release info
 
@@ -158,19 +159,4 @@ ADMIN_PASSWORD="..."
 - try: https://github.com/kmcgrady/streamlit-autorefresh
 
 
-## Checklist
-
-- Raid button
-  - start Raid:
-    - create raid entry, set status started (or log added same day)
-    - show checklist
-  - finish Raid:
-    - set status finished (log added from past or raid stopped manually or is next day)
-    - show warning if attendees not present (or no report url)
-    - get attendees from report or manually
-    - add 50 pt. to balance (happens automatically when added to raid entry)
-    - ends automatically on next day (german timezone)
-
-
-- raid liste on overview?
-- protection for delete object
+- notification area: there is loot, but no raid entry

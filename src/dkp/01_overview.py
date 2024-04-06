@@ -46,7 +46,7 @@ def build_sidebar(season: Season):
         st.sidebar.markdown(f'🐲 _ {boss} ({difficulty})')
 
         # checklist
-        if app.get_current_raid():
+        if app.is_raid_started():
             checklist = app.get_raid_checklist()
             status = "🟢" if checklist.is_fullfilled() else "🔴"
             st.markdown(f"#### Checkliste: {status}")

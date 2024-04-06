@@ -18,6 +18,7 @@ from core import (
     RaidChecklist,
     RawLoot,
     Season,
+    csv_to_list,
     is_local_development,
     to_raw_loot_list,
 )
@@ -398,11 +399,3 @@ def data_to_json[T: (Player, Raid, Season)](model_list: list[T], sort_by: str) -
 
 def _to_json(content: list) -> str:
     return json.dumps(content, indent=2, ensure_ascii=False)  # allow non-ascii characters
-
-
-def csv_to_list(csv: str) -> list[str]:
-    return [item.strip() for item in csv.split(",") if csv]  # "a, b, c" -> ["a", "b", "c"] and "" -> []
-
-
-def list_to_csv(list: list[str]) -> str:
-    return ", ".join(list)  # ["a", "b", "c"] -> "a, b, c"

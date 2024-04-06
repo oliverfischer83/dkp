@@ -10,9 +10,9 @@ import os
 from typing import Any
 
 from config_mapper import Config
-from core import Fix, FixEntry, RaidChecklist, Season, is_local_development
+from core import Fix, FixEntry, RaidChecklist, Season, is_local_development, list_to_csv
 from dotenv import load_dotenv
-from github_client import GithubClient, Loot, Player, Raid, RawLoot, csv_to_list, list_to_csv
+from github_client import GithubClient, Loot, Player, Raid, RawLoot, csv_to_list
 from warcraftlogs_client import WclClient
 
 load_dotenv()
@@ -189,16 +189,16 @@ def get_loot_history(season: Season) -> list[Loot]:
     return [entry for entry in season_loot if entry.response == "Gebot"]
 
 
-def get_raid_entry_for_manual_storage(report_id):
-    date, report_url, raiding_char_list = WCL_CLIENT.get_raid_details(report_id)
+def get_attending_player_list(report_id):
+    char_list = WCL_CLIENT.get_attending_character_list(report_id)
     # find attending players
     player_list = []
     for player in DATABASE.player_list:
-        for char in raiding_char_list:
+        for char in char_list:
             if char in player.chars:
                 player_list.append(player.name)
                 break
-    return date, report_url, player_list
+    return player_list
 
 
 def upload_loot_log(raw_loot_list: list[RawLoot]):
@@ -365,7 +365,7 @@ def stop_raid():
     if not raid.report_id:
         raise ValueError("No report id found for today's raid.")
 
-    _, _, player_list = get_raid_entry_for_manual_storage(raid.report_id)
+    _, _, player_list = get_attending_player_list(raid.report_id)
     raid.player = player_list
 
     fixes = [Fix(id=str(raid.id), entries=[FixEntry(name="player", value=list_to_csv(player_list))])]
@@ -404,7 +404,18 @@ def is_raid_started():
     # if a raid is found
     return bool(get_current_raid())
 
+
 def is_raid_stopped():
     # if no raid is found or raid is found but no player is assigned
     raid = get_current_raid()
     return not bool(raid) or bool(raid.player)
+
+
+def find_past_raids_without_attendees():
+    result = []
+    for raid in DATABASE.raid_list:
+        if raid == get_current_raid():
+            continue
+        if not raid.player:
+            result.append(raid.date)
+    return result

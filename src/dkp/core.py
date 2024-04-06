@@ -163,3 +163,11 @@ def to_raw_date(date: str) -> str:
 def to_date(raw_date: str) -> str:
     """Converts date from %d/%m/%y to %Y-%m-%d."""
     return datetime.datetime.strptime(raw_date, "%d/%m/%y").strftime("%Y-%m-%d")  # like 2024-01-01
+
+
+def csv_to_list(csv: str) -> list[str]:
+    return [item.strip() for item in csv.split(",") if csv]  # "a, b, c" -> ["a", "b", "c"] and "" -> []
+
+
+def list_to_csv(list: list[str]) -> str:
+    return ", ".join(list)  # ["a", "b", "c"] -> "a, b, c"
