@@ -79,7 +79,7 @@ python -m streamlit run src/dkp/01_overview.py
 - new app
   - repo: `oliverfischer83/dkp`
   - branch: `main`
-  - file: `src/dkp/01_overview.py`
+  - file: `src/dkp/01_Guthaben.py`
   - url: `dkp-vipers.streamlit.app`
   - advanced:
     - python version: `3.12`
@@ -92,7 +92,14 @@ GITHUB_CLIENT_TOKEN="..."
 ADMIN_PASSWORD="..."
 ```
 
-- use pull requests for release from `develop` branch to `main` branch
+## Release process
+- merge `develop` into `release` branch
+- create pull requests for `release` into `main` branch
+- clean up `release` branch (no test data/files)
+- test deploy on streamlit cloud
+- squash commit
+- tag commit, e.g. `v1.0.0`
+
 
 # TODO
 
