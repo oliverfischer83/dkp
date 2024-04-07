@@ -419,3 +419,11 @@ def find_past_raids_without_attendees() -> list[str]:
         if not raid.player:
             result.append(raid.date)
     return result
+
+
+def find_player_with_negative_balance(balance: dict[str, dict[int, Any]]) -> list[str]:
+    result = []
+    for i, name in balance["name"].items():
+        if balance["value"][i] < 0:
+            result.append(name)
+    return result

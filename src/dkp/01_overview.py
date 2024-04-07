@@ -1,5 +1,6 @@
 # pylint: disable=missing-module-docstring
 from datetime import date
+from typing import Any
 
 import app
 import pandas as pd
@@ -16,7 +17,9 @@ def main():
         initial_sidebar_state="expanded")
 
     season = build_season_selector()
+    balance = app.get_balance(season)
     build_sidebar(season)
+    build_notification_area(balance)
     build_balance(season)
     build_loot_history(season)
 
@@ -54,6 +57,13 @@ def build_sidebar(season: Season):
             st.checkbox("Logs aktiviert", value=checklist.logs_recording, disabled=True)
             st.checkbox("Addon installiert", value=checklist.rclc_installed, disabled=True)
             st.checkbox("Kessel, Food, Vantus Runen", value=checklist.consumables, disabled=True)
+
+
+def build_notification_area(balance: dict[str, dict[int, Any]]):
+    with st.container():
+        player = app.find_player_with_negative_balance(balance)
+        if player:
+            st.error("Spieler mit negativen Guthaben: " + ", ".join(player))
 
 
 def build_balance(season: Season):
