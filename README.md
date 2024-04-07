@@ -107,10 +107,13 @@ ADMIN_PASSWORD="..."
   - fix note in editor
   - try again add loot: -> succeeded
   - click on raid button: status "finished" (adds 50pt. to balance)
-- use case "Same Day"
-  - add loot: raid entry, status "started"
-- use case "Next Day"
-  - add loot: raid entry, status "finished"
+
+## page reload
+
+- auto refresh page
+- on loot data upload, clients get signal to refresh or waning banner that data outdated
+- make optional
+- try: https://github.com/kmcgrady/streamlit-autorefresh
 
 ## misc
 
@@ -124,11 +127,6 @@ ADMIN_PASSWORD="..."
 - translation of bosses and raids into german
 - protection for delete object
 
-# Release info
-
-- tagging releases
-- show release info bottom of side pane
-
 
 # Fallback Excel list
 
@@ -137,7 +135,7 @@ ADMIN_PASSWORD="..."
   - add entries by hand on admin page, define simple default values for other fields of RawLoot
 - No Masterlooter (ID already taken, cant distribute loot)
   - do auction like bidding and note down winner
-  - manually add entries afterwards
+  - get upload from someone else
 
 ## Info Page
 
@@ -151,9 +149,7 @@ ADMIN_PASSWORD="..."
   - create_loot_log, update_loot_log, fix_loot_log
 - unify data validation on export upload and loot editor changes
 
-## page reload
+# Release info
 
-- auto refresh page
-- on loot data upload, clients get signal to refresh or waning banner that data outdated
-- make optional
-- try: https://github.com/kmcgrady/streamlit-autorefresh
+- tagging releases
+- show release info bottom of side pane
