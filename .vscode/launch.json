@@ -6,8 +6,8 @@
       "type": "debugpy",
       "request": "launch",
       "module": "streamlit",
-      "justMyCode": true,     // toggle to also debug library code
-      "args": ["run", "src/dkp/01_overview.py"],
+      "justMyCode": true, // toggle to also debug library code
+      "args": ["run", "src/dkp/01_Guthaben.py"],
       "console": "integratedTerminal"
     },
     {
@@ -17,8 +17,8 @@
       "module": "pytest",
       "args": [
         "${workspaceFolder}/tests",
-        "--capture=no",               // show print statements
-        "-vv"                         // verbose
+        "--capture=no", // show print statements
+        "-vv" // verbose
       ],
       "console": "integratedTerminal"
     }
