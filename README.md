@@ -137,11 +137,6 @@ ADMIN_PASSWORD="..."
   - do auction like bidding and note down winner
   - get upload from someone else
 
-## Info Page
-
-- rules (copy from Excel Sheet)
-- how to install and configure Addon RCLootCouncil using screenshots
-
 # Refactor
 
 - balance and loot-history should have an own data class
