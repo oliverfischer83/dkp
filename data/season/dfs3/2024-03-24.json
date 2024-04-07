@@ -6,7 +6,7 @@
     "id": "1711301751-0",
     "itemID": 207117,
     "itemString": "item:207117::::::::70:70::5:6:6652:9508:7980:9568:1498:8767",
-    "response": "Gebot",
+    "response": "Transmog",
     "votes": 0,
     "class": "WARLOCK",
     "instance": "Amirdrassil, the Dream's Hope-Heroic",
@@ -18,7 +18,7 @@
     "rollType": "normal",
     "subType": "Cloth",
     "equipLoc": "Shoulder",
-    "note": "1000",
+    "note": "",
     "owner": "Moppi-Anub'arak",
     "itemName": "Requiem Rootmantle"
   },
