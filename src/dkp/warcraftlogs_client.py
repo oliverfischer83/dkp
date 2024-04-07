@@ -15,6 +15,8 @@ import requests
 from oauthlib.oauth2 import BackendApplicationClient
 from requests_oauthlib import OAuth2Session
 
+from core import list_to_csv
+
 log = logging.getLogger(__name__)
 
 
@@ -47,7 +49,7 @@ class WclClient:
         response = requests.get(self.api_endpoint, headers=self.headers, json=data, timeout=10)
         return response.json()
 
-    def get_raid_details(self, report_id):
+    def get_attending_character_list(self, report_id):
         log.debug("get_raid_details")
         # TODO test report having m+ fights, expect m+ fights not considered
         query = """query($code: String) {
@@ -79,12 +81,14 @@ class WclClient:
         """
         response_json = self.get_data(query, code=report_id)
 
-        timestamp_sec = response_json["data"]["reportData"]["report"]["startTime"] / 1000.0
-        date = datetime.datetime.fromtimestamp(timestamp_sec, datetime.UTC).strftime("%Y-%m-%d")
-
-        report_url = f"https://www.warcraftlogs.com/reports/{report_id}"
+        try:
+            errors = response_json["errors"]
+            raise ValueError(list_to_csv([error["message"] for error in errors]))
+        except KeyError:
+            pass # no errors
 
         all_fights = response_json["data"]["reportData"]["report"]["fights"]
+
         char_id_list = []
         for fight in all_fights:
             char_id_list.extend(fight["friendlyPlayers"])
@@ -96,4 +100,4 @@ class WclClient:
             if char["id"] in char_id_list:
                 char_list.append(f"{char['name']}-{char['server']}")
 
-        return date, report_url, char_list
+        return char_list

@@ -1,7 +1,14 @@
 [
-    {
-        "id": "1",
-        "name": "dfs3",
-        "descr": "Dragonflight - Season 3"
-    }
+  {
+    "id": 1,
+    "name": "dfs3",
+    "desc": "Dragonflight - Season 3",
+    "start_date": "2023-11-15"
+  },
+  {
+    "id": 2,
+    "name": "dfs4",
+    "desc": "Dragonflight - Season 4",
+    "start_date": "2024-04-24"
+  }
 ]

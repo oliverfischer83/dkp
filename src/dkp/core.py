@@ -5,12 +5,16 @@ Data classes concentrated into a single file to omit cyclic imports.
 import datetime
 import json
 import os
-from typing import Any
+
 from pydantic import BaseModel, Field, ValidationInfo, field_validator
+import pytz
+
+ORIGINAL = "original"
+CHANGE = "change"
 
 
 def is_local_development() -> bool:
-     # used to speed up testing
+    # used to speed up testing
     return os.environ.get("LOCAL_DEVELOPMENT", "false").lower() == "true"
 
 
@@ -28,11 +32,11 @@ class Loot(BaseModel):
     character: str
     response: str
 
-    @field_validator('note')
+    @field_validator("note")
     def validate_note(cls, note, info):
         if note == "":  # empty note is valid
             return note
-        message = f'Invalid note for entry {details(info)}: '
+        message = f"Invalid note for entry {details(info)}: "
         if not note.isdigit():
             raise ValueError(message + f'Note must be a parsable integer, but was: "{note}"')
         if int(note) <= 0:
@@ -41,23 +45,24 @@ class Loot(BaseModel):
             raise ValueError(message + f'Note must be a multiple of 10 (e.g. 10, 20, ...), but was: "{note}"')
         return note
 
-    @field_validator('player')
+    @field_validator("player")
     def validate_player(cls, player, info):
         if not player:
-            raise ValueError(f'Player must not be empty. {details(info)}')
+            raise ValueError(f"Player must not be empty. {details(info)}")
         return player
 
-    @field_validator('character')
+    @field_validator("character")
     def validate_character(cls, character, info):
         if not character:
-            raise ValueError(f'Character must not be empty. {details(info)}')
+            raise ValueError(f"Character must not be empty. {details(info)}")
         return character
 
-    @field_validator('response')
+    @field_validator("response")
     def validate_response(cls, response, info):
         if not response:
-            raise ValueError(f'Response must not be empty. {details(info)}')
+            raise ValueError(f"Response must not be empty. {details(info)}")
         return response
+
 
 def details(values: ValidationInfo):
     return f'(id="{values.data["id"]}", timestamp="{values.data["timestamp"]}")'
@@ -108,10 +113,11 @@ class Player(BaseModel):
     def __hash__(self):
         return hash((self.id))
 
+
 class Raid(BaseModel):
     id: int = 0
     date: str
-    report: str
+    report_id: str
     player: list[str]
 
     def __eq__(self, other):
@@ -120,10 +126,12 @@ class Raid(BaseModel):
     def __hash__(self):
         return hash((self.id))
 
+
 class Season(BaseModel):
     id: int = 0
     name: str
-    descr: str
+    desc: str
+    start_date: str
 
     def __eq__(self, other):
         return isinstance(other, Season) and self.id == other.id
@@ -132,11 +140,14 @@ class Season(BaseModel):
         return hash((self.id))
 
 
-class AdminView(BaseModel):
-    date: str
-    report_url: str
-    player_list: list[str]
+class RaidChecklist(BaseModel):
+    video_recording: bool = False
+    logs_recording: bool = False
+    rclc_installed: bool = False
+    consumables: bool = False
 
+    def is_fullfilled(self) -> bool:
+        return self.video_recording and self.logs_recording and self.rclc_installed and self.consumables
 
 
 def to_raw_loot_list(content: str) -> list[RawLoot]:
@@ -155,32 +166,22 @@ def to_date(raw_date: str) -> str:
     return datetime.datetime.strptime(raw_date, "%d/%m/%y").strftime("%Y-%m-%d")  # like 2024-01-01
 
 
-def to_raw_loot_json(loot_list: list[RawLoot]) -> str:
-    """Converts raw loot lists into json str for database storage."""
-    content = [loot.model_dump(by_alias=True) for loot in loot_list]
-    sorted_content = sorted(content, key=lambda entry: entry['player'])  # sort by character name
-    return to_json(sorted_content)
+def to_timestamp(raw_timestamp: str) -> str:
+    return datetime.datetime.strptime(raw_timestamp, "%d/%m/%y %H:%M:%S").strftime("%Y-%m-%d %H:%M:%S")  # like 2024-01-01 00:00:00
 
 
-def to_player_json(player_list: list[Player]) -> str:
-    content = [player.model_dump() for player in player_list]
-    sorted_content = sorted(content, key=lambda entry: entry['name'])  # sort by player name
-    return to_json(sorted_content)
+def csv_to_list(csv: str) -> list[str]:
+    return [item.strip() for item in csv.split(",") if csv]  # "a, b, c" -> ["a", "b", "c"] and "" -> []
 
 
-def to_raid_json(raid_list: list[Raid]) -> str:
-    content = [raid.model_dump() for raid in raid_list]
-    sorted_content = sorted(content, key=lambda entry: entry['date'])  # sort by raid date
-    return to_json(sorted_content)
+def list_to_csv(list: list[str]) -> str:
+    return ", ".join(list)  # ["a", "b", "c"] -> "a, b, c"
 
 
-def to_season_json(season_list: list[Season]) -> str:
-    content = [season.model_dump() for season in season_list]
-    sorted_content = sorted(content, key=lambda entry: entry['id'])  # sort by raid id
-    return to_json(sorted_content)
+def today() -> str:
+    return datetime.date.today().isoformat()
 
 
-def to_json(content: Any) -> str:
-    return json.dumps(content,
-                      indent=2,             # beautify
-                      ensure_ascii=False)   # allow non-ascii characters
+def now() -> str:
+    """Returns current time in Europe/Berlin timezone."""
+    return datetime.datetime.now(pytz.timezone('Europe/Berlin')).strftime("%Y-%m-%d %H:%M:%S")
