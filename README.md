@@ -96,6 +96,7 @@ ADMIN_PASSWORD="..."
 - merge `develop` into `release` branch
 - create pull requests for `release` into `main` branch
 - clean up `release` branch (no test data/files)
+- test deploy on streamlit cloud
 - squash commit
 - tag commit, e.g. `v1.0.0`
 
