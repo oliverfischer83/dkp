@@ -20,7 +20,7 @@ def main():
     balance = app.get_balance(season)
     build_sidebar(season)
     build_notification_area(balance)
-    build_balance(season)
+    build_balance(season, balance)
     build_loot_history(season)
 
 
@@ -66,11 +66,12 @@ def build_notification_area(balance: dict[str, dict[int, Any]]):
             st.error("Spieler mit negativen Guthaben: " + ", ".join(player))
 
 
-def build_balance(season: Season):
+def build_balance(season: Season, balance_table: dict[str, dict[int, Any]]):
     st.markdown("### DKP Liste")
     show_all = st.checkbox("alle anzeigen", value=False)
+    balance_table = balance_table if show_all else app.filter_active_player(balance_table, season)
     st.dataframe(
-        pd.DataFrame(app.get_balance(season, show_all), columns=["name", "value", "income", "cost", "characters"]).sort_values(
+        pd.DataFrame(balance_table, columns=["name", "value", "income", "cost", "characters"]).sort_values(
             by=["name"], ascending=True, ignore_index=False
         ),
         column_config={

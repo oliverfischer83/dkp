@@ -88,8 +88,9 @@ def add_cost_to_balance_table(balance_table: dict[str, dict[int, Any]], player_t
     return balance_table
 
 
-def filter_active_player(balance_table: dict[str, dict[int, Any]], raid_list: list[Raid]) -> dict[str, dict[int, Any]]:
+def filter_active_player(balance_table: dict[str, dict[int, Any]], season: Season) -> dict[str, dict[int, Any]]:
     active_player = set()
+    raid_list = get_raid_list(season)
     for raid in raid_list:
         for player in raid.player:
             active_player.add(player)
@@ -110,15 +111,13 @@ def filter_active_player(balance_table: dict[str, dict[int, Any]], raid_list: li
     return result
 
 
-def get_balance(season: Season, show_all: bool = False) -> dict[str, dict[int, Any]]:
+def get_balance(season: Season) -> dict[str, dict[int, Any]]:
     log.debug("get_balance")
     loot = get_loot_history(season)
     player_to_cost_pair = get_player_to_cost_pair(DATABASE.player_list, loot)
     balance_table = init_balance_table(DATABASE.player_list)
     balance_table = add_income_to_balance_table(balance_table, DATABASE.get_raid_list(season))
     balance_table = add_cost_to_balance_table(balance_table, player_to_cost_pair)
-    if not show_all:
-        balance_table = filter_active_player(balance_table, DATABASE.get_raid_list(season))
     return balance_table
 
 
