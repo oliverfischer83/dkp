@@ -108,13 +108,6 @@ ADMIN_PASSWORD="..."
   - try again add loot: -> succeeded
   - click on raid button: status "finished" (adds 50pt. to balance)
 
-## page reload
-
-- auto refresh page
-- on loot data upload, clients get signal to refresh or waning banner that data outdated
-- make optional
-- try: https://github.com/kmcgrady/streamlit-autorefresh
-
 ## misc
 
 - fix: m+ chars in raid report, test with report vF2C8crAdja1QKhD

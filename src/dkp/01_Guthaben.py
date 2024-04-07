@@ -34,7 +34,6 @@ def build_season_selector() -> Season:
 
 
 def build_sidebar(season: Season):
-
     with st.sidebar:
         # last update
         timestamp, boss, difficulty = app.get_info_last_update(season)

@@ -4,7 +4,6 @@ Client for interaction with github.com API
 
 # pylint: disable=missing-module-docstring,missing-function-docstring,missing-class-docstring
 
-import datetime
 import json
 import logging
 from threading import Lock
@@ -21,6 +20,7 @@ from core import (
     csv_to_list,
     is_local_development,
     to_raw_loot_list,
+    to_timestamp,
 )
 from github import Auth, Github, UnknownObjectException
 from github.ContentFile import ContentFile
@@ -245,9 +245,7 @@ class GithubClient:
             ).name  # raw_entry.player is actually the character name not the player name
             entry = Loot(
                 id=raw_entry.id,
-                timestamp=datetime.datetime.strptime(raw_entry.date + " " + raw_entry.time, "%d/%m/%y %H:%M:%S").strftime(
-                    "%Y-%m-%d %H:%M:%S"
-                ),
+                timestamp=to_timestamp(raw_entry.date + " " + raw_entry.time),
                 player=player_name,
                 note=raw_entry.note.strip(),
                 item_name=raw_entry.itemName,

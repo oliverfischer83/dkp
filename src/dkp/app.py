@@ -4,13 +4,21 @@ Business logic for the DKP webapp.
 
 # pylint: disable=missing-module-docstring,missing-function-docstring,missing-class-docstring
 
-import datetime
 import logging
 import os
 from typing import Any
 
 from config_mapper import Config
-from core import Fix, FixEntry, RaidChecklist, Season, is_local_development, list_to_csv
+from core import (
+    Fix,
+    FixEntry,
+    RaidChecklist,
+    Season,
+    is_local_development,
+    list_to_csv,
+    to_date,
+    today,
+)
 from dotenv import load_dotenv
 from github_client import GithubClient, Loot, Player, Raid, RawLoot, csv_to_list
 from warcraftlogs_client import WclClient
@@ -201,7 +209,7 @@ def get_attending_player_list(report_id):
 
 
 def upload_loot_log(raw_loot_list: list[RawLoot]):
-    raid_day = datetime.datetime.strptime(raw_loot_list[0].date, "%d/%m/%y").strftime("%Y-%m-%d")  # first entry
+    raid_day = to_date(raw_loot_list[0].date)
     existing_log = DATABASE.get_raid_loot_raw(raid_day)
 
     if existing_log:
@@ -255,17 +263,13 @@ def apply_fixes(existing_log: list[RawLoot], fixes: list[Fix]) -> list[RawLoot]:
     return result
 
 
-def get_current_date() -> str:
-    return datetime.date.today().isoformat()
-
-
 def get_current_season() -> Season:
-    today = get_current_date()
-    possible_seasons = [season for season in DATABASE.season_list if season.start_date < today]
+    current_day = today()
+    possible_seasons = [season for season in DATABASE.season_list if season.start_date < current_day]
     if possible_seasons:
         return max(possible_seasons, key=lambda season: season.start_date)
     else:
-        raise ValueError("No season found for current date: " + today)
+        raise ValueError("No season found for current date: " + current_day)
 
 
 def get_season_list_starting_with_current() -> list[Season]:
@@ -276,9 +280,9 @@ def get_season_list_starting_with_current() -> list[Season]:
 
 
 def get_current_raid() -> Raid | None:
-    today = get_current_date()
+    current_day = today()
     try:
-        return DATABASE.find_raid_by_date(today)
+        return DATABASE.find_raid_by_date(current_day)
     except ValueError:
         return None
 
@@ -353,7 +357,7 @@ def add_raid(date: str):
 
 
 def start_raid():
-    date = get_current_date()
+    date = today()
     DATABASE.add_raid(date)
 
 

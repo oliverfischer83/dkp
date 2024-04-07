@@ -7,6 +7,7 @@ import json
 import os
 
 from pydantic import BaseModel, Field, ValidationInfo, field_validator
+import pytz
 
 ORIGINAL = "original"
 CHANGE = "change"
@@ -165,9 +166,22 @@ def to_date(raw_date: str) -> str:
     return datetime.datetime.strptime(raw_date, "%d/%m/%y").strftime("%Y-%m-%d")  # like 2024-01-01
 
 
+def to_timestamp(raw_timestamp: str) -> str:
+    return datetime.datetime.strptime(raw_timestamp, "%d/%m/%y %H:%M:%S").strftime("%Y-%m-%d %H:%M:%S")  # like 2024-01-01 00:00:00
+
+
 def csv_to_list(csv: str) -> list[str]:
     return [item.strip() for item in csv.split(",") if csv]  # "a, b, c" -> ["a", "b", "c"] and "" -> []
 
 
 def list_to_csv(list: list[str]) -> str:
     return ", ".join(list)  # ["a", "b", "c"] -> "a, b, c"
+
+
+def today() -> str:
+    return datetime.date.today().isoformat()
+
+
+def now() -> str:
+    """Returns current time in Europe/Berlin timezone."""
+    return datetime.datetime.now(pytz.timezone('Europe/Berlin')).strftime("%Y-%m-%d %H:%M:%S")
