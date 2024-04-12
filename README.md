@@ -127,7 +127,6 @@ ADMIN_PASSWORD="..."
 - find other cloud hosting as backup
 - code quality
   - unit tests for balance functions
-  - constants for string field names where possible
 - loot statistics (which loot dropt how often, raid progress, raid attendence, ...)
 - translation of bosses and raids into german
 - protection for delete object
@@ -140,12 +139,6 @@ ADMIN_PASSWORD="..."
 - No Masterlooter (ID already taken, cant distribute loot)
   - do auction like bidding and note down winner
   - get upload from someone else
-
-# Refactor
-
-- unify methods
-  - create_loot_log, update_loot_log, fix_loot_log
-- unify data validation on export upload and loot editor changes
 
 # Statistics
 

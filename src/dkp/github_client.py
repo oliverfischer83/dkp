@@ -7,7 +7,7 @@ Client for interaction with github.com API
 import json
 import logging
 from threading import Lock
-from typing import Type
+from typing import Callable, Type
 
 from core import (
     Fix,
@@ -333,30 +333,25 @@ class GithubClient:
         self._raid_checklist = checklist
 
     def create_loot_log(self, content: list[RawLoot], raid_day: str):
-        season = self.find_season_by_raid(self.find_raid_by_date(raid_day))
-        # update file on github
-        file_path = _get_loot_log_file_path(season.name, raid_day)
-        self.repo_api.create_file(file_path, "Create", to_raw_loot_json(content), BRANCH)
-        # update loot list
-        raid = self.find_raid_by_date(raid_day)
-        self.raw_loot_list[season][raid] = content
+        def _create_loot_log(file_path: str, content: str, commit_msg: str):
+            self.repo_api.create_file(file_path, commit_msg, content, BRANCH)
+        self._handle_github_file(content, raid_day, "Create", _create_loot_log)
+
+    def _update_loot_log(self, file_path: str, content: str, commit_msg: str):
+        file_hash = self._get_data_file_hash(file_path)
+        self.repo_api.update_file(file_path, commit_msg, content, file_hash, BRANCH)
 
     def update_loot_log(self, content: list[RawLoot], raid_day: str):
-        season = self.find_season_by_raid(self.find_raid_by_date(raid_day))
-        # update file on github
-        file_path = _get_loot_log_file_path(season.name, raid_day)
-        file_hash = self._get_data_file_hash(file_path)
-        self.repo_api.update_file(file_path, "Update", to_raw_loot_json(content), file_hash, BRANCH)
-        # update loot list
-        raid = self.find_raid_by_date(raid_day)
-        self.raw_loot_list[season][raid] = content
+        self._handle_github_file(content, raid_day, "Update", self._update_loot_log)
 
     def fix_loot_log(self, content: list[RawLoot], raid_day: str, reason: str):
+        self._handle_github_file(content, raid_day, f"Fix: {reason}", self._update_loot_log)
+
+    def _handle_github_file(self, content: list[RawLoot], raid_day: str, commit_msg: str, specific_handling_func: Callable):
         season = self.find_season_by_raid(self.find_raid_by_date(raid_day))
-        # update file on github
         file_path = _get_loot_log_file_path(season.name, raid_day)
-        file_hash = self._get_data_file_hash(file_path)
-        self.repo_api.update_file(file_path, f"Fix: {reason}", to_raw_loot_json(content), file_hash, BRANCH)
+        # update file on github
+        specific_handling_func(file_path, to_raw_loot_json(content), commit_msg)
         # update loot list
         raid = self.find_raid_by_date(raid_day)
         self.raw_loot_list[season][raid] = content
