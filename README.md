@@ -106,19 +106,19 @@ ADMIN_PASSWORD="..."
 - squash commit
 - create [new release](https://github.com/oliverfischer83/dkp/releases/new)
 
-# TODO
-
-## Scenarios:
+## Use cases:
 
 - Normal use case:
-  - click Raid button: raid entry, status "started"
-  - add report id (live log)
-  - add loot: -> failed: unknown character
+  - start Raid
+  - fulfill Checklist (add report id)
+  - add loot -> failed: unknown character
   - add character in editor
-  - try again add loot: -> failed: invalid note
+  - try again add loot -> failed: invalid note
   - fix note in editor
-  - try again add loot: -> succeeded
-  - click on raid button: status "finished" (adds 50pt. to balance)
+  - try again add loot -> succeeded
+  - finish Raid (adds 50pt. to balance)
+
+# TODO
 
 ## misc
 

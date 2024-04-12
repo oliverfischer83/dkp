@@ -350,7 +350,7 @@ def stop_raid():
     if not raid.report_id:
         raise ValueError("No report id found for today's raid.")
 
-    _, _, player_list = get_attending_player_list(raid.report_id)
+    player_list = get_attending_player_list(raid.report_id)
     raid.player = player_list
 
     fixes = [Fix(id=str(raid.id), entries=[FixEntry(name="player", value=list_to_csv(player_list))])]

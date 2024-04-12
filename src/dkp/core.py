@@ -182,8 +182,8 @@ def csv_to_list(csv: str) -> list[str]:
     return [item.strip() for item in csv.split(",") if csv]  # "a, b, c" -> ["a", "b", "c"] and "" -> []
 
 
-def list_to_csv(list: list[str]) -> str:
-    return ", ".join(list)  # ["a", "b", "c"] -> "a, b, c"
+def list_to_csv(list_of_strings: list[str]) -> str:
+    return ", ".join(list_of_strings)  # ["a", "b", "c"] -> "a, b, c"
 
 
 def today() -> str:
