@@ -152,13 +152,10 @@ class RaidChecklist(BaseModel):
 
 class Balance(BaseModel):
     name: str
-    value: int
-    income: int
-    cost: int
+    value: int = 0
+    income: int = 0
+    cost: int = 0
     characters: list[str]
-
-    def to_dict(self):
-        return self.dict()
 
 
 def to_raw_loot_list(content: str) -> list[RawLoot]:

@@ -1,4 +1,4 @@
-from core import Fix, FixEntry, Loot, Player, Raid, RawLoot, Season
+from core import Balance, Fix, FixEntry, Loot, Player, Raid, RawLoot, Season
 
 
 def create_test_object_raw_loot(raw_loot: dict) -> RawLoot:
@@ -84,3 +84,18 @@ def create_test_object_season(season: dict) -> Season:
 
 def create_test_object_fixes(fix_id: str, entries: dict[str, str]) -> Fix:
     return Fix(id=fix_id, entries=[FixEntry(name=name, value=value) for name, value in entries.items()])
+
+
+def create_test_object_balance(balance: dict) -> Balance:
+    fields = {
+        "name": balance.get("name", ""),
+        "value": balance.get("value", ""),
+        "income": balance.get("income", ""),
+        "cost": balance.get("cost", ""),
+        "characters": balance.get("characters", []),
+    }
+    # sanity check
+    for key in balance:
+        if key not in fields:
+            raise ValueError(f"Invalid field: {key}")
+    return Balance(**fields)

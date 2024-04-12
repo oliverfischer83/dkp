@@ -125,8 +125,6 @@ ADMIN_PASSWORD="..."
 - fix: m+ chars in raid report, test with report vF2C8crAdja1QKhD
   - or show warning and abort if m+ logs in report
 - find other cloud hosting as backup
-- code quality
-  - unit tests for balance functions
 - loot statistics (which loot dropt how often, raid progress, raid attendence, ...)
 - translation of bosses and raids into german
 - protection for delete object
