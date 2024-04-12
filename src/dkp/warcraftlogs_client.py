@@ -8,14 +8,12 @@ see request oauth doc: https://requests-oauthlib.readthedocs.io/en/latest/oauth2
 
 # pylint: disable=missing-module-docstring,missing-function-docstring,missing-class-docstring
 
-import datetime
 import logging
 
 import requests
+from core import list_to_csv
 from oauthlib.oauth2 import BackendApplicationClient
 from requests_oauthlib import OAuth2Session
-
-from core import list_to_csv
 
 log = logging.getLogger(__name__)
 

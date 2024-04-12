@@ -4,22 +4,18 @@
 
 ### Platform
 
-- outsourcing the platform management, just giving the application code and configuration
 - sadly cant use AWS App Runner, because websockets are not supported (needed by Streamlit)
 - choosing Streamlit Community Cloud over Elastic Beanstalk
-- cheap, easy to setup and manage
+  - cheap, easy to setup and manage
 
 ### Database
 
-- dealing with json data only, so no relational database needed
-- using AWS nosql database, mostly for educational reasons
-- choosing DynamoDB over DocumentDB, because its cheap and easy to setup
-
-### Database backup
-
-- saving production data as files in github directory once a day, because no sensitive data exists
-- can be reused for development, testing and database initialization
-- using GitHub API for educational reasons
+- no relational database needed (json data files only)
+- saving production data as files in github directory
+  - no sensitive data exists
+  - no dedicated database needed
+  - audit log, high availability and backup feature given
+  - can be reused for development, testing and database initialization
 
 ### Architecture
 
