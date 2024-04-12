@@ -18,6 +18,7 @@ from core import (
     RawLoot,
     Season,
     csv_to_list,
+    dict_to_csv,
     is_local_development,
     to_raw_loot_list,
     to_timestamp,
@@ -335,6 +336,7 @@ class GithubClient:
     def create_loot_log(self, content: list[RawLoot], raid_day: str):
         def _create_loot_log(file_path: str, content: str, commit_msg: str):
             self.repo_api.create_file(file_path, commit_msg, content, BRANCH)
+
         self._handle_github_file(content, raid_day, "Create", _create_loot_log)
 
     def _update_loot_log(self, file_path: str, content: str, commit_msg: str):
@@ -356,6 +358,12 @@ class GithubClient:
         raid = self.find_raid_by_date(raid_day)
         self.raw_loot_list[season][raid] = content
 
+    def create_raid_excel_file(self, balance: dict[str, str]):
+        file_path = _get_balance_fallback_file()
+        file_hash = self._get_data_file_hash(file_path)
+        content = dict_to_csv(balance)
+        self.repo_api.update_file(file_path, "Update", content, file_hash, BRANCH)
+
 
 def _get_raid_file():
     return "data/raid.json"
@@ -367,6 +375,10 @@ def _get_player_file():
 
 def _get_season_file():
     return "data/season.json"
+
+
+def _get_balance_fallback_file():
+    return "data/balance_fallback.csv"
 
 
 def _get_loot_log_dir_path(season: str):

@@ -6,8 +6,8 @@ import datetime
 import json
 import os
 
-from pydantic import BaseModel, Field, ValidationInfo, field_validator
 import pytz
+from pydantic import BaseModel, Field, ValidationInfo, field_validator
 
 ORIGINAL = "original"
 CHANGE = "change"
@@ -186,10 +186,14 @@ def list_to_csv(list_of_strings: list[str]) -> str:
     return ", ".join(list_of_strings)  # ["a", "b", "c"] -> "a, b, c"
 
 
+def dict_to_csv(dict_: dict[str, str]) -> str:
+    return "\n".join([f"{key},{value}" for key, value in dict_.items()])  # {"a": "1", "b": "2", "c": "3"} -> "a,1\nb,2\nc,3"
+
+
 def today() -> str:
     return datetime.date.today().isoformat()
 
 
 def now() -> str:
     """Returns current time in Europe/Berlin timezone."""
-    return datetime.datetime.now(pytz.timezone('Europe/Berlin')).strftime("%Y-%m-%d %H:%M:%S")
+    return datetime.datetime.now(pytz.timezone("Europe/Berlin")).strftime("%Y-%m-%d %H:%M:%S")

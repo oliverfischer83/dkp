@@ -354,11 +354,17 @@ def stop_raid():
     raid.player = player_list
 
     fixes = [Fix(id=str(raid.id), entries=[FixEntry(name="player", value=list_to_csv(player_list))])]
-    DATABASE.update_raid(fixes)
+    _update_raid(fixes)
 
 
 def update_raid(fixes: list[Fix]):
+    _update_raid(fixes)
+
+
+def _update_raid(fixes: list[Fix]):
     DATABASE.update_raid(fixes)
+    balance_list = {balance.name: str(balance.value) for balance in get_balance(get_current_season())}
+    DATABASE.create_raid_excel_file(balance_list)
 
 
 def delete_raid(raid_date: str):

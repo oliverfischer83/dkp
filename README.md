@@ -50,7 +50,8 @@ conda activate dkp
 pip install pip-tools
 pip-compile --all-extras pyproject.toml
 pip-sync
-pip install --editable=.[dev]  # installs dkp app incl. dev extras in edit mode (. indicates, where to find the setup file)
+# installs dkp app incl. dev extras in edit mode (. indicates, where to find the setup file)
+pip install --editable=.[dev]
 ```
 
 ### Configuration
@@ -118,6 +119,30 @@ ADMIN_PASSWORD="..."
   - try again add loot -> succeeded
   - finish Raid (adds 50pt. to balance)
 
+## Desaster Plan
+
+- App not available
+  - cause:
+    - App is buggy
+    - App startup failed
+  - solution:
+    - use [Excel sheet](https://docs.google.com/spreadsheets/d/1bVRMxiiKN4kWlpDF9bvVprsjm8ucpHJ1TYGSAuDFO2c/edit?usp=sharing)
+    - copy balance from `data/balance_fallback.csv` into Excel sheet
+    - fix App and add loot later
+- Addon (RCLootCouncil) not available
+  - cause:
+    - Addon is buggy
+    - Addon updated with incompatible export schema
+  - solution:
+    - add entries manually on admin page
+    - fix App and loot later
+- Masterlooter mode not usable
+  - cause:
+    - Character of masterlooter has already a raid ID and cannot collect the loot
+  - solution:
+    - someone else collects the loot
+    - start session manually: `/rc add <item>`
+
 # TODO
 
 ## misc
@@ -126,15 +151,7 @@ ADMIN_PASSWORD="..."
   - or show warning and abort if m+ logs in report
 - find other cloud hosting as backup
 - translation of bosses and raids into german
-
-# Fallback Excel list
-
-- after each raid, generate table entries which can be used within excel as a fallback solution
-- RCLootCouncil not useable at all (through bug, or similiar)
-  - add entries by hand on admin page, define simple default values for other fields of RawLoot
-- No Masterlooter (ID already taken, cant distribute loot)
-  - do auction like bidding and note down winner
-  - get upload from someone else
+- release branch should work on its own data, not on main
 
 # Statistics
 
@@ -145,3 +162,7 @@ ADMIN_PASSWORD="..."
   - number of trash, number of rolled
 - raid size over time
 - boss kill timer over time
+
+# Fallbacks
+
+- add entries by hand on admin page, define simple default values for other fields of RawLoot
