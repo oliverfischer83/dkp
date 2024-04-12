@@ -6,11 +6,11 @@ Business logic for the DKP webapp.
 
 import logging
 import os
-from typing import Any
 
 import toml
 from config_mapper import Config
 from core import (
+    Balance,
     Fix,
     FixEntry,
     RaidChecklist,
@@ -60,77 +60,55 @@ def get_player_to_cost_pair(player_list: list[Player], loot_table: list[Loot]) -
     return result
 
 
-def init_balance_table(player_list: list[Player]) -> dict[str, dict[int, Any]]:  # TODO refactor: dict[int, Any] is not very descriptive
-    log.debug("init_balance_table")
-    balance_list = {}
-    balance_list["name"] = {}
-    balance_list["value"] = {}
-    balance_list["income"] = {}
-    balance_list["cost"] = {}
-    balance_list["characters"] = {}
-    for i, player in enumerate(player_list):
-        balance_list["name"][i] = player.name
-        balance_list["value"][i] = INITIAL_BALANCE
-        balance_list["income"][i] = INITIAL_BALANCE
-        balance_list["cost"][i] = 0
-        balance_list["characters"][i] = player.chars
+def init_balance_list(player_list: list[Player]) -> list[Balance]:
+    log.debug("init_balance_list")
+    return [
+        Balance(name=player.name, value=INITIAL_BALANCE, income=INITIAL_BALANCE, cost=0, characters=player.chars) for player in player_list
+    ]
+
+
+def add_income_to_balance_list(balance_list: list[Balance], raid_list: list[Raid]) -> list[Balance]:
+    log.debug("add_income_to_balance_list")
+    for balance in balance_list:
+        for raid in raid_list:
+            for raid_player_name in raid.player:
+                if balance.name == raid_player_name:
+                    balance.value += ATTENDANCE_BONUS
+                    balance.income += ATTENDANCE_BONUS
     return balance_list
 
 
-def add_income_to_balance_table(balance_table: dict[str, dict[int, Any]], raid_list: list[Raid]) -> dict[str, dict[int, Any]]:
-    log.debug("add_income_to_balance_table")
-    for i, name in balance_table["name"].items():
-        for raid in raid_list:
-            for raid_player_name in raid.player:
-                if name == raid_player_name:
-                    balance_table["value"][i] += ATTENDANCE_BONUS
-                    balance_table["income"][i] += ATTENDANCE_BONUS
-    return balance_table
+def add_cost_to_balance_list(balance_list: list[Balance], player_to_cost_pair: dict[str, int]) -> list[Balance]:
+    log.debug("add_cost_to_balance_list")
+    for balance in balance_list:
+        cost = player_to_cost_pair.get(balance.name, 0)
+        balance.value -= cost
+        balance.cost -= cost
+    return balance_list
 
 
-def add_cost_to_balance_table(balance_table: dict[str, dict[int, Any]], player_to_cost_pair: dict[str, int]) -> dict[str, dict[int, Any]]:
-    log.debug("add_cost_to_balance_table")
-    for i, name in balance_table["name"].items():
-        for key, value in player_to_cost_pair.items():
-            player_name = key
-            cost = value
-            if name == player_name:
-                balance_table["value"][i] -= cost
-                balance_table["cost"][i] -= cost
-    return balance_table
-
-
-def filter_active_player(balance_table: dict[str, dict[int, Any]], season: Season) -> dict[str, dict[int, Any]]:
+def filter_by_active_player(balance_list: list[Balance], season: Season) -> list[Balance]:
     active_player = set()
     raid_list = get_raid_list(season)
     for raid in raid_list:
         for player in raid.player:
             active_player.add(player)
 
-    result = {}
-    result["name"] = {}
-    result["value"] = {}
-    result["income"] = {}
-    result["cost"] = {}
-    result["characters"] = {}
-    for i, name in balance_table["name"].items():
-        if name in active_player:
-            result["name"][i] = balance_table["name"][i]
-            result["value"][i] = balance_table["value"][i]
-            result["income"][i] = balance_table["income"][i]
-            result["cost"][i] = balance_table["cost"][i]
-            result["characters"][i] = balance_table["characters"][i]
+    result = []
+    for balance in balance_list:
+        if balance.name in active_player:
+            result.append(balance)
     return result
 
 
-def get_balance(season: Season) -> dict[str, dict[int, Any]]:
+def get_balance(season: Season) -> list[Balance]:
     log.debug("get_balance")
     loot = get_loot_history(season)
     player_to_cost_pair = get_player_to_cost_pair(DATABASE.player_list, loot)
-    balance_table = init_balance_table(DATABASE.player_list)
-    balance_table = add_income_to_balance_table(balance_table, DATABASE.get_raid_list(season))
-    balance_table = add_cost_to_balance_table(balance_table, player_to_cost_pair)
-    return balance_table
+    balance_list = init_balance_list(DATABASE.player_list)
+    balance_list = add_income_to_balance_list(balance_list, DATABASE.get_raid_list(season))
+    balance_list = add_cost_to_balance_list(balance_list, player_to_cost_pair)
+    return balance_list
 
 
 def validate_characters_known(known_player: list[Player], looting_characters: list[str]):
@@ -428,9 +406,5 @@ def find_past_raids_without_attendees() -> list[str]:
     return result
 
 
-def find_player_with_negative_balance(balance: dict[str, dict[int, Any]]) -> list[str]:
-    result = []
-    for i, name in balance["name"].items():
-        if balance["value"][i] < 0:
-            result.append(name)
-    return result
+def find_player_with_negative_balance(balance_list: list[Balance]) -> list[str]:
+    return [balance.name for balance in balance_list if balance.value < 0]

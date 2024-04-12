@@ -143,7 +143,6 @@ ADMIN_PASSWORD="..."
 
 # Refactor
 
-- balance and loot-history should have an own data class
 - unify methods
   - create_loot_log, update_loot_log, fix_loot_log
 - unify data validation on export upload and loot editor changes

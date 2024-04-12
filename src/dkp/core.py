@@ -150,6 +150,17 @@ class RaidChecklist(BaseModel):
         return self.video_recording and self.logs_recording and self.rclc_installed and self.consumables
 
 
+class Balance(BaseModel):
+    name: str
+    value: int
+    income: int
+    cost: int
+    characters: list[str]
+
+    def to_dict(self):
+        return self.dict()
+
+
 def to_raw_loot_list(content: str) -> list[RawLoot]:
     """Converts json str into raw loot lists."""
     loot_list = json.loads(content)
