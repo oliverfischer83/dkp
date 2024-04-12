@@ -30,12 +30,12 @@ log = logging.getLogger(__name__)
 
 USER_NAME = "oliverfischer83"
 REPO_NAME = "dkp"
-BRANCH = "develop" if is_local_development() else "main"
 
 
 class GithubClient:
 
-    def __init__(self, token):
+    def __init__(self, branch_name, token):
+        self._branch_name = branch_name
         self._github_api = Github(auth=Auth.Token(token))
         self._repo_api = None
         self._raid_checklist = None
@@ -90,7 +90,7 @@ class GithubClient:
             for season in self.season_list:
                 dir_path = _get_loot_log_dir_path(season.name)
                 try:
-                    file_list = self.repo_api.get_contents(dir_path, ref=BRANCH)
+                    file_list = self.repo_api.get_contents(dir_path, ref=self._branch_name)
                 except UnknownObjectException:
                     continue  # no loot logs for this season yet
                 if isinstance(file_list, ContentFile):
@@ -113,13 +113,13 @@ class GithubClient:
             return [clazz(**entry) for entry in json.loads(content)]
 
     def _get_data_file_hash(self, file_path: str) -> str:
-        result = self.repo_api.get_contents(file_path, ref=BRANCH)
+        result = self.repo_api.get_contents(file_path, ref=self._branch_name)
         if isinstance(result, list):
             raise TypeError(f"Multiple files found for {file_path}")
         return result.sha
 
     def _get_data_file_content(self, file_path: str) -> str:
-        result = self.repo_api.get_contents(file_path, ref=BRANCH)
+        result = self.repo_api.get_contents(file_path, ref=self._branch_name)
         if isinstance(result, list):
             raise TypeError(f"Multiple files found for {file_path}")
         return result.decoded_content.decode("utf-8")
@@ -202,17 +202,17 @@ class GithubClient:
     def _update_player_list(self):
         file_path = _get_player_file()
         file_hash = self._get_data_file_hash(file_path)
-        self.repo_api.update_file(file_path, "Update", data_to_json(self.player_list, "name"), file_hash, BRANCH)
+        self.repo_api.update_file(file_path, "Update", data_to_json(self.player_list, "name"), file_hash, self._branch_name)
 
     def _update_raid_list(self):
         file_path = _get_raid_file()
         file_hash = self._get_data_file_hash(file_path)
-        self.repo_api.update_file(file_path, "Update", data_to_json(self.raid_list, "date"), file_hash, BRANCH)
+        self.repo_api.update_file(file_path, "Update", data_to_json(self.raid_list, "date"), file_hash, self._branch_name)
 
     def _update_season_list(self):
         file_path = _get_season_file()
         file_hash = self._get_data_file_hash(file_path)
-        self.repo_api.update_file(file_path, "Update", data_to_json(self.season_list, "id"), file_hash, BRANCH)
+        self.repo_api.update_file(file_path, "Update", data_to_json(self.season_list, "id"), file_hash, self._branch_name)
 
     def get_season_loot_raw(self, season: Season) -> list[RawLoot]:
         if season not in self.raw_loot_list:
@@ -335,13 +335,13 @@ class GithubClient:
 
     def create_loot_log(self, content: list[RawLoot], raid_day: str):
         def _create_loot_log(file_path: str, content: str, commit_msg: str):
-            self.repo_api.create_file(file_path, commit_msg, content, BRANCH)
+            self.repo_api.create_file(file_path, commit_msg, content, self._branch_name)
 
         self._handle_github_file(content, raid_day, "Create", _create_loot_log)
 
     def _update_loot_log(self, file_path: str, content: str, commit_msg: str):
         file_hash = self._get_data_file_hash(file_path)
-        self.repo_api.update_file(file_path, commit_msg, content, file_hash, BRANCH)
+        self.repo_api.update_file(file_path, commit_msg, content, file_hash, self._branch_name)
 
     def update_loot_log(self, content: list[RawLoot], raid_day: str):
         self._handle_github_file(content, raid_day, "Update", self._update_loot_log)
@@ -362,7 +362,7 @@ class GithubClient:
         file_path = _get_balance_fallback_file()
         file_hash = self._get_data_file_hash(file_path)
         content = dict_to_csv(balance)
-        self.repo_api.update_file(file_path, "Update", content, file_hash, BRANCH)
+        self.repo_api.update_file(file_path, "Update", content, file_hash, self._branch_name)
 
 
 def _get_raid_file():

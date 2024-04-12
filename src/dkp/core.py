@@ -18,6 +18,13 @@ def is_local_development() -> bool:
     return os.environ.get("LOCAL_DEVELOPMENT", "false").lower() == "true"
 
 
+def get_evn_var(name: str):
+    value = os.environ.get(name)
+    if not value:
+        raise ValueError(f"{name} not set in environment variables.")
+    return value
+
+
 class Loot(BaseModel):
     id: str
     timestamp: str

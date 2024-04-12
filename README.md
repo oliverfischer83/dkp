@@ -75,7 +75,7 @@ python -m streamlit run src/dkp/01_Guthaben.py
 - login to steamlit cloud: https://share.streamlit.io/
 - new app
   - repo: `oliverfischer83/dkp`
-  - branch: `main`
+  - branch: `develop`, `release`, `main`
   - file: `src/dkp/01_Guthaben.py`
   - url: `dkp-vipers.streamlit.app`
   - advanced:
@@ -87,6 +87,7 @@ WCL_CLIENT_ID="..."
 WCL_CLIENT_SECRET="..."
 GITHUB_CLIENT_TOKEN="..."
 ADMIN_PASSWORD="..."
+BRANCH_NAME="..."  # develop, release, main
 ```
 
 ## Release process
@@ -95,7 +96,6 @@ ADMIN_PASSWORD="..."
 - merge `develop` into `release` branch
 - create pull requests from `release` into `main` branch
 - clean up `release` branch, no test data/files, keep ...
-  - /data
   - /media
   - /src
   - config.yml
@@ -151,7 +151,6 @@ ADMIN_PASSWORD="..."
   - or show warning and abort if m+ logs in report
 - find other cloud hosting as backup
 - translation of bosses and raids into german
-- release branch should work on its own data, not on main
 
 # Statistics
 

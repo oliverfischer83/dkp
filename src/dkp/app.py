@@ -15,6 +15,7 @@ from core import (
     FixEntry,
     RaidChecklist,
     Season,
+    get_evn_var,
     is_local_development,
     list_to_csv,
     to_date,
@@ -30,15 +31,16 @@ log = logging.getLogger(__name__)
 PROJECT_DATA = toml.load("pyproject.toml")
 PROJECT_VERSION = PROJECT_DATA["project"]["version"]
 
-WCL_CLIENT_ID = os.environ.get("WCL_CLIENT_ID")
-WCL_CLIENT_SECRET = os.environ.get("WCL_CLIENT_SECRET")
-GITHUB_TOKEN = os.environ.get("GITHUB_CLIENT_TOKEN")
-ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
+WCL_CLIENT_ID = get_evn_var("WCL_CLIENT_ID")
+WCL_CLIENT_SECRET = get_evn_var("WCL_CLIENT_SECRET")
+GITHUB_TOKEN = get_evn_var("GITHUB_CLIENT_TOKEN")
+ADMIN_PASSWORD = get_evn_var("ADMIN_PASSWORD")
+BRANCH_NAME = get_evn_var("BRANCH_NAME")
 
 CONFIG = Config()
 
 WCL_CLIENT = WclClient(CONFIG.auth.wcl_client, WCL_CLIENT_ID, WCL_CLIENT_SECRET)
-DATABASE = GithubClient(GITHUB_TOKEN)
+DATABASE = GithubClient(BRANCH_NAME, GITHUB_TOKEN)
 
 
 INITIAL_BALANCE = 100
