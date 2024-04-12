@@ -178,7 +178,7 @@ class GithubClient:
         self._update_season_list()
 
     def delete_season(self, season_desc: str):
-        season = next((s for s in self.season_list if s.name == season_desc))
+        season = next((s for s in self.season_list if s.desc == season_desc))
         self.season_list.remove(season)
         self._update_season_list()
 
