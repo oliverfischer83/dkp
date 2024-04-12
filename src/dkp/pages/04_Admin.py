@@ -73,7 +73,7 @@ def build_sidebar():
         st.write("")
         st.write("")
         st.write("")
-        st.write("###### Version: 0.1.0")
+        st.write(f"###### Version: {app.PROJECT_VERSION}")
 
 
 def build_notification_area():

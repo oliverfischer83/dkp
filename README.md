@@ -66,7 +66,7 @@ WCL_CLIENT_SECRET=...
 
 ```bash
 cd ~/Projects/private/dkp
-python -m streamlit run src/dkp/01_overview.py
+python -m streamlit run src/dkp/01_Guthaben.py
 ```
 
 ## Deployment on streamlit community cloud
@@ -89,13 +89,14 @@ ADMIN_PASSWORD="..."
 ```
 
 ## Release process
+
+- set correct version in `pyproject.toml` file, e.g. `0.1.0`
 - merge `develop` into `release` branch
-- create pull requests for `release` into `main` branch
+- create pull requests from `release` into `main` branch
 - clean up `release` branch (no test data/files)
 - test deploy on streamlit cloud
 - squash commit
-- tag commit, e.g. `v1.0.0`
-
+- create [new release](https://github.com/oliverfischer83/dkp/releases/new)
 
 # TODO
 
@@ -123,7 +124,6 @@ ADMIN_PASSWORD="..."
 - translation of bosses and raids into german
 - protection for delete object
 
-
 # Fallback Excel list
 
 - after each raid, generate table entries which can be used within excel as a fallback solution
@@ -140,7 +140,12 @@ ADMIN_PASSWORD="..."
   - create_loot_log, update_loot_log, fix_loot_log
 - unify data validation on export upload and loot editor changes
 
-# Release info
+# Statistics
 
-- tagging releases
-- show release info bottom of side pane
+- items
+  - raid itemlevel over time
+  - highest rolled
+  - lowest drop rate
+  - number of trash, number of rolled
+- raid size over time
+- boss kill timer over time

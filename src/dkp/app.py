@@ -8,6 +8,7 @@ import logging
 import os
 from typing import Any
 
+import toml
 from config_mapper import Config
 from core import (
     Fix,
@@ -26,9 +27,8 @@ from warcraftlogs_client import WclClient
 load_dotenv()
 log = logging.getLogger(__name__)
 
-
-INITIAL_BALANCE = 100
-ATTENDANCE_BONUS = 50
+PROJECT_DATA = toml.load("pyproject.toml")
+PROJECT_VERSION = PROJECT_DATA["project"]["version"]
 
 WCL_CLIENT_ID = os.environ.get("WCL_CLIENT_ID")
 WCL_CLIENT_SECRET = os.environ.get("WCL_CLIENT_SECRET")
@@ -39,6 +39,10 @@ CONFIG = Config()
 
 WCL_CLIENT = WclClient(CONFIG.auth.wcl_client, WCL_CLIENT_ID, WCL_CLIENT_SECRET)
 DATABASE = GithubClient(GITHUB_TOKEN)
+
+
+INITIAL_BALANCE = 100
+ATTENDANCE_BONUS = 50
 
 
 def get_admin_password():
