@@ -43,43 +43,9 @@ class WclClient:
         }
 
     def get_data(self, query: str, **kwargs):
-        log.debug("get_data")
         data = {"query": query, "variables": kwargs}
         response = requests.get(self.api_endpoint, headers=self.headers, json=data, timeout=10)
-        return response.json()
-
-    def get_attending_character_list(self, report_id):
-        log.debug("get_raid_details")
-        # TODO test report having m+ fights, expect m+ fights not considered
-        query = """query($code: String) {
-            reportData {
-                report(code: $code) {
-                    code
-                    title
-                    startTime
-                    fights(translate: true, killType: Encounters) {
-                        id
-                        size
-                        name
-                        difficulty
-                        friendlyPlayers
-                        encounterID
-                        startTime
-                        endTime
-                    }
-                    masterData(translate: true) {
-                        lang
-                        actors(type: "Player") {
-                            name
-                            server
-                            id
-                        }
-                    }
-                }
-            }
-        }
-        """
-        response_json = self.get_data(query, code=report_id)
+        response_json = response.json()
 
         try:
             errors = response_json["errors"]
@@ -87,8 +53,28 @@ class WclClient:
         except KeyError:
             pass # no errors
 
-        with open("warcraftlogs-query-response.json", "w") as file:
-            json.dump(response_json, file)
+        return response_json
+
+    def get_attending_character_list(self, report_id):
+        query = """query($code: String) {
+            reportData {
+                report(code: $code) {
+                    fights(translate: true, killType: Encounters) {
+                        size
+                        friendlyPlayers
+                    }
+                    masterData(translate: true) {
+                        actors(type: "Player") {
+                            id
+                            name
+                            server
+                        }
+                    }
+                }
+            }
+        }
+        """
+        response_json = self.get_data(query, code=report_id)
 
         all_fights = response_json["data"]["reportData"]["report"]["fights"]
 
@@ -104,6 +90,7 @@ class WclClient:
                 char_list.append(f"{char['name']}-{char['server']}")
 
         return char_list
+
 
     def get_example_for_zones(self):
         query = """query {
@@ -140,8 +127,7 @@ class WclClient:
             }
         }
         """
-        with open("data/example/wcl-zones.json", "w") as file:
-            json.dump(self.get_data(query), file)
+        save_example_to_file("wcl-zones", self.get_data(query))
 
 
     def get_example_for_rate_limits(self):
@@ -153,8 +139,7 @@ class WclClient:
             }
         }
         """
-        with open("data/example/wcl-rate-limits.json", "w") as file:
-            json.dump(self.get_data(query), file)
+        save_example_to_file("wcl-rate-limits", self.get_data(query))
 
 
     def get_example_for_report(self, report_id):
@@ -187,8 +172,7 @@ class WclClient:
             }
         }
         """
-        with open("data/example/wcl-report.json", "w") as file:
-            json.dump(self.get_data(query, code=report_id), file)
+        save_example_to_file("wcl-report", self.get_data(query, code=report_id))
 
 
     def get_example_for_player_details(self, report_id):
@@ -207,5 +191,49 @@ class WclClient:
             }
         }
         """
-        with open("data/example/wcl-player_details.json", "w") as file:
-            json.dump(self.get_data(query, code=report_id), file)
+        save_example_to_file("wcl-player_details", self.get_data(query, code=report_id))
+
+
+    def get_example_for_debugging_report(self, report_id):
+        query = """query($code: String) {
+            reportData {
+                report(code: $code) {
+                    fights(translate: true, killType: Encounters) {
+                        size
+                        friendlyPlayers
+                    }
+                    masterData(translate: true) {
+                        actors(type: "Player") {
+                            id
+                            name
+                            server
+                        }
+                    }
+                }
+            }
+        }
+        """
+
+        response_json = self.get_data(query, code=report_id)
+
+        raid_fights = [fight for fight in response_json["data"]["reportData"]["report"]["fights"] if fight["size"] >= 9] # assuming raid size >= 9
+
+        char_id_list = []
+        for fight in raid_fights:
+            char_id_list.extend(fight["friendlyPlayers"])
+        char_id_list = list(set(char_id_list))  # distinct
+
+        all_chars = response_json["data"]["reportData"]["report"]["masterData"]["actors"]
+        char_list = []
+        for char in all_chars:
+            if char["id"] in char_id_list:
+                char_list.append(f"{char['name']}-{char['server']}")
+
+
+        save_example_to_file("wcl-report-debug", char_list)
+
+
+
+def save_example_to_file(file_name: str, content):
+    with open(f"data/example/{file_name}.json", "w", encoding="utf-8") as file:
+        json.dump(content, file)

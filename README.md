@@ -142,9 +142,6 @@ BRANCH_NAME="..."  # develop, release, main
 
 ## misc
 
-- fix: m+ chars in raid report, test with report vF2C8crAdja1QKhD
-  - or show warning and abort if m+ logs in report
-  - ignore all fights[x].size <= 9
 - find other cloud hosting as backup
 - translation of bosses and raids into german
 

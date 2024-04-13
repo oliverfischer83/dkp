@@ -418,17 +418,21 @@ def find_player_with_negative_balance(balance_list: list[Balance]) -> list[str]:
     return [balance.name for balance in balance_list if balance.value < 0]
 
 
-def get_zones():
+def get_example_zones():
     return WCL_CLIENT.get_example_for_zones()
 
 
-def get_rate_limits():
+def get_example_rate_limits():
     return WCL_CLIENT.get_example_for_rate_limits()
 
 
-def get_report(code: str):
+def get_example_report(code: str):
     return WCL_CLIENT.get_example_for_report(code)
 
 
-def get_player_details(code: str):
+def get_example_player_details(code: str):
     return WCL_CLIENT.get_example_for_player_details(code)
+
+
+def get_example_report_debug(code: str):
+    return WCL_CLIENT.get_example_for_debugging_report(code)
