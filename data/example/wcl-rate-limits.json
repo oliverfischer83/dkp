@@ -1,0 +1,9 @@
+{
+  "data": {
+    "rateLimitData": {
+      "limitPerHour": 3600,
+      "pointsSpentThisHour": 1,
+      "pointsResetIn": 3600
+    }
+  }
+}

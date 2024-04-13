@@ -8,6 +8,7 @@ see request oauth doc: https://requests-oauthlib.readthedocs.io/en/latest/oauth2
 
 # pylint: disable=missing-module-docstring,missing-function-docstring,missing-class-docstring
 
+import json
 import logging
 
 import requests
@@ -66,7 +67,8 @@ class WclClient:
                         startTime
                         endTime
                     }
-                    masterData {
+                    masterData(translate: true) {
+                        lang
                         actors(type: "Player") {
                             name
                             server
@@ -85,6 +87,9 @@ class WclClient:
         except KeyError:
             pass # no errors
 
+        with open("warcraftlogs-query-response.json", "w") as file:
+            json.dump(response_json, file)
+
         all_fights = response_json["data"]["reportData"]["report"]["fights"]
 
         char_id_list = []
@@ -99,3 +104,108 @@ class WclClient:
                 char_list.append(f"{char['name']}-{char['server']}")
 
         return char_list
+
+    def get_example_for_zones(self):
+        query = """query {
+            worldData {
+                expansions {
+                    id
+                    name
+                    zones {
+                        id
+                        name
+                        difficulties {
+                            id
+                            name
+                            sizes
+                        }
+                        encounters {
+                            id
+                            name
+                            journalID
+                        }
+                        brackets {
+                            type
+                            min
+                            max
+                            bucket
+                        }
+                        partitions {
+                            id
+                            name
+                            compactName
+                        }
+                    }
+                }
+            }
+        }
+        """
+        with open("data/example/wcl-zones.json", "w") as file:
+            json.dump(self.get_data(query), file)
+
+
+    def get_example_for_rate_limits(self):
+        query = """query {
+            rateLimitData {
+                limitPerHour
+                pointsSpentThisHour
+                pointsResetIn
+            }
+        }
+        """
+        with open("data/example/wcl-rate-limits.json", "w") as file:
+            json.dump(self.get_data(query), file)
+
+
+    def get_example_for_report(self, report_id):
+        query = """query($code: String) {
+            reportData {
+                report(code: $code) {
+                    code
+                    title
+                    startTime
+                    fights(translate: true, killType: Encounters) {
+                        id
+                        size
+                        name
+                        averageItemLevel
+                        difficulty
+                        friendlyPlayers
+                        encounterID
+                        startTime
+                        endTime
+                    }
+                    masterData(translate: true) {
+                        lang
+                        actors(type: "Player") {
+                            name
+                            server
+                            id
+                        }
+                    }
+                }
+            }
+        }
+        """
+        with open("data/example/wcl-report.json", "w") as file:
+            json.dump(self.get_data(query, code=report_id), file)
+
+
+    def get_example_for_player_details(self, report_id):
+        query = """query($code: String) {
+            reportData {
+                report(code: $code) {
+                    code
+                    title
+                    startTime
+                    playerDetails(fightIDs: [4])
+                    fights(translate: true, killType: Encounters) {
+                        averageItemLevel
+                    }
+                    table(fightIDs: [4])
+                }
+            }
+        }
+        """
+        with open("data/example/wcl-player_details.json", "w") as file:
+            json.dump(self.get_data(query, code=report_id), file)

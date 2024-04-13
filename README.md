@@ -23,7 +23,7 @@
 - clients don't contain any business logic
 - data formats
   - dataframes for views
-  - dataframes and list of dics for transformation/data-manipulation
+  - dataframes and list of dicts for transformation/data-manipulation
   - json as storage format of data files (should be converted right before pushing to github.com)
 
 ```mermaid
@@ -144,6 +144,7 @@ BRANCH_NAME="..."  # develop, release, main
 
 - fix: m+ chars in raid report, test with report vF2C8crAdja1QKhD
   - or show warning and abort if m+ logs in report
+  - ignore all fights[x].size <= 9
 - find other cloud hosting as backup
 - translation of bosses and raids into german
 
@@ -157,3 +158,7 @@ BRANCH_NAME="..."  # develop, release, main
 - raid size over time
 - boss kill timer over time
 
+
+- try to get infos about
+  - characterData: CharacterData
+  - gameData: GameData

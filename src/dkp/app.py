@@ -416,3 +416,19 @@ def find_past_raids_without_attendees() -> list[str]:
 
 def find_player_with_negative_balance(balance_list: list[Balance]) -> list[str]:
     return [balance.name for balance in balance_list if balance.value < 0]
+
+
+def get_zones():
+    return WCL_CLIENT.get_example_for_zones()
+
+
+def get_rate_limits():
+    return WCL_CLIENT.get_example_for_rate_limits()
+
+
+def get_report(code: str):
+    return WCL_CLIENT.get_example_for_report(code)
+
+
+def get_player_details(code: str):
+    return WCL_CLIENT.get_example_for_player_details(code)
