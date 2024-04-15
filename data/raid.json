@@ -80,172 +80,49 @@
     "id": 4,
     "date": "2023-11-26",
     "report_id": "NxD74H2FGLb3mVRh",
-    "player": [
-      "Dennis",
-      "Dimi",
-      "Joseph",
-      "Kalle",
-      "Kevin",
-      "Marco",
-      "Marc",
-      "Micha",
-      "Mischa",
-      "Olli",
-      "Stephan",
-      "Tanja",
-      "Thomas",
-      "Tobi",
-      "Tom",
-      "Yasmin"
-    ]
+    "player": ["Dennis", "Dimi", "Joseph", "Kalle", "Kevin", "Marco", "Marc", "Micha", "Mischa", "Olli", "Stephan", "Tanja", "Thomas", "Tobi", "Tom", "Yasmin"]
   },
   {
     "id": 5,
     "date": "2023-11-29",
     "report_id": "B6JXPT3Ycjqt9ND1",
-    "player": [
-      "Dave",
-      "Dimi",
-      "Franzi",
-      "Joseph",
-      "Kalle",
-      "Kevin",
-      "Leon",
-      "Lutz",
-      "Marc",
-      "Micha",
-      "Mischa",
-      "Olli",
-      "Tanja",
-      "Thomas",
-      "Tom",
-      "Yasmin"
-    ]
+    "player": ["Dave", "Dimi", "Franzi", "Joseph", "Kalle", "Kevin", "Leon", "Lutz", "Marc", "Micha", "Mischa", "Olli", "Tanja", "Thomas", "Tom", "Yasmin"]
   },
   {
     "id": 6,
     "date": "2023-12-03",
     "report_id": "awWJnDtgmVb8AxH4",
-    "player": [
-      "Dimi",
-      "Franzi",
-      "Joseph",
-      "Kalle",
-      "Kevin",
-      "Leon",
-      "Lutz",
-      "Marc",
-      "Maxi",
-      "Micha",
-      "Olli",
-      "Stephan",
-      "Tanja",
-      "Tobi",
-      "Tom",
-      "Yasmin"
-    ]
+    "player": ["Dimi", "Franzi", "Joseph", "Kalle", "Kevin", "Leon", "Lutz", "Marc", "Maxi", "Micha", "Olli", "Stephan", "Tanja", "Tobi", "Tom", "Yasmin"]
   },
   {
     "id": 7,
     "date": "2023-12-06",
     "report_id": "QWnZwTKz8PyApxhd",
-    "player": [
-      "Carmen",
-      "Christoph",
-      "Dimi",
-      "Franzi",
-      "Joseph",
-      "Kalle",
-      "Kevin",
-      "Marc",
-      "Micha",
-      "Olli",
-      "Stephan",
-      "Tanja",
-      "Thomas",
-      "Tom",
-      "Yasmin"
-    ]
+    "player": ["Carmen", "Christoph", "Dimi", "Franzi", "Joseph", "Kalle", "Kevin", "Marc", "Micha", "Olli", "Stephan", "Tanja", "Thomas", "Tom", "Yasmin"]
   },
   {
     "id": 8,
     "date": "2023-12-10",
     "report_id": "mQYJGTMj2dzXPVyr",
-    "player": [
-      "Dimi",
-      "Franzi",
-      "Joseph",
-      "Kalle",
-      "Lutz",
-      "Marco",
-      "Marc",
-      "Micha",
-      "Olli",
-      "Stephan",
-      "Tanja",
-      "Thomas",
-      "Tobi",
-      "Tom"
-    ]
+    "player": ["Dimi", "Franzi", "Joseph", "Kalle", "Lutz", "Marco", "Marc", "Micha", "Olli", "Stephan", "Tanja", "Thomas", "Tobi", "Tom"]
   },
   {
     "id": 9,
     "date": "2023-12-13",
     "report_id": "6XfmYNygvqV84Htz",
-    "player": [
-      "Christoph",
-      "Dave",
-      "Dimi",
-      "Joseph",
-      "Kalle",
-      "Lutz",
-      "Marco",
-      "Marc",
-      "Micha",
-      "Olli",
-      "Stephan",
-      "Tanja",
-      "Thomas",
-      "Tom"
-    ]
+    "player": ["Christoph", "Dave", "Dimi", "Joseph", "Kalle", "Lutz", "Marco", "Marc", "Micha", "Olli", "Stephan", "Tanja", "Thomas", "Tom"]
   },
   {
     "id": 10,
     "date": "2023-12-17",
     "report_id": "VXmAQFxvdk2cRDrt",
-    "player": [
-      "Dimi",
-      "Kalle",
-      "Lutz",
-      "Marc",
-      "Micha",
-      "Olli",
-      "Stephan",
-      "Tanja",
-      "Thomas",
-      "Tobi",
-      "Tom"
-    ]
+    "player": ["Dimi", "Kalle", "Lutz", "Marc", "Micha", "Olli", "Stephan", "Tanja", "Thomas", "Tobi", "Tom"]
   },
   {
     "id": 11,
     "date": "2023-12-20",
     "report_id": "naMxQhwHjqZB3d2y",
-    "player": [
-      "Christoph",
-      "Dimi",
-      "Jessica",
-      "Kalle",
-      "Lutz",
-      "Marco",
-      "Marc",
-      "Micha",
-      "Olli",
-      "Stephan",
-      "Tanja",
-      "Thomas",
-      "Tobi"
-    ]
+    "player": ["Christoph", "Dimi", "Jessica", "Kalle", "Lutz", "Marco", "Marc", "Micha", "Olli", "Stephan", "Tanja", "Thomas", "Tobi"]
   },
   {
     "id": 12,
@@ -298,42 +175,13 @@
     "id": 14,
     "date": "2024-01-07",
     "report_id": "8B2ZXfVaYTqWzk7d",
-    "player": [
-      "Carmen",
-      "Christoph",
-      "Dimi",
-      "Kalle",
-      "Kevin",
-      "Lutz",
-      "Marc",
-      "Micha",
-      "Olli",
-      "Stephan",
-      "Tanja",
-      "Thomas",
-      "Tobi",
-      "Yasmin"
-    ]
+    "player": ["Carmen", "Christoph", "Dimi", "Kalle", "Kevin", "Lutz", "Marc", "Micha", "Olli", "Stephan", "Tanja", "Thomas", "Tobi", "Yasmin"]
   },
   {
     "id": 15,
     "date": "2024-01-10",
     "report_id": "CMDTYL4HrFzwmjXR",
-    "player": [
-      "Carmen",
-      "Christoph",
-      "Kalle",
-      "Kevin",
-      "Leon",
-      "Lutz",
-      "Marco",
-      "Marc",
-      "Micha",
-      "Olli",
-      "Stephan",
-      "Thomas",
-      "Yasmin"
-    ]
+    "player": ["Carmen", "Christoph", "Kalle", "Kevin", "Leon", "Lutz", "Marco", "Marc", "Micha", "Olli", "Stephan", "Thomas", "Yasmin"]
   },
   {
     "id": 16,
@@ -411,210 +259,66 @@
     "id": 19,
     "date": "2024-01-24",
     "report_id": "2nMYkQfm1GCt6pbV",
-    "player": [
-      "Carmen",
-      "Christoph",
-      "Kalle",
-      "Kevin",
-      "Leon",
-      "Marco",
-      "Marc",
-      "Micha",
-      "Olli",
-      "Stephan",
-      "Tanja",
-      "Thomas",
-      "Yasmin"
-    ]
+    "player": ["Carmen", "Christoph", "Kalle", "Kevin", "Leon", "Marco", "Marc", "Micha", "Olli", "Stephan", "Tanja", "Thomas", "Yasmin"]
   },
   {
     "id": 20,
     "date": "2024-01-28",
     "report_id": "8gWbwtCPdQqKY72j",
-    "player": [
-      "Carmen",
-      "Christoph",
-      "Joseph",
-      "Kalle",
-      "Kevin",
-      "Lutz",
-      "Marco",
-      "Marc",
-      "Micha",
-      "Olli",
-      "Stephan",
-      "Thomas",
-      "Tobi",
-      "Yasmin"
-    ]
+    "player": ["Carmen", "Christoph", "Joseph", "Kalle", "Kevin", "Lutz", "Marco", "Marc", "Micha", "Olli", "Stephan", "Thomas", "Tobi", "Yasmin"]
   },
   {
     "id": 21,
     "date": "2024-01-31",
     "report_id": "FgtBdN9Kvmp1xknb",
-    "player": [
-      "Carmen",
-      "Christoph",
-      "Joseph",
-      "Kalle",
-      "Kevin",
-      "Lutz",
-      "Marco",
-      "Marc",
-      "Micha",
-      "Olli",
-      "Stephan",
-      "Tanja",
-      "Thomas",
-      "Yasmin"
-    ]
+    "player": ["Carmen", "Christoph", "Joseph", "Kalle", "Kevin", "Lutz", "Marco", "Marc", "Micha", "Olli", "Stephan", "Tanja", "Thomas", "Yasmin"]
   },
   {
     "id": 22,
     "date": "2024-02-07",
     "report_id": "2rCNvzQP9yJwWkdg",
-    "player": [
-      "Carmen",
-      "Christoph",
-      "Joseph",
-      "Kalle",
-      "Kevin",
-      "Lutz",
-      "Marco",
-      "Micha",
-      "Olli",
-      "Stephan",
-      "Thomas",
-      "Tobi"
-    ]
+    "player": ["Carmen", "Christoph", "Joseph", "Kalle", "Kevin", "Lutz", "Marco", "Micha", "Olli", "Stephan", "Thomas", "Tobi"]
   },
   {
     "id": 23,
     "date": "2024-02-18",
     "report_id": "BYPjJwazMCxNTVbp",
-    "player": [
-      "Carmen",
-      "Christoph",
-      "Janine",
-      "Kalle",
-      "Kevin",
-      "Lutz",
-      "Marco",
-      "Micha",
-      "Olli",
-      "Tanja",
-      "Thomas",
-      "Yasmin"
-    ]
+    "player": ["Carmen", "Christoph", "Janine", "Kalle", "Kevin", "Lutz", "Marco", "Micha", "Olli", "Tanja", "Thomas", "Yasmin"]
   },
   {
     "id": 24,
     "date": "2024-02-21",
     "report_id": "A9wgWR6ckLtyNaC3",
-    "player": [
-      "Carmen",
-      "Christoph",
-      "Janine",
-      "Joseph",
-      "Kalle",
-      "Kevin",
-      "Lutz",
-      "Marco",
-      "Micha",
-      "Olli",
-      "Tanja",
-      "Thomas",
-      "Tobi"
-    ]
+    "player": ["Carmen", "Christoph", "Janine", "Joseph", "Kalle", "Kevin", "Lutz", "Marco", "Micha", "Olli", "Tanja", "Thomas", "Tobi"]
   },
   {
     "id": 25,
     "date": "2024-02-28",
     "report_id": "1KkpanNrx4hgfLvM",
-    "player": [
-      "Carmen",
-      "Christoph",
-      "Kalle",
-      "Kevin",
-      "Lutz",
-      "Marco",
-      "Micha",
-      "Olli",
-      "Stephan",
-      "Tanja",
-      "Yasmin"
-    ]
+    "player": ["Carmen", "Christoph", "Kalle", "Kevin", "Lutz", "Marco", "Micha", "Olli", "Stephan", "Tanja", "Yasmin"]
   },
   {
     "id": 26,
     "date": "2024-03-10",
     "report_id": "1G9FmMY7xvwD2Lpq",
-    "player": [
-      "Christoph",
-      "Jan",
-      "Joseph",
-      "Kalle",
-      "Kevin",
-      "Lutz",
-      "Marco",
-      "Micha",
-      "Olli",
-      "Thomas",
-      "Tobi",
-      "Yasmin"
-    ]
+    "player": ["Christoph", "Jan", "Joseph", "Kalle", "Kevin", "Lutz", "Marco", "Micha", "Olli", "Thomas", "Tobi", "Yasmin"]
   },
   {
     "id": 27,
     "date": "2024-03-17",
     "report_id": "cxQAbgTXJ2Z8yjPt",
-    "player": [
-      "Carmen",
-      "Christoph",
-      "Jan",
-      "Kalle",
-      "Kevin",
-      "Lutz",
-      "Marco",
-      "Nadja",
-      "Olli",
-      "Thomas",
-      "Tobi",
-      "Yasmin"
-    ]
+    "player": ["Carmen", "Christoph", "Jan", "Kalle", "Kevin", "Lutz", "Marco", "Nadja", "Olli", "Thomas", "Tobi", "Yasmin"]
   },
   {
     "id": 28,
     "date": "2024-03-24",
     "report_id": "L9ZrWwPcBGht7dpN",
-    "player": [
-      "Carmen",
-      "Christoph",
-      "Joseph",
-      "Kalle",
-      "Kevin",
-      "Marco",
-      "Micha",
-      "Olli",
-      "Thomas",
-      "Tobi",
-      "Yasmin"
-    ]
+    "player": ["Carmen", "Christoph", "Joseph", "Kalle", "Kevin", "Marco", "Micha", "Olli", "Thomas", "Tobi", "Yasmin"]
   },
   {
     "id": 29,
     "date": "2024-04-12",
     "report_id": "L9ZrWwPcBGht7dpN",
-    "player": [
-      "Christoph",
-      "Kalle",
-      "Kevin",
-      "Marco",
-      "Micha",
-      "Olli",
-      "Thomas",
-      "Tobi",
-      "Yasmin"
-    ]
+    "player": ["Christoph", "Kalle", "Kevin", "Marco", "Micha", "Olli", "Thomas", "Tobi", "Yasmin"]
   }
 ]

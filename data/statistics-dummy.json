@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "report_id": "...",
+    "name": "Amirdrassil, the Dream's Hope",
+    "fights": [
+      {
+        "id": 1,
+        "size": 15,
+        "boss_name": "Gnarlroot",
+        "difficulty": "normal",
+        "raid_item_level": 441.32,
+        "start_ts": "2019-07-01T00:00:00Z",
+        "end_ts": "2019-07-01T00:00:00Z"
+      },
+      {
+        "id": 2,
+        "size": 15,
+        "boss_name": "Igira the Cruel",
+        "difficulty": "normal",
+        "raid_item_level": 441.32,
+        "start_ts": "2019-07-01T00:00:00Z",
+        "end_ts": "2019-07-01T00:00:00Z"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "report_id": "...",
+    "name": "The Eternal Palace",
+    "fights": [
+      {
+        "id": 3,
+        "size": 15,
+        "boss_name": "Abyssal Commander Sivara",
+        "difficulty": "normal",
+        "raid_item_level": 441.32,
+        "start_ts": "2019-07-01T00:00:00Z",
+        "end_ts": "2019-07-01T00:00:00Z"
+      },
+      {
+        "id": 4,
+        "size": 15,
+        "boss_name": "Blackwater Behemoth",
+        "difficulty": "normal",
+        "raid_item_level": 441.32,
+        "start_ts": "2019-07-01T00:00:00Z",
+        "end_ts": "2019-07-01T00:00:00Z"
+      }
+    ]
+  }
+]

@@ -12,9 +12,11 @@ import json
 import logging
 
 import requests
-from core import list_to_csv
+from core import FightStats, RaidStats, list_to_csv
 from oauthlib.oauth2 import BackendApplicationClient
 from requests_oauthlib import OAuth2Session
+
+from github_client import data_to_json
 
 log = logging.getLogger(__name__)
 
@@ -198,15 +200,26 @@ class WclClient:
         query = """query($code: String) {
             reportData {
                 report(code: $code) {
+                    code
+                    title
+                    startTime
                     fights(translate: true, killType: Encounters) {
+                        id
                         size
+                        name
+                        averageItemLevel
+                        difficulty
                         friendlyPlayers
+                        encounterID
+                        startTime
+                        endTime
                     }
                     masterData(translate: true) {
+                        lang
                         actors(type: "Player") {
-                            id
                             name
                             server
+                            id
                         }
                     }
                 }
@@ -216,24 +229,27 @@ class WclClient:
 
         response_json = self.get_data(query, code=report_id)
 
-        raid_fights = [fight for fight in response_json["data"]["reportData"]["report"]["fights"] if fight["size"] >= 9] # assuming raid size >= 9
+        report = response_json["data"]["reportData"]["report"]
+        fights = [fight for fight in report["fights"] if fight["size"] >= 9] # assuming raid size >= 9
 
-        char_id_list = []
-        for fight in raid_fights:
-            char_id_list.extend(fight["friendlyPlayers"])
-        char_id_list = list(set(char_id_list))  # distinct
+        result = RaidStats(
+            id=0,
+            report_id=report["code"],
+            name=report["title"],
+            fights=[FightStats(
+                id=fight["id"],
+                size=fight["size"],
+                boss_name=fight["name"],
+                item_level=fight["averageItemLevel"],
+                difficulty=str(fight["difficulty"]),
+                duration=fight["endTime"] - fight["startTime"]
+            ) for fight in fights]
+        )
 
-        all_chars = response_json["data"]["reportData"]["report"]["masterData"]["actors"]
-        char_list = []
-        for char in all_chars:
-            if char["id"] in char_id_list:
-                char_list.append(f"{char['name']}-{char['server']}")
-
-
-        save_example_to_file("wcl-report-debug", char_list)
+        save_example_to_file("statistics", result)
 
 
 
 def save_example_to_file(file_name: str, content):
     with open(f"data/example/{file_name}.json", "w", encoding="utf-8") as file:
-        json.dump(content, file)
+        json.dump(data_to_json(content, "id"), file)

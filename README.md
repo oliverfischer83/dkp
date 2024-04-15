@@ -148,14 +148,10 @@ BRANCH_NAME="..."  # develop, release, main
 # Statistics
 
 - items
-  - raid itemlevel over time
-  - highest rolled
-  - lowest drop rate
-  - number of trash, number of rolled
-- raid size over time
-- boss kill timer over time
-
-
-- try to get infos about
-  - characterData: CharacterData
-  - gameData: GameData
+  - highest rolled                      # rc
+  - lowest drop rate                    # rc
+  - number of trash, number of rolled   # rc
+- raid
+  - raid itemlevel over time            # wcl
+  - boss kill timer over time           # wcl
+  - raid size over time                 # wcl

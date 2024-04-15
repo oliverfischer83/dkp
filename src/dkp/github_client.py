@@ -15,6 +15,7 @@ from core import (
     Player,
     Raid,
     RaidChecklist,
+    RaidStats,
     RawLoot,
     Season,
     csv_to_list,
@@ -396,7 +397,7 @@ def to_raw_loot_json(loot_list: list[RawLoot]) -> str:
     return _to_json(sorted_content)
 
 
-def data_to_json[T: (Player, Raid, Season)](model_list: list[T], sort_by: str) -> str:
+def data_to_json[T: (Player, Raid, Season, RaidStats)](model_list: list[T], sort_by: str) -> str:
     content = [model.model_dump() for model in model_list]
     sorted_content = sorted(content, key=lambda entry: entry[sort_by])
     return _to_json(sorted_content)

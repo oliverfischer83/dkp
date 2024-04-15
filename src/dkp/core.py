@@ -165,6 +165,23 @@ class Balance(BaseModel):
     characters: list[str]
 
 
+class FightStats(BaseModel):
+    id: int = 0
+    size: int
+    boss_name: str
+    difficulty: str
+    item_level: float
+    difficulty: str
+    duration: int
+
+
+class RaidStats(BaseModel):
+    id: int = 0
+    report_id: str
+    name: str
+    fights: list[FightStats]
+
+
 def to_raw_loot_list(content: str) -> list[RawLoot]:
     """Converts json str into raw loot lists."""
     loot_list = json.loads(content)
