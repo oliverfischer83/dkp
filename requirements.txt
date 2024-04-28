@@ -169,7 +169,9 @@ streamlit==1.32.2
 tenacity==8.2.3
     # via streamlit
 toml==0.10.2
-    # via streamlit
+    # via
+    #   dkp (pyproject.toml)
+    #   streamlit
 tomlkit==0.12.4
     # via pylint
 toolz==0.12.0

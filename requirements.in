@@ -5,3 +5,4 @@ requests-oauthlib~=2.0.0
 pydantic~=2.6.4
 python-dotenv~=1.0.1
 PyGithub~=2.3.0
+toml~=0.10.2

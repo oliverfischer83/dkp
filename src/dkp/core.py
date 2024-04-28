@@ -6,8 +6,8 @@ import datetime
 import json
 import os
 
-from pydantic import BaseModel, Field, ValidationInfo, field_validator
 import pytz
+from pydantic import BaseModel, Field, ValidationInfo, field_validator
 
 ORIGINAL = "original"
 CHANGE = "change"
@@ -16,6 +16,13 @@ CHANGE = "change"
 def is_local_development() -> bool:
     # used to speed up testing
     return os.environ.get("LOCAL_DEVELOPMENT", "false").lower() == "true"
+
+
+def get_evn_var(name: str):
+    value = os.environ.get(name)
+    if not value:
+        raise ValueError(f"{name} not set in environment variables.")
+    return value
 
 
 class Loot(BaseModel):
@@ -150,6 +157,31 @@ class RaidChecklist(BaseModel):
         return self.video_recording and self.logs_recording and self.rclc_installed and self.consumables
 
 
+class Balance(BaseModel):
+    name: str
+    value: int = 0
+    income: int = 0
+    cost: int = 0
+    characters: list[str]
+
+
+class FightStats(BaseModel):
+    id: int = 0
+    size: int
+    boss_name: str
+    difficulty: str
+    item_level: float
+    difficulty: str
+    duration: int
+
+
+class RaidStats(BaseModel):
+    id: int = 0
+    report_id: str
+    name: str
+    fights: list[FightStats]
+
+
 def to_raw_loot_list(content: str) -> list[RawLoot]:
     """Converts json str into raw loot lists."""
     loot_list = json.loads(content)
@@ -174,8 +206,12 @@ def csv_to_list(csv: str) -> list[str]:
     return [item.strip() for item in csv.split(",") if csv]  # "a, b, c" -> ["a", "b", "c"] and "" -> []
 
 
-def list_to_csv(list: list[str]) -> str:
-    return ", ".join(list)  # ["a", "b", "c"] -> "a, b, c"
+def list_to_csv(list_of_strings: list[str]) -> str:
+    return ", ".join(list_of_strings)  # ["a", "b", "c"] -> "a, b, c"
+
+
+def dict_to_csv(dict_: dict[str, str]) -> str:
+    return "\n".join([f"{key},{value}" for key, value in dict_.items()])  # {"a": "1", "b": "2", "c": "3"} -> "a,1\nb,2\nc,3"
 
 
 def today() -> str:
@@ -184,4 +220,4 @@ def today() -> str:
 
 def now() -> str:
     """Returns current time in Europe/Berlin timezone."""
-    return datetime.datetime.now(pytz.timezone('Europe/Berlin')).strftime("%Y-%m-%d %H:%M:%S")
+    return datetime.datetime.now(pytz.timezone("Europe/Berlin")).strftime("%Y-%m-%d %H:%M:%S")
