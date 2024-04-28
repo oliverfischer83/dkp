@@ -1,11 +1,10 @@
 # pylint: disable=missing-module-docstring
 from datetime import date
-from typing import Any
 
 import app
 import pandas as pd
 import streamlit as st
-from core import Season
+from core import Balance, Season
 
 
 def main():
@@ -58,19 +57,19 @@ def build_sidebar(season: Season):
             st.checkbox("Kessel, Food, Vantus Runen", value=checklist.consumables, disabled=True)
 
 
-def build_notification_area(balance: dict[str, dict[int, Any]]):
+def build_notification_area(balance: list[Balance]):
     with st.container():
         player = app.find_player_with_negative_balance(balance)
         if player:
             st.error("Spieler mit negativen Guthaben: " + ", ".join(player))
 
 
-def build_balance(season: Season, balance_table: dict[str, dict[int, Any]]):
+def build_balance(season: Season, balance_list: list[Balance]):
     st.markdown("### DKP Liste")
     show_all = st.checkbox("alle anzeigen", value=False)
-    balance_table = balance_table if show_all else app.filter_active_player(balance_table, season)
+    balance_list = balance_list if show_all else app.filter_by_active_player(balance_list, season)
     st.dataframe(
-        pd.DataFrame(balance_table, columns=["name", "value", "income", "cost", "characters"]).sort_values(
+        pd.DataFrame([balance.model_dump() for balance in balance_list], columns=["name", "value", "income", "cost", "characters"]).sort_values(
             by=["name"], ascending=True, ignore_index=False
         ),
         column_config={

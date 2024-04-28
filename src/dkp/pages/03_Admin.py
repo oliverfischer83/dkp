@@ -73,12 +73,12 @@ def build_sidebar():
         st.write("")
         st.write("")
         st.write("")
-        st.write("###### Version: 0.1.0")
+        st.write(f"###### Version: {app.PROJECT_VERSION}")
 
 
 def build_notification_area():
     with st.container():
-        st.write("") # strange: this element is necessary, otherwise all expander on the page collapse after any button pressed
+        st.write("")  # strange: this element is necessary, otherwise all expander on the page collapse after any button pressed
         unfinished_raids = app.find_past_raids_without_attendees()
         if unfinished_raids:
             st.error("Missing attendees for raids: " + ", ".join(unfinished_raids))
@@ -163,14 +163,15 @@ def build_player_editor():
 
             with col2:
                 player_name = st.selectbox("Select absent player:", sorted([player.name for player in app.get_absent_player_list()]))
-                if st.button("Delete player"):
-                    if not player_name:
-                        st.error("Please select player to remove.")
-                    else:
-                        app.delete_player(player_name)
-                        st.success(f"Player removed: {player_name}")
-                        time.sleep(2)
-                        st.rerun()
+                if st.checkbox("Really?", key="delete_player_cb"):
+                    if st.button("Delete player"):
+                        if not player_name:
+                            st.error("Please select player to remove.")
+                        else:
+                            app.delete_player(player_name)
+                            st.success(f"Player removed: {player_name}")
+                            time.sleep(2)
+                            st.rerun()
 
             data = [{"id": player.id, "name": player.name, "chars": ", ".join(player.chars)} for player in app.get_player_list()]
             columns = ["id", "name", "chars"]
@@ -207,13 +208,14 @@ def build_raid_editor():
 
             with col2:
                 selected_raid_date = st.selectbox(
-                    "Select raid:", sorted([raid.date for raid in app.get_empty_raid_list(season)], reverse=True)
+                    "Delete raid:", sorted([raid.date for raid in app.get_empty_raid_list(season)], reverse=True)
                 )
-                if st.button("Delete raid") and selected_raid_date:
-                    app.delete_raid(selected_raid_date)
-                    st.success(f"Raid deleted: {selected_raid_date}")
-                    time.sleep(2)
-                    st.rerun()
+                if st.checkbox("Really?", key="delete_raid_cb"):
+                    if st.button("Delete raid") and selected_raid_date:
+                        app.delete_raid(selected_raid_date)
+                        st.success(f"Raid deleted: {selected_raid_date}")
+                        time.sleep(2)
+                        st.rerun()
 
             data = [
                 {"id": raid.id, "date": raid.date, "report_id": raid.report_id, "player": ", ".join(raid.player)}
@@ -263,12 +265,16 @@ def build_season_editor():
                         st.rerun()
 
             with right:
-                selected_season = st.selectbox("Select empty season:", [season.desc for season in app.get_empty_season_list()], index=None)
-                if st.button("Delete season") and selected_season:
-                    app.delete_season(selected_season)
-                    st.success(f"Season deleted: {selected_season}")
-                    time.sleep(2)
-                    st.rerun()
+                selected_season = st.selectbox("Delete empty season:", [season.desc for season in app.get_empty_season_list()], index=None)
+                if st.checkbox("Really?", key="delete_season_cb"):
+                    if st.button("Delete season"):
+                        if not selected_season:
+                            st.error("Please select season to remove.")
+                        else:
+                            app.delete_season(selected_season)
+                            st.success(f"Season deleted: {selected_season}")
+                            time.sleep(2)
+                            st.rerun()
 
             data = [
                 {"id": season.id, "name": season.name, "desc": season.desc, "start_date": season.start_date}
