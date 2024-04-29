@@ -92,19 +92,10 @@ BRANCH_NAME="..."  # develop, release, main
 
 ## Release process
 
+- create new branch (e.g. `develop`), make changes and create pull request
 - set correct version in `pyproject.toml` file, e.g. `0.1.0`
-- merge `develop` into `release` branch
-- create pull requests from `release` into `main` branch
-- clean up `release` branch, no test data/files, keep ...
-  - /media
-  - /src
-  - config.yml
-  - LICENSE
-  - pyproject.toml
-  - README.md
-  - requirements.txt
-- test deploy on streamlit cloud
-- squash commit
+- test branch deployment on streamlit cloud
+- squash commit and merge
 - create [new release](https://github.com/oliverfischer83/dkp/releases/new)
 
 ## Use cases:
