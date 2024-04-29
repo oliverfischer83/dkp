@@ -31,7 +31,6 @@ log = logging.getLogger(__name__)
 
 USER_NAME = "oliverfischer83"
 REPO_NAME = "dkp"
-BRANCH = "develop" if is_local_development() else "main"
 
 
 class GithubClient:
