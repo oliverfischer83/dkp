@@ -1,4 +1,4 @@
 
 # Some headline
 
-some text for testing porposes
+some text for testing purposes
